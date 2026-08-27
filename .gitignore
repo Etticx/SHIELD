@@ -1,32 +1,50 @@
-# Python
+# =============================================================================
+# SHIELD — .gitignore
+# =============================================================================
+
+# ---- Python (root Streamlit app + backend) ----
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 .Python
 
-# Virtual environment
+# Virtual environments
 venv/
 env/
-.env
 .venv/
+backend/venv/
+backend/env/
 
-# Jupyter checkpoints
+# Environment secrets — never commit
+.env
+backend/.env
+frontend/.env.local
+
+# Streamlit cache
+.streamlit/
+
+# Jupyter
 .ipynb_checkpoints/
-*.ipynb_checkpoints
 
-# OS
+# ---- Node / Next.js (frontend) ----
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/coverage/
+*.tsbuildinfo
+.npm/
+
+# ---- OS ----
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# IDE
+# ---- IDE ----
 .vscode/
 .idea/
 *.kiro/
 
-# Large raw source data (not needed for running the app)
+# ---- Large raw source data ----
 data/bankruptcy_italian_companies_2023.xlsx
-
-# Streamlit cache
-.streamlit/

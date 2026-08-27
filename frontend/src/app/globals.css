@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Google Fonts — loaded via next/font in layout.tsx, this is the fallback */
+@layer base {
+  :root {
+    --color-bg:     #0e1117;
+    --color-panel:  #1a1c23;
+    --color-border: #2a2d36;
+    --color-yellow: #FFD100;
+    --color-text:   #f0f2f5;
+  }
+
+  html, body {
+    @apply bg-brand-bg text-brand-text;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    scrollbar-color: #2a2d36 #0e1117;
+    scrollbar-width: thin;
+  }
+
+  /* Webkit scrollbar */
+  ::-webkit-scrollbar       { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0e1117; }
+  ::-webkit-scrollbar-thumb { background: #2a2d36; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3d46; }
+}
+
+@layer components {
+  /* Reusable panel card */
+  .panel {
+    @apply bg-brand-panel border border-brand-border rounded-xl shadow-panel;
+  }
+
+  /* Section label (CARD TITLE style) */
+  .section-label {
+    @apply text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-brand-muted mb-3;
+  }
+
+  /* Yellow accent button */
+  .btn-primary {
+    @apply bg-brand-yellow hover:bg-brand-yellowHover text-black font-bold
+           py-3 px-6 rounded-lg transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-brand-yellow/50
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Ghost / secondary button */
+  .btn-ghost {
+    @apply border border-brand-border hover:border-brand-yellow/50 text-brand-subtext
+           hover:text-brand-yellow font-medium py-2 px-4 rounded-lg
+           transition-colors duration-150 text-sm;
+  }
+
+  /* Number input field */
+  .input-field {
+    @apply w-full bg-brand-bg border border-brand-border rounded-lg
+           px-3 py-2 text-sm text-brand-text font-mono
+           focus:outline-none focus:ring-1 focus:ring-brand-yellow/60
+           focus:border-brand-yellow/60 transition-colors;
+  }
+}
