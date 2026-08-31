@@ -12,6 +12,7 @@ class Settings(BaseSettings):
         env_file=Path(__file__).parent / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        protected_namespaces=("settings_",),  # avoids false warning on model_path field
     )
 
     model_path: str = "../model/xgb_shield_model.joblib"
@@ -19,6 +20,7 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
     log_level: str = "info"
+    groq_api_key: str | None = None  # Set GROQ_API_KEY in .env to enable AI advisory
 
     @property
     def cors_origins_list(self) -> list[str]:

@@ -9,49 +9,57 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // JuneBank brand palette
+        // JuneBank brand palette — light/cream theme
         brand: {
-          yellow:  "#FFD100",
+          yellow:      "#FFD100",
           yellowHover: "#E6BC00",
-          bg:      "#0e1117",
-          panel:   "#1a1c23",
-          border:  "#2a2d36",
-          muted:   "#6b7280",
-          text:    "#f0f2f5",
-          subtext: "#9ca3af",
+          cream:       "#FCFAF8",       // main page background
+          panel:       "#FFFFFF",       // card / panel background
+          border:      "#E8E4DE",       // subtle warm border
+          charcoal:    "#1A1A1A",       // primary text
+          muted:       "#6B6B6B",       // secondary text
+          subtext:     "#9A9A9A",       // tertiary / captions
         },
         risk: {
-          high:    "#ef4444",
-          highBg:  "rgba(239,68,68,0.12)",
-          low:     "#22c55e",
-          lowBg:   "rgba(34,197,94,0.12)",
-          amber:   "#f59e0b",
+          high:    "#DC2626",
+          highBg:  "rgba(220,38,38,0.08)",
+          low:     "#16A34A",
+          lowBg:   "rgba(22,163,74,0.08)",
+          amber:   "#D97706",
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        // Ubuntu — headers, nav, wordmarks
+        heading: ["Ubuntu", "system-ui", "sans-serif"],
+        // Lato — body text, data, labels
+        sans:    ["Lato", "system-ui", "sans-serif"],
+        mono:    ["JetBrains Mono", "Courier New", "monospace"],
       },
       backgroundImage: {
-        "header-gradient":
-          "linear-gradient(135deg, #12141c 0%, #0e1117 50%, #12141c 100%)",
+        "navbar-gradient":
+          "linear-gradient(180deg, #FCFAF8 0%, rgba(252,250,248,0.96) 100%)",
       },
       boxShadow: {
-        panel: "0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)",
-        "yellow-glow": "0 0 20px rgba(255,209,0,0.25)",
+        navbar: "0 1px 0 0 #E8E4DE",
+        panel:  "0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)",
+        card:   "0 2px 8px rgba(0,0,0,0.08)",
       },
       keyframes: {
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(8px)" },
+          from: { opacity: "0", transform: "translateY(6px)" },
           to:   { opacity: "1", transform: "translateY(0)" },
         },
         "gauge-fill": {
           from: { "stroke-dashoffset": "251" },
           to:   {},
         },
+        "nav-underline": {
+          from: { transform: "scaleX(0)" },
+          to:   { transform: "scaleX(1)" },
+        },
       },
       animation: {
-        "fade-in":   "fade-in 0.35s ease-out both",
+        "fade-in":    "fade-in 0.3s ease-out both",
         "gauge-fill": "gauge-fill 1s ease-out both",
       },
     },

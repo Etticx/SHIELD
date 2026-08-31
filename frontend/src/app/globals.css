@@ -2,62 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Fonts — loaded via next/font in layout.tsx, this is the fallback */
 @layer base {
   :root {
-    --color-bg:     #0e1117;
-    --color-panel:  #1a1c23;
-    --color-border: #2a2d36;
-    --color-yellow: #FFD100;
-    --color-text:   #f0f2f5;
+    --color-cream:   #FCFAF8;
+    --color-yellow:  #FFD100;
+    --color-charcoal:#1A1A1A;
+    --color-border:  #E8E4DE;
   }
 
   html, body {
-    @apply bg-brand-bg text-brand-text;
-    font-feature-settings: "cv11", "ss01";
+    @apply bg-brand-cream text-brand-charcoal;
     -webkit-font-smoothing: antialiased;
-    scrollbar-color: #2a2d36 #0e1117;
+    -moz-osx-font-smoothing: grayscale;
+    scrollbar-color: #E8E4DE #FCFAF8;
     scrollbar-width: thin;
   }
 
-  /* Webkit scrollbar */
-  ::-webkit-scrollbar       { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0e1117; }
-  ::-webkit-scrollbar-thumb { background: #2a2d36; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3a3d46; }
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { background: #FCFAF8; }
+  ::-webkit-scrollbar-thumb  { background: #D4CFC8; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #B8B2AA; }
+
+  /* Ubuntu on all headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-ubuntu), system-ui, sans-serif;
+  }
 }
 
 @layer components {
-  /* Reusable panel card */
+  /* Card / panel */
   .panel {
     @apply bg-brand-panel border border-brand-border rounded-xl shadow-panel;
   }
 
-  /* Section label (CARD TITLE style) */
+  /* Section label — small ALL-CAPS tag above headings */
   .section-label {
-    @apply text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-brand-muted mb-3;
+    @apply text-[0.68rem] font-bold tracking-[0.14em] uppercase text-brand-muted mb-2;
+    font-family: var(--font-ubuntu), system-ui, sans-serif;
   }
 
-  /* Yellow accent button */
+  /* Primary CTA — yellow button */
   .btn-primary {
-    @apply bg-brand-yellow hover:bg-brand-yellowHover text-black font-bold
+    @apply bg-brand-yellow hover:bg-brand-yellowHover text-brand-charcoal font-bold
            py-3 px-6 rounded-lg transition-colors duration-150
-           focus:outline-none focus:ring-2 focus:ring-brand-yellow/50
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           focus:outline-none focus:ring-2 focus:ring-brand-yellow/40
+           disabled:opacity-40 disabled:cursor-not-allowed;
+    font-family: var(--font-ubuntu), system-ui, sans-serif;
   }
 
   /* Ghost / secondary button */
   .btn-ghost {
-    @apply border border-brand-border hover:border-brand-yellow/50 text-brand-subtext
-           hover:text-brand-yellow font-medium py-2 px-4 rounded-lg
+    @apply border border-brand-border hover:border-brand-yellow text-brand-muted
+           hover:text-brand-charcoal font-medium py-2 px-4 rounded-lg
            transition-colors duration-150 text-sm;
+    font-family: var(--font-ubuntu), system-ui, sans-serif;
   }
 
-  /* Number input field */
+  /* Number input */
   .input-field {
-    @apply w-full bg-brand-bg border border-brand-border rounded-lg
-           px-3 py-2 text-sm text-brand-text font-mono
-           focus:outline-none focus:ring-1 focus:ring-brand-yellow/60
-           focus:border-brand-yellow/60 transition-colors;
+    @apply w-full bg-white border border-brand-border rounded-lg
+           px-3 py-2 text-sm text-brand-charcoal font-mono
+           focus:outline-none focus:ring-2 focus:ring-brand-yellow/40
+           focus:border-brand-yellow transition-colors;
   }
 }

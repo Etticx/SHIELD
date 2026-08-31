@@ -39,6 +39,7 @@ export interface AdvisoryReport {
   risk_drivers: Array<{ label: string; shap_value: number }>;
   protective_factors: Array<{ label: string; shap_value: number }>;
   recommendation: string;
+  advisory_source: "groq" | "rule-based" | "rate-limited";  // which engine generated this
 }
 
 export interface PredictionResponse {

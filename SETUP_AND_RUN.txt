@@ -1,125 +1,214 @@
 ================================================================
   SHIELD — SME Health Indicator and Evaluator for Loan Decision
-  Setup & Run Guide
+  Setup & Run Guide  |  v2.0 (FastAPI + Next.js)
 ================================================================
 
+PROJECT STRUCTURE
+-----------------
+SHIELD/
+├── app.py                        <- Legacy Streamlit app (still works)
+├── requirements.txt              <- Streamlit app dependencies
+├── backend/                      <- FastAPI prediction API
+│   ├── main.py
+│   ├── config.py
+│   ├── run.py
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/                     <- Next.js dashboard (JuneBank theme)
+│   ├── src/
+│   │   ├── app/
+│   │   ├── components/
+│   │   └── lib/
+│   ├── package.json
+│   └── next.config.ts
+├── model/
+│   └── xgb_shield_model.joblib   <- Pre-trained XGBoost model
+└── data/                         <- Processed CSVs
+
+
+================================================================
 PREREQUISITES
--------------
-- Python 3.10 or higher installed on your machine
-- All project files in place:
-    SHIELD/
-    ├── app.py
-    ├── requirements.txt
-    ├── data/
-    │   ├── df_cleaned_original.csv
-    │   └── X_train_processed_8020.csv
-    └── model/
-        └── xgb_shield_model.joblib
+================================================================
+
+Python:
+  - Python 3.10 or higher
+  - Download from https://www.python.org/downloads/
+  - During install, check "Add Python to PATH"
+
+Node.js (for the new frontend only):
+  - Node.js 18 or higher (includes npm)
+  - Download from https://nodejs.org/
+  - Verify: node --version  and  npm --version
 
 
 ================================================================
-STEP 1 — Open Terminal in the SHIELD Root Folder
+OPTION A — New Enterprise App (FastAPI + Next.js)
 ================================================================
+This runs the full decoupled v2 setup: a Python API backend
+and a React/Next.js frontend. Requires two terminals running
+at the same time.
 
-Option A (Recommended):
-  - Open the SHIELD folder in VS Code
-  - Press Ctrl + ` to open the integrated terminal
+------------------------------------------------------------
+TERMINAL 1 — Backend (FastAPI)
+------------------------------------------------------------
 
-Option B:
-  - Open Windows Command Prompt or PowerShell
-  - Navigate to your project folder:
-      cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
+STEP 1: Navigate to the backend folder
+
+    cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\backend"
 
 
-================================================================
-STEP 2 — Create a Virtual Environment
-================================================================
-
-Run this command once (you only need to do this one time):
+STEP 2: Create a virtual environment (first time only)
 
     python -m venv venv
 
-This creates a folder called "venv" inside your SHIELD directory.
-It is your isolated Python environment for this project.
 
-
-================================================================
-STEP 3 — Activate the Virtual Environment
-================================================================
-
-Run this every time you open a new terminal to work on SHIELD:
+STEP 3: Activate the virtual environment
 
     venv\Scripts\activate
 
-You will see (venv) appear at the start of your terminal prompt.
-This confirms the environment is active.
-
-    Example:  (venv) d:\...\SHIELD>
+    You will see (venv) at the start of your prompt.
 
 
-================================================================
-STEP 4 — Install All Required Packages
-================================================================
-
-Run this once (or again if you ever recreate the venv):
+STEP 4: Install backend dependencies (first time only)
 
     pip install -r requirements.txt
 
-This installs:
-  - streamlit       (web app framework)
-  - pandas          (data handling)
-  - numpy           (numerical operations)
-  - xgboost         (the trained model)
-  - shap            (explainability)
-  - joblib          (loading the .joblib model file)
-  - matplotlib      (SHAP plots)
+    This installs: fastapi, uvicorn, pydantic, xgboost,
+                   shap, joblib, pandas, numpy, python-dotenv
 
-Wait for all packages to finish installing before moving on.
+
+STEP 5: Configure environment (first time only)
+
+    copy .env.example .env
+
+    Open .env in a text editor. The default values work
+    for local development — no changes needed to start.
+
+    ── Optional: Enable AI-Powered Advisory (Groq) ────────────────────
+    SHIELD's advisory engine uses Groq (openai/gpt-oss-120b) to
+    generate dynamic, natural-language credit risk explanations.
+
+    To enable it:
+
+    1. Get a FREE API key from Groq Console (no billing required):
+           https://console.groq.com
+
+    2. Open backend/.env and add your key:
+           GROQ_API_KEY=your_key_here
+
+    3. Restart the backend — that's it.
+
+    Why Groq?
+      • ~500 t/s on Groq's LPU hardware
+      • Free plan: 1,000 requests/day, 200K tokens/day
+      • openai/gpt-oss-120b — flagship model, high quality output
+      • 131k context window, no billing required
+
+    Free plan rate limits (openai/gpt-oss-120b):
+      • 30 requests/minute
+      • 1,000 requests/day
+      • 8,000 tokens/minute
+      • 200,000 tokens/day
+
+    If GROQ_API_KEY is missing, empty, or the API call fails for
+    any reason, SHIELD automatically falls back to the built-in
+    rule-based advisory engine. The app never crashes or stalls.
+    The AdvisoryReport panel shows a "Groq AI" or "Rule-based"
+    badge so users can see which engine generated the text.
+    ────────────────────────────────────────────────────────────────────
+
+
+STEP 6: Start the API server
+
+    python run.py
+
+    API is now running at:   http://localhost:8000
+    Interactive API docs at: http://localhost:8000/docs
+
+    Leave this terminal open and running.
+
+
+------------------------------------------------------------
+TERMINAL 2 — Frontend (Next.js)
+------------------------------------------------------------
+
+STEP 1: Open a NEW terminal and navigate to the frontend folder
+
+    cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\frontend"
+
+
+STEP 2: Install Node dependencies (first time only)
+
+    npm install
+
+    This may take a minute. Wait for it to complete.
+
+
+STEP 3: Start the development server
+
+    npm run dev
+
+    Dashboard is now running at: http://localhost:3000
+
+    Open http://localhost:3000 in your browser.
+
+
+------------------------------------------------------------
+EVERY TIME YOU COME BACK (v2 Quick Reference)
+------------------------------------------------------------
+
+Terminal 1 — Backend:
+    cd "...\SHIELD\backend"
+    venv\Scripts\activate
+    python run.py
+
+Terminal 2 — Frontend:
+    cd "...\SHIELD\frontend"
+    npm run dev
+
+Then open: http://localhost:3000
+
+
+------------------------------------------------------------
+STOPPING v2
+------------------------------------------------------------
+
+In each terminal, press Ctrl + C to stop the server.
 
 
 ================================================================
-STEP 5 — Run the SHIELD App
+OPTION B — Legacy Streamlit App (v1 — still works)
 ================================================================
+The original single-file Streamlit app is still fully
+functional. Use this if you don't need the new frontend.
+
+STEP 1: Open terminal in the SHIELD root folder
+
+    cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
+
+
+STEP 2: Create and activate the root virtual environment
+        (first time only — skip if already created)
+
+    python -m venv venv
+    venv\Scripts\activate
+
+
+STEP 3: Install dependencies (first time only)
+
+    pip install -r requirements.txt
+
+
+STEP 4: Run the app
 
     streamlit run app.py
 
-The app will automatically open in your default browser at:
-
-    http://localhost:8501
-
-If it does not open automatically, copy that URL into your browser.
+    Opens automatically at: http://localhost:8501
 
 
-================================================================
-STOPPING THE APP
-================================================================
-
-Go back to the terminal and press:
-
-    Ctrl + C
-
-This stops the Streamlit server.
-
-
-================================================================
-EVERY TIME YOU COME BACK (Quick Reference)
-================================================================
-
-Open terminal in SHIELD folder, then run:
-
+Quick reference (every time):
     venv\Scripts\activate
     streamlit run app.py
-
-That's it.
-
-
-================================================================
-DEACTIVATING THE VIRTUAL ENVIRONMENT
-================================================================
-
-When you are done working and want to exit the venv:
-
-    deactivate
 
 
 ================================================================
@@ -127,39 +216,62 @@ TROUBLESHOOTING
 ================================================================
 
 Problem : "python is not recognized"
-Fix     : Make sure Python is installed and added to your PATH.
-          Download from https://www.python.org/downloads/
-          During install, check "Add Python to PATH".
+Fix     : Python is not on your PATH. Reinstall Python and
+          check "Add Python to PATH" during setup.
 
-Problem : "venv\Scripts\activate is not recognized"
-Fix     : Make sure you are inside the SHIELD folder, not a subfolder.
-          Run: cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
+Problem : Backend venv\Scripts\activate not recognised
+Fix     : Make sure you are inside the backend/ folder,
+          not the SHIELD root.
+          Run: cd "...\SHIELD\backend"
 
-Problem : Streamlit opens but model fails to load
-Fix     : Confirm xgb_shield_model.joblib is inside the model/ folder.
-          Confirm you ran streamlit from the SHIELD root, not a subfolder.
+Problem : "npm is not recognized"
+Fix     : Node.js is not installed. Download from https://nodejs.org/
 
-Problem : SHAP waterfall plot does not appear
-Fix     : Run: pip install --upgrade shap
-          Then restart the app.
+Problem : Frontend shows "Failed to fetch" or API errors
+Fix     : Make sure the backend is running in Terminal 1 first.
+          Check http://localhost:8000/health — it should return:
+          {"status":"healthy","model_loaded":true,...}
 
-Problem : Port 8501 already in use
-Fix     : Run on a different port:
-          streamlit run app.py --server.port 8502
+Problem : Backend crashes — model file not found
+Fix     : Confirm xgb_shield_model.joblib is in SHIELD/model/
+          Check MODEL_PATH in backend/.env points to the right path.
+          Default value: ../model/xgb_shield_model.joblib
+
+Problem : Port 8000 already in use (backend)
+Fix     : Edit backend/.env and change PORT=8000 to PORT=8001
+          Then update frontend/.env.local:
+          NEXT_PUBLIC_API_URL=http://localhost:8001
+
+Problem : Port 3000 already in use (frontend)
+Fix     : Next.js will automatically try port 3001, 3002 etc.
+          Check the terminal output for the actual URL.
+
+Problem : Port 8501 already in use (Streamlit)
+Fix     : streamlit run app.py --server.port 8502
+
+Problem : SHAP errors or slow first prediction
+Fix     : The SHAP explainer is built once on backend startup.
+          The first POST /predict call may take a few seconds.
+          Subsequent calls will be faster.
 
 
 ================================================================
-GITIGNORE (if using Git)
+API QUICK REFERENCE (v2 backend)
 ================================================================
 
-Add a .gitignore file in SHIELD/ with these contents to avoid
-committing large or auto-generated files:
+GET  http://localhost:8000/health
+     → Checks model and explainer are loaded
 
-    venv/
-    __pycache__/
-    *.pyc
-    .streamlit/
-    *.joblib
+GET  http://localhost:8000/features
+     → Returns all 20 feature labels, median defaults,
+       and both test profiles (healthy / distressed)
+
+POST http://localhost:8000/predict
+     → Body: JSON with 20 float fields (see README.md)
+     → Returns: probability, classification, SHAP values,
+                advisory report
+
+Full interactive docs: http://localhost:8000/docs
 
 
 ================================================================

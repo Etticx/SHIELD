@@ -3,13 +3,26 @@
 // =============================================================================
 // SHIELD — AdvisoryReport Component
 // Renders the structured advisory from the /predict response:
-//   • Tone banner (colour-coded by risk level)
+//   • Tone banner (colour-coded by risk level) with LLM explanation
 //   • Risk drivers table
 //   • Protective factors table
-//   • Recommendation block
+//   • Recommendation block (structured action list)
 // =============================================================================
 
 import clsx from "clsx";
+import type { LucideIcon } from "lucide-react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  Info,
+  CheckCircle,
+  TrendingUp,
+  TrendingDown,
+  Lightbulb,
+  Sparkles,
+  Clock,
+  Minus,
+} from "lucide-react";
 import type { AdvisoryReport as AdvisoryReportType } from "@/lib/types";
 
 interface Props {
@@ -18,32 +31,81 @@ interface Props {
 
 type ToneLevel = AdvisoryReportType["tone_level"];
 
-const TONE_STYLES: Record<ToneLevel, { bg: string; border: string; text: string; icon: string }> = {
+// Each risk level maps to a colour scheme + a Lucide icon component
+const TONE_CONFIG: Record<
+  ToneLevel,
+  {
+    bg: string;
+    border: string;
+    text: string;
+    subtext: string;
+    divider: string;
+    label: string;
+    Icon: LucideIcon;
+  }
+> = {
   critical: {
-    bg:     "bg-risk-highBg",
+    bg: "bg-risk-highBg",
     border: "border-risk-high/30",
-    text:   "text-risk-high",
-    icon:   "🔴",
+    text: "text-risk-high",
+    subtext: "text-risk-high/80",
+    divider: "border-risk-high/20",
+    label: "Critical Risk",
+    Icon: AlertCircle,
   },
   elevated: {
-    bg:     "bg-[rgba(245,158,11,0.1)]",
+    bg: "bg-[rgba(245,158,11,0.08)]",
     border: "border-risk-amber/30",
-    text:   "text-risk-amber",
-    icon:   "🟠",
+    text: "text-risk-amber",
+    subtext: "text-risk-amber/80",
+    divider: "border-risk-amber/20",
+    label: "Elevated Risk",
+    Icon: AlertTriangle,
   },
   moderate: {
-    bg:     "bg-[rgba(234,179,8,0.08)]",
+    bg: "bg-[rgba(234,179,8,0.06)]",
     border: "border-yellow-500/30",
-    text:   "text-yellow-400",
-    icon:   "🟡",
+    text: "text-yellow-400",
+    subtext: "text-yellow-400/80",
+    divider: "border-yellow-500/20",
+    label: "Moderate Risk",
+    Icon: Info,
   },
   low: {
-    bg:     "bg-risk-lowBg",
+    bg: "bg-risk-lowBg",
     border: "border-risk-low/30",
-    text:   "text-risk-low",
-    icon:   "🟢",
+    text: "text-risk-low",
+    subtext: "text-risk-low/80",
+    divider: "border-risk-low/20",
+    label: "Low Risk",
+    Icon: CheckCircle,
   },
 };
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function splitSentences(text: string): string[] {
+  return text
+    .split(/(?<=[.!?])\s+(?=[A-Z])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function splitRecommendation(text: string): string[] {
+  const numbered = text.split(/\n+\d+\.\s+/).filter(Boolean);
+  if (numbered.length > 1) return numbered.map((s) => s.trim());
+
+  const bulleted = text.split(/\n+[-•]\s+/).filter(Boolean);
+  if (bulleted.length > 1) return bulleted.map((s) => s.trim());
+
+  return splitSentences(text);
+}
+
+function ensurePeriod(s: string) {
+  return s.endsWith(".") || s.endsWith("!") || s.endsWith("?") ? s : s + ".";
+}
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -64,7 +126,7 @@ function FactorRow({
       <span className="text-xs text-brand-subtext leading-snug flex-1">{label}</span>
       <span
         className={clsx(
-          "font-mono text-xs font-bold shrink-0",
+          "font-mono text-xs font-bold shrink-0 tabular-nums",
           isRisk ? "text-risk-high" : "text-risk-low"
         )}
       >
@@ -72,6 +134,31 @@ function FactorRow({
         {value.toFixed(4)}
       </span>
     </div>
+  );
+}
+
+function SourceBadge({ source }: { source: AdvisoryReportType["advisory_source"] }) {
+  if (source === "groq") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border text-brand-yellow border-brand-yellow/40 bg-brand-yellow/10">
+        <Sparkles size={9} />
+        Groq AI
+      </span>
+    );
+  }
+  if (source === "rate-limited") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border text-risk-amber border-risk-amber/40 bg-risk-amber/10">
+        <Clock size={9} />
+        API limit reached
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border text-brand-muted border-brand-border bg-brand-bg">
+      <Minus size={9} />
+      Rule-based
+    </span>
   );
 }
 
@@ -85,69 +172,107 @@ export default function AdvisoryReport({ advisory }: Props) {
     risk_drivers,
     protective_factors,
     recommendation,
+    advisory_source,
   } = advisory;
 
-  const style = TONE_STYLES[tone_level];
+  const config = TONE_CONFIG[tone_level];
+  const { Icon } = config;
+  const isGroq = advisory_source === "groq";
+
+  const explanationSentences = isGroq ? splitSentences(tone) : [tone];
+  const recommendationPoints = isGroq ? splitRecommendation(recommendation) : [recommendation];
 
   return (
     <div className="flex flex-col gap-4 animate-fade-in">
 
-      {/* ---- Section Header ---- */}
-      <p className="section-label">AI Advisory Report</p>
-
-      {/* ---- Tone Banner ---- */}
-      <div
-        className={clsx(
-          "rounded-lg px-4 py-3 border",
-          style.bg,
-          style.border
-        )}
-      >
-        <p className={clsx("text-sm font-semibold leading-snug", style.text)}>
-          {style.icon} {tone}
-        </p>
+      {/* ── Section Header ─────────────────────────────────────── */}
+      <div className="flex items-center justify-between">
+        <p className="section-label">AI Advisory Report</p>
+        <SourceBadge source={advisory_source} />
       </div>
 
-      {/* ---- Risk Drivers ---- */}
+      {/* ── Tone / Explanation Banner ───────────────────────────── */}
+      <div className={clsx("rounded-lg border overflow-hidden", config.border)}>
+
+        {/* Header row */}
+        <div className={clsx("flex items-center gap-2 px-4 py-2.5", config.bg)}>
+          <Icon size={13} className={config.text} />
+          <p className={clsx("text-xs font-bold uppercase tracking-widest", config.text)}>
+            {config.label}
+          </p>
+        </div>
+
+        {/* Explanation body */}
+        <div className={clsx("px-4 py-3 flex flex-col gap-2.5", config.bg)}>
+          {explanationSentences.map((sentence, i) => (
+            <div
+              key={i}
+              className={clsx(
+                "flex gap-2.5 items-start",
+                i > 0 && ["pt-2.5 border-t", config.divider]
+              )}
+            >
+              {isGroq && explanationSentences.length > 1 && (
+                <span className={clsx("mt-0.5 shrink-0 text-[10px] font-bold w-4 text-center leading-none", config.text)}>
+                  {i + 1}
+                </span>
+              )}
+              <p className={clsx("text-xs leading-relaxed", config.subtext)}>
+                {ensurePeriod(sentence)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Risk Drivers ────────────────────────────────────────── */}
       {risk_drivers.length > 0 && (
         <div className="bg-brand-bg rounded-lg border border-brand-border px-3 py-2">
-          <p className="text-[10px] uppercase tracking-widest font-semibold text-risk-high/70 mb-2">
-            ↑ Key Risk Drivers
+          <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-risk-high/70 mb-2">
+            <TrendingUp size={11} className="text-risk-high/70" />
+            Key Risk Drivers
           </p>
           {risk_drivers.map((d) => (
-            <FactorRow
-              key={d.label}
-              label={d.label}
-              value={d.shap_value}
-              direction="risk"
-            />
+            <FactorRow key={d.label} label={d.label} value={d.shap_value} direction="risk" />
           ))}
         </div>
       )}
 
-      {/* ---- Protective Factors ---- */}
+      {/* ── Protective Factors ──────────────────────────────────── */}
       {protective_factors.length > 0 && (
         <div className="bg-brand-bg rounded-lg border border-brand-border px-3 py-2">
-          <p className="text-[10px] uppercase tracking-widest font-semibold text-risk-low/70 mb-2">
-            ↓ Protective Factors
+          <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-risk-low/70 mb-2">
+            <TrendingDown size={11} className="text-risk-low/70" />
+            Protective Factors
           </p>
           {protective_factors.map((d) => (
-            <FactorRow
-              key={d.label}
-              label={d.label}
-              value={d.shap_value}
-              direction="protective"
-            />
+            <FactorRow key={d.label} label={d.label} value={d.shap_value} direction="protective" />
           ))}
         </div>
       )}
 
-      {/* ---- Recommendation ---- */}
-      <div className="border-l-2 border-brand-yellow/60 pl-3 py-1">
-        <p className="text-[10px] uppercase tracking-widest font-semibold text-brand-yellow/70 mb-1.5">
-          Recommendation
-        </p>
-        <p className="text-xs text-brand-subtext leading-relaxed">{recommendation}</p>
+      {/* ── Recommendation ──────────────────────────────────────── */}
+      <div className="rounded-lg border border-brand-yellow/25 bg-brand-yellow/5 overflow-hidden">
+
+        <div className="flex items-center gap-2 px-4 py-2 border-b border-brand-yellow/20">
+          <Lightbulb size={12} className="text-brand-yellow/80" />
+          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-yellow/80">
+            Recommendation
+          </p>
+        </div>
+
+        <div className="px-4 py-3 flex flex-col gap-3">
+          {recommendationPoints.map((point, i) => (
+            <div key={i} className="flex gap-3 items-start">
+              <span className="shrink-0 mt-0.5 w-4 h-4 rounded-full bg-brand-yellow/20 border border-brand-yellow/40 flex items-center justify-center text-[9px] font-bold text-brand-yellow leading-none">
+                {recommendationPoints.length > 1 ? i + 1 : "→"}
+              </span>
+              <p className="text-xs text-brand-subtext leading-relaxed">
+                {ensurePeriod(point)}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
     </div>

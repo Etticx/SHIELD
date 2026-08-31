@@ -8,7 +8,8 @@
 // =============================================================================
 
 import { useState, useRef, useCallback, ChangeEvent } from "react";
-import { Upload, Download, ChevronDown } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Upload, Download, ChevronDown, Pencil, CheckCircle, XCircle, Check, Zap } from "lucide-react";
 import clsx from "clsx";
 
 import type { SMEFinancialData } from "@/lib/types";
@@ -32,10 +33,16 @@ interface Props {
 // Ordered list of field keys (must match SMEFinancialData / FEATURE_LABELS)
 const FIELD_KEYS = Object.keys(FEATURE_LABELS) as Array<keyof SMEFinancialData>;
 
-const PROFILES: Record<ProfileKey, { label: string; values: SMEFinancialData | null }> = {
-  manual:     { label: "✏️  Manual Input",                    values: null },
-  healthy:    { label: "🟢  Profile A: Healthy SME (Low Risk)",   values: PROFILE_HEALTHY },
-  distressed: { label: "🔴  Profile B: Distressed SME (High Risk)", values: PROFILE_DISTRESSED },
+// Profile metadata — labels and icons now separate from the value string
+const PROFILES: Record<ProfileKey, {
+  label: string;
+  Icon: LucideIcon;
+  iconClass: string;
+  values: SMEFinancialData | null;
+}> = {
+  manual: { label: "Manual Input", Icon: Pencil, iconClass: "text-brand-muted", values: null },
+  healthy: { label: "Profile A: Healthy SME (Low Risk)", Icon: CheckCircle, iconClass: "text-risk-low", values: PROFILE_HEALTHY },
+  distressed: { label: "Profile B: Distressed SME (High Risk)", Icon: XCircle, iconClass: "text-risk-high", values: PROFILE_DISTRESSED },
 };
 
 // ---------------------------------------------------------------------------
@@ -70,9 +77,9 @@ function buildCsvTemplate(): string {
 
 function downloadCsv(content: string, filename: string) {
   const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  a.href     = url;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
@@ -80,36 +87,37 @@ function downloadCsv(content: string, filename: string) {
 
 // Map CSV header → SMEFinancialData key (order-based — headers and FIELD_KEYS share index)
 const CSV_HEADER_TO_KEY: Record<string, keyof SMEFinancialData> = {
-  " ROA(A) before interest and % after tax":                 "roa_a",
-  " ROA(B) before interest and depreciation after tax":      "roa_b",
-  " Continuous interest rate (after tax)":                   "continuous_interest_rate",
-  " Net Value Per Share (B)":                                "net_value_per_share_b",
-  " Net Value Per Share (A)":                                "net_value_per_share_a",
-  " Net Value Per Share (C)":                                "net_value_per_share_c",
-  " Persistent EPS in the Last Four Seasons":                "persistent_eps",
-  " Per Share Net profit before tax":                        "per_share_net_profit",
-  " Interest Expense Ratio":                                 "interest_expense_ratio",
-  " Debt ratio %":                                           "debt_ratio",
-  " Net worth/Assets":                                       "net_worth_assets",
-  " Borrowing dependency":                                   "borrowing_dependency",
-  " Net profit before tax/Paid-in capital":                  "net_profit_paid_in_capital",
-  " Retained Earnings to Total Assets":                      "retained_earnings",
-  " Total income/Total expense":                             "total_income_expense",
-  " Net Income to Total Assets":                             "net_income_total_assets",
-  " Net Income to Stockholder's Equity":                     "net_income_equity",
-  " Liability to Equity":                                    "liability_to_equity",
-  " Interest Coverage Ratio (Interest expense to EBIT)":     "interest_coverage_ratio",
-  " Equity to Liability":                                    "equity_to_liability",
+  " ROA(A) before interest and % after tax": "roa_a",
+  " ROA(B) before interest and depreciation after tax": "roa_b",
+  " Continuous interest rate (after tax)": "continuous_interest_rate",
+  " Net Value Per Share (B)": "net_value_per_share_b",
+  " Net Value Per Share (A)": "net_value_per_share_a",
+  " Net Value Per Share (C)": "net_value_per_share_c",
+  " Persistent EPS in the Last Four Seasons": "persistent_eps",
+  " Per Share Net profit before tax": "per_share_net_profit",
+  " Interest Expense Ratio": "interest_expense_ratio",
+  " Debt ratio %": "debt_ratio",
+  " Net worth/Assets": "net_worth_assets",
+  " Borrowing dependency": "borrowing_dependency",
+  " Net profit before tax/Paid-in capital": "net_profit_paid_in_capital",
+  " Retained Earnings to Total Assets": "retained_earnings",
+  " Total income/Total expense": "total_income_expense",
+  " Net Income to Total Assets": "net_income_total_assets",
+  " Net Income to Stockholder's Equity": "net_income_equity",
+  " Liability to Equity": "liability_to_equity",
+  " Interest Coverage Ratio (Interest expense to EBIT)": "interest_coverage_ratio",
+  " Equity to Liability": "equity_to_liability",
 };
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export default function InputForm({ onEvaluate, isLoading }: Props) {
-  const [profile, setProfile]   = useState<ProfileKey>("manual");
-  const [fields, setFields]     = useState<SMEFinancialData>({ ...MEDIAN_DEFAULTS });
+  const [profile, setProfile] = useState<ProfileKey>("manual");
+  const [fields, setFields] = useState<SMEFinancialData>({ ...MEDIAN_DEFAULTS });
   const [uploadMsg, setUploadMsg] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // ---- Profile switch ----
@@ -146,7 +154,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
         if (lines.length < 2) throw new Error("File has no data rows.");
 
         const rawHeaders = lines[0].split(",");
-        const rawValues  = lines[1].split(",");
+        const rawValues = lines[1].split(",");
 
         const parsed: Partial<SMEFinancialData> = {};
         const missing: string[] = [];
@@ -161,15 +169,14 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
 
         if (missing.length > 0) {
           throw new Error(
-            `Missing ${missing.length} column(s): ${missing.slice(0, 3).join(", ")}${
-              missing.length > 3 ? ` … (+${missing.length - 3} more)` : ""
+            `Missing ${missing.length} column(s): ${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ` … (+${missing.length - 3} more)` : ""
             }. Download the template to see the required headers.`
           );
         }
 
         setFields(parsed as SMEFinancialData);
         setProfile("manual");
-        setUploadMsg(`✔ "${file.name}" loaded — fields updated from row 1.`);
+        setUploadMsg(`"${file.name}" loaded — fields updated from row 1.`);
       } catch (err) {
         setUploadError(err instanceof Error ? err.message : "Could not parse file.");
       }
@@ -191,38 +198,67 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
       {/* ---- Profile Selector ---- */}
       <div>
         <label className="section-label block">Select SME Test Profile</label>
+
+        {/* Custom dropdown — native <select> can't render SVG icons inside <option> */}
         <div className="relative">
-          <select
-            value={profile}
-            onChange={(e) => handleProfileChange(e.target.value as ProfileKey)}
-            className="w-full appearance-none bg-brand-bg border border-brand-border
+          <button
+            type="button"
+            onClick={() => setDropdownOpen((v) => !v)}
+            className="w-full flex items-center gap-2 bg-brand-bg border border-brand-border
                        rounded-lg px-3 py-2.5 text-sm text-brand-text
                        focus:outline-none focus:ring-1 focus:ring-brand-yellow/60
-                       focus:border-brand-yellow/60 transition-colors cursor-pointer"
+                       focus:border-brand-yellow/60 transition-colors cursor-pointer text-left"
           >
-            {(Object.entries(PROFILES) as [ProfileKey, typeof PROFILES[ProfileKey]][]).map(
-              ([key, { label }]) => (
-                <option key={key} value={key}>{label}</option>
-              )
-            )}
-          </select>
-          <ChevronDown
-            size={14}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted pointer-events-none"
-          />
+            {(() => {
+              const { Icon, iconClass, label } = PROFILES[profile];
+              return (
+                <>
+                  <Icon size={13} className={iconClass} />
+                  <span className="flex-1">{label}</span>
+                </>
+              );
+            })()}
+            <ChevronDown
+              size={14}
+              className={clsx("text-brand-muted transition-transform duration-150", dropdownOpen && "rotate-180")}
+            />
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute z-10 mt-1 w-full bg-brand-panel border border-brand-border rounded-lg shadow-card overflow-hidden">
+              {(Object.entries(PROFILES) as [ProfileKey, typeof PROFILES[ProfileKey]][]).map(
+                ([key, { label, Icon, iconClass }]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => { handleProfileChange(key); setDropdownOpen(false); }}
+                    className={clsx(
+                      "w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left",
+                      "hover:bg-brand-bg transition-colors",
+                      profile === key ? "text-brand-text font-semibold" : "text-brand-subtext"
+                    )}
+                  >
+                    <Icon size={13} className={iconClass} />
+                    {label}
+                  </button>
+                )
+              )}
+            </div>
+          )}
         </div>
 
         {/* Profile badge */}
         {profile !== "manual" && (
           <p className={clsx(
-            "mt-1.5 text-xs px-2 py-1 rounded",
+            "mt-1.5 text-xs px-2 py-1 rounded flex items-center gap-1",
             profile === "healthy"
               ? "text-risk-low bg-risk-lowBg"
               : "text-risk-high bg-risk-highBg"
           )}>
+            <Check size={10} />
             {profile === "healthy"
-              ? "✔ Healthy preset loaded — P(default) ≈ 0.007%"
-              : "✔ Distressed preset loaded — P(default) ≈ 99.8%"}
+              ? "Healthy preset loaded — P(default) ≈ 0.007%"
+              : "Distressed preset loaded — P(default) ≈ 99.8%"}
           </p>
         )}
       </div>
@@ -320,7 +356,10 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
             Evaluating…
           </>
         ) : (
-          <>⚡ Evaluate Risk</>
+          <>
+            <Zap size={14} />
+            Evaluate Risk
+          </>
         )}
       </button>
 
