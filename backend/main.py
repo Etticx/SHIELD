@@ -7,12 +7,17 @@
 # when GROQ_API_KEY is set in backend/.env.
 # Falls back gracefully to rule-based text if the key is absent or the API
 # call fails — the application never crashes due to a Groq error.
+#
+# Persistence: every evaluation is saved to PostgreSQL when DATABASE_URL is
+# set in backend/.env.  Falls back gracefully if DB is unavailable.
 # =============================================================================
 
 from __future__ import annotations
 
+import json
 import logging
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from typing import Any
 
 import numpy as np
@@ -25,6 +30,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from config import settings
+from database import init_db, close_db, get_session, Evaluation
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -219,9 +225,13 @@ async def lifespan(app: FastAPI):
     logger.info("Initialising Groq advisory engine …")
     _init_groq()
 
+    logger.info("Initialising database …")
+    await init_db(settings.database_url)
+
     logger.info("SHIELD backend ready.")
     yield
 
+    await close_db()
     logger.info("SHIELD backend shutting down.")
 
 
@@ -312,6 +322,42 @@ class PredictionResponse(BaseModel):
 
 
 PredictionResponse.model_rebuild()
+
+
+# ---------------------------------------------------------------------------
+# Request wrapper — financial data + evaluation metadata
+# ---------------------------------------------------------------------------
+
+class EvaluationMeta(BaseModel):
+    """Identification fields collected via the frontend gate modal."""
+    company_name: str = Field(..., min_length=1, max_length=255)
+    ssm_number:   str = Field(..., min_length=1, max_length=100)
+    loan_amount:  float = Field(..., gt=0)
+    evaluator:    str = Field(..., min_length=1, max_length=100)
+
+
+class PredictRequest(BaseModel):
+    """Full /predict payload — metadata + 20 financial ratios."""
+    meta:       EvaluationMeta
+    financials: SMEFinancialData
+
+
+# ---------------------------------------------------------------------------
+# Log entry response model
+# ---------------------------------------------------------------------------
+
+class LogEntry(BaseModel):
+    id:                  int
+    company_name:        str
+    ssm_number:          str
+    loan_amount:         float
+    evaluator:           str
+    evaluated_at:        str   # ISO-8601 string
+    probability_default: float
+    risk_classification: str
+    financial_inputs:    dict
+    shap_breakdown:      list
+    advisory_report:     str
 
 
 # ---------------------------------------------------------------------------
@@ -519,11 +565,13 @@ async def get_features() -> dict:
 
 
 @app.post("/predict", response_model=PredictionResponse, tags=["Prediction"])
-async def predict(data: SMEFinancialData) -> PredictionResponse:
-    """Main prediction endpoint — runs XGBoost + SHAP + Groq advisory."""
+async def predict(request: PredictRequest) -> PredictionResponse:
+    """Main prediction endpoint — runs XGBoost + SHAP + Groq advisory, then persists to DB."""
     if app_state.model is None or app_state.explainer is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Try again shortly.")
 
+    data          = request.financials
+    meta          = request.meta
     feature_array = data.to_feature_array()
     input_df      = pd.DataFrame([feature_array], columns=FEATURE_NAMES)
 
@@ -557,6 +605,43 @@ async def predict(data: SMEFinancialData) -> PredictionResponse:
         fallback_tone=tone,
     )
 
+    advisory = AdvisoryReport(
+        tone=final_tone,
+        tone_level=tone_level,
+        risk_drivers=risk_drivers,
+        protective_factors=protective_factors,
+        recommendation=final_recommendation,
+        advisory_source=advisory_source,
+    )
+
+    # ── Persist to PostgreSQL (non-blocking, best-effort) ────────────────────
+    advisory_text = f"{final_tone}\n\nRecommendation: {final_recommendation}"
+    shap_list = [
+        {"label": f.label, "value": f.value, "shap_value": f.shap_value, "direction": f.direction}
+        for f in shap_features
+    ]
+    try:
+        async with get_session() as session:
+            if session is not None:
+                record = Evaluation(
+                    company_name         = meta.company_name,
+                    ssm_number           = meta.ssm_number,
+                    loan_amount          = meta.loan_amount,
+                    evaluator            = meta.evaluator,
+                    evaluated_at         = datetime.now(timezone.utc),
+                    probability_default  = round(prob_bankrupt, 6),
+                    risk_classification  = classification,
+                    financial_inputs     = json.dumps(data.model_dump()),
+                    shap_breakdown       = json.dumps(shap_list),
+                    advisory_report      = advisory_text,
+                )
+                session.add(record)
+                await session.commit()
+                logger.info("Evaluation saved — id=%s company=%s", record.id, meta.company_name)
+    except Exception as exc:
+        logger.error("Failed to save evaluation to DB: %s", exc)
+        # Never let a DB failure block the response
+
     return PredictionResponse(
         probability=round(prob_bankrupt, 6),
         probability_pct=round(prob_bankrupt * 100, 2),
@@ -564,12 +649,26 @@ async def predict(data: SMEFinancialData) -> PredictionResponse:
         is_high_risk=is_high_risk,
         shap_base_value=round(base_val, 6),
         shap_features=shap_features,
-        advisory=AdvisoryReport(
-            tone=final_tone,
-            tone_level=tone_level,
-            risk_drivers=risk_drivers,
-            protective_factors=protective_factors,
-            recommendation=final_recommendation,
-            advisory_source=advisory_source,
-        ),
+        advisory=advisory,
     )
+
+
+@app.get("/logs", response_model=list[LogEntry], tags=["Logs"])
+async def get_logs(limit: int = 200) -> list[LogEntry]:
+    """Return past evaluations, newest first. Max 200 rows per call."""
+    from sqlalchemy import select, desc
+
+    async with get_session() as session:
+        if session is None:
+            raise HTTPException(
+                status_code=503,
+                detail="Audit log unavailable — DATABASE_URL not configured.",
+            )
+        result = await session.execute(
+            select(Evaluation)
+            .order_by(desc(Evaluation.evaluated_at))
+            .limit(limit)
+        )
+        rows = result.scalars().all()
+
+    return [LogEntry(**row.to_dict()) for row in rows]

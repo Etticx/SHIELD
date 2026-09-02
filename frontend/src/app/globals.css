@@ -66,3 +66,22 @@
            focus:border-brand-yellow transition-colors;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Print utilities
+   @page    — remove browser header/footer chrome, set A4
+   @media print — force background images and colors to print
+--------------------------------------------------------------------------- */
+@media print {
+  /* Force browsers to print background colors and images */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Remove browser-injected URL / page number header and footer */
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
+}

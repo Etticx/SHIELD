@@ -10,7 +10,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { useAuth } from "@/lib/auth";
 
@@ -28,6 +28,7 @@ function ProfileDropdown() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Close when clicking outside
   useEffect(() => {
@@ -127,7 +128,7 @@ function ProfileDropdown() {
               label="Settings"
               onClick={() => {
                 setOpen(false);
-                // TODO: navigate to /settings
+                router.push("/settings");
               }}
             />
 

@@ -1,275 +1,383 @@
 ================================================================
   SHIELD — SME Health Indicator and Evaluator for Loan Decision
-  Setup & Run Guide  |  v2.0 (FastAPI + Next.js)
+  Setup & Run Guide  |  v1.0.2 (FastAPI + Next.js + PostgreSQL)
 ================================================================
 
 PROJECT STRUCTURE
 -----------------
 SHIELD/
+├── docker-compose.yml            <- Local PostgreSQL 15 database
 ├── app.py                        <- Legacy Streamlit app (still works)
-├── requirements.txt              <- Streamlit app dependencies
-├── backend/                      <- FastAPI prediction API
-│   ├── main.py
+├── backend/
+│   ├── main.py                   <- All routes (/predict, /logs, /health)
+│   ├── database.py               <- SQLAlchemy async ORM
 │   ├── config.py
-│   ├── run.py
+│   ├── run.py                    <- Convenience launcher
 │   ├── requirements.txt
-│   └── .env.example
-├── frontend/                     <- Next.js dashboard (JuneBank theme)
+│   └── .env.example              <- Copy to .env and fill in keys
+├── frontend/
 │   ├── src/
 │   │   ├── app/
+│   │   │   ├── page.tsx          <- Dashboard
+│   │   │   └── logs/page.tsx     <- Audit log table
 │   │   ├── components/
 │   │   └── lib/
-│   ├── package.json
-│   └── next.config.ts
+│   └── package.json
 ├── model/
-│   └── xgb_shield_model.joblib   <- Pre-trained XGBoost model
-└── data/                         <- Processed CSVs
+│   └── xgb_shield_model.joblib
+└── data/
 
 
 ================================================================
-PREREQUISITES
+PREREQUISITES — install these before anything else
 ================================================================
 
-Python:
-  - Python 3.10 or higher
-  - Download from https://www.python.org/downloads/
-  - During install, check "Add Python to PATH"
+1. Python 3.10+
+   https://www.python.org/downloads/
+   During install: check "Add Python to PATH"
+   Verify: python --version
 
-Node.js (for the new frontend only):
-  - Node.js 18 or higher (includes npm)
-  - Download from https://nodejs.org/
-  - Verify: node --version  and  npm --version
+2. Node.js 18+
+   https://nodejs.org/
+   Verify: node --version   and   npm --version
+
+3. Docker Desktop
+   https://www.docker.com/products/docker-desktop
+   Verify: docker --version
+
+   IMPORTANT: Docker Desktop must be fully open and running
+   (whale icon in system tray, not spinning) before you can
+   start the database in Step 1 below.
 
 
 ================================================================
-OPTION A — New Enterprise App (FastAPI + Next.js)
+LOGIN CREDENTIALS (demo)
 ================================================================
-This runs the full decoupled v2 setup: a Python API backend
-and a React/Next.js frontend. Requires two terminals running
-at the same time.
 
-------------------------------------------------------------
-TERMINAL 1 — Backend (FastAPI)
-------------------------------------------------------------
-
-STEP 1: Navigate to the backend folder
-
-    cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\backend"
+   Username: admin      Password: admin
+   Username: analyst    Password: junebank1
 
 
-STEP 2: Create a virtual environment (first time only)
+================================================================
+FIRST-TIME SETUP — run these steps once
+================================================================
 
-    python -m venv venv
+--- Step 1: Database ----------------------------------------
 
+1a. Open Docker Desktop from the Start menu.
+    Wait until the whale icon in the system tray is steady
+    (not animating). This takes about 30 seconds.
 
-STEP 3: Activate the virtual environment
+1b. Open a terminal, navigate to the SHIELD root folder:
 
-    venv\Scripts\activate
+        cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
 
-    You will see (venv) at the start of your prompt.
+1c. Start the PostgreSQL container:
 
+        docker compose up -d
 
-STEP 4: Install backend dependencies (first time only)
+    First time: Docker downloads postgres:15-alpine (~100 MB).
+    Subsequent runs: starts instantly from cache.
 
-    pip install -r requirements.txt
+1d. Confirm it is healthy (wait ~10 seconds after starting):
 
-    This installs: fastapi, uvicorn, pydantic, xgboost,
-                   shap, joblib, pandas, numpy, python-dotenv
+        docker compose ps
 
+    You should see shield_postgres with STATUS "healthy".
+    If it shows "starting", wait a few more seconds and retry.
 
-STEP 5: Configure environment (first time only)
+--- Step 2: Backend -----------------------------------------
 
-    copy .env.example .env
+2a. Navigate to the backend folder:
 
-    Open .env in a text editor. The default values work
-    for local development — no changes needed to start.
+        cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\backend"
 
-    ── Optional: Enable AI-Powered Advisory (Groq) ────────────────────
-    SHIELD's advisory engine uses Groq (openai/gpt-oss-120b) to
-    generate dynamic, natural-language credit risk explanations.
+2b. Create a virtual environment (first time only):
 
-    To enable it:
+        python -m venv venv
 
-    1. Get a FREE API key from Groq Console (no billing required):
-           https://console.groq.com
+2c. Activate the virtual environment:
 
-    2. Open backend/.env and add your key:
-           GROQ_API_KEY=your_key_here
+        venv\Scripts\activate
 
-    3. Restart the backend — that's it.
+    Your prompt will show (venv) at the start.
 
-    Why Groq?
-      • ~500 t/s on Groq's LPU hardware
-      • Free plan: 1,000 requests/day, 200K tokens/day
-      • openai/gpt-oss-120b — flagship model, high quality output
-      • 131k context window, no billing required
+2d. Install all Python dependencies (first time only):
 
-    Free plan rate limits (openai/gpt-oss-120b):
-      • 30 requests/minute
-      • 1,000 requests/day
-      • 8,000 tokens/minute
-      • 200,000 tokens/day
+        pip install -r requirements.txt
 
-    If GROQ_API_KEY is missing, empty, or the API call fails for
-    any reason, SHIELD automatically falls back to the built-in
-    rule-based advisory engine. The app never crashes or stalls.
-    The AdvisoryReport panel shows a "Groq AI" or "Rule-based"
-    badge so users can see which engine generated the text.
-    ────────────────────────────────────────────────────────────────────
+    This installs: fastapi, uvicorn, xgboost, shap, sqlalchemy,
+                   asyncpg, groq, pandas, numpy, joblib, etc.
 
+2e. Create your .env file (first time only):
 
-STEP 6: Start the API server
+        copy .env.example .env
 
-    python run.py
+2f. Open backend\.env in a text editor and add your keys:
 
-    API is now running at:   http://localhost:8000
-    Interactive API docs at: http://localhost:8000/docs
+    ── Required: Database URL ──────────────────────────────────
+    This connects the backend to the Docker PostgreSQL container.
+    The credentials match docker-compose.yml exactly.
 
-    Leave this terminal open and running.
+        DATABASE_URL=postgresql+asyncpg://shield:shield@localhost:5400/shield_db
 
+    Port 5400 is used because 5432 is taken by a local PostgreSQL
+    installation, and Windows reserves ports 5433–5532 for Hyper-V/WSL.
+    Docker maps its internal 5432 to your machine's 5400 — no conflict.
 
-------------------------------------------------------------
-TERMINAL 2 — Frontend (Next.js)
-------------------------------------------------------------
+    ── Optional: Groq API key (AI advisory) ────────────────────
+    Get a free key at https://console.groq.com (no billing needed)
 
-STEP 1: Open a NEW terminal and navigate to the frontend folder
+        GROQ_API_KEY=your_key_here
 
-    cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\frontend"
+    If either key is missing, that feature is disabled gracefully
+    and the app still works.
+    ─────────────────────────────────────────────────────────────
 
+    then python run.py
 
-STEP 2: Install Node dependencies (first time only)
+--- Step 3: Frontend ----------------------------------------
 
-    npm install
+3a. Open a NEW terminal. Navigate to the frontend folder:
+
+        cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\frontend"
+
+3b. Install Node dependencies (first time only):
+
+        npm install
 
     This may take a minute. Wait for it to complete.
 
 
-STEP 3: Start the development server
+================================================================
+RUNNING THE APP — do this every time
+================================================================
 
-    npm run dev
-
-    Dashboard is now running at: http://localhost:3000
-
-    Open http://localhost:3000 in your browser.
-
+You need three things running at the same time.
+Open three separate terminal windows.
 
 ------------------------------------------------------------
-EVERY TIME YOU COME BACK (v2 Quick Reference)
+TERMINAL 1 — Database
 ------------------------------------------------------------
 
-Terminal 1 — Backend:
-    cd "...\SHIELD\backend"
-    venv\Scripts\activate
-    python run.py
+1. Open Docker Desktop and wait for it to be ready
+   (whale icon steady in system tray).
 
-Terminal 2 — Frontend:
-    cd "...\SHIELD\frontend"
-    npm run dev
+2. Navigate to the SHIELD root folder:
 
-Then open: http://localhost:3000
+       cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
 
+3. Start the database:
+
+       docker compose up -d
+
+4. Verify it is healthy:
+
+       docker compose ps
+
+   STATUS should show "healthy" before you start the backend.
+
+   If the container is already running from a previous session,
+   docker compose up -d is safe to run again — it does nothing.
 
 ------------------------------------------------------------
-STOPPING v2
+TERMINAL 2 — Backend (FastAPI)
 ------------------------------------------------------------
 
-In each terminal, press Ctrl + C to stop the server.
+1. Navigate to the backend folder:
+
+       cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\backend"
+
+2. Activate the virtual environment:
+
+       venv\Scripts\activate
+
+3. Start the API server:
+
+       python run.py
+
+   You should see these lines on startup (order may vary):
+
+       INFO  Loading XGBoost model ...
+       INFO  Building SHAP TreeExplainer ...
+       INFO  Initialising Groq advisory engine ...
+       INFO  Database ready — evaluations table confirmed.
+       INFO  SHIELD backend ready.
+
+   API runs at:          http://localhost:8000
+   Interactive API docs: http://localhost:8000/docs
+
+   If you see "Application startup failed" check:
+     - Is Docker Desktop open? (whale icon in tray)
+     - Did you run docker compose up -d first?
+     - Is DATABASE_URL correct in backend\.env?
+
+------------------------------------------------------------
+TERMINAL 3 — Frontend (Next.js)
+------------------------------------------------------------
+
+1. Navigate to the frontend folder:
+
+       cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\frontend"
+
+2. Start the development server:
+
+       npm run dev
+
+   Dashboard:  http://localhost:3000
+   Logs page:  http://localhost:3000/logs
+
+   Open http://localhost:3000 in your browser.
+
+------------------------------------------------------------
+STOPPING
+------------------------------------------------------------
+
+   Backend + Frontend : Ctrl + C in each terminal
+
+   Database           : In the SHIELD root terminal:
+                            docker compose down
+
+   To wipe all saved data and start the database fresh:
+                            docker compose down -v
 
 
 ================================================================
 OPTION B — Legacy Streamlit App (v1 — still works)
 ================================================================
-The original single-file Streamlit app is still fully
-functional. Use this if you don't need the new frontend.
 
-STEP 1: Open terminal in the SHIELD root folder
+STEP 1: Navigate to the SHIELD root folder:
 
     cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
 
-
 STEP 2: Create and activate the root virtual environment
-        (first time only — skip if already created)
+        (first time only):
 
     python -m venv venv
     venv\Scripts\activate
 
-
-STEP 3: Install dependencies (first time only)
+STEP 3: Install dependencies (first time only):
 
     pip install -r requirements.txt
 
-
-STEP 4: Run the app
+STEP 4: Run the app:
 
     streamlit run app.py
 
-    Opens automatically at: http://localhost:8501
-
-
-Quick reference (every time):
-    venv\Scripts\activate
-    streamlit run app.py
+    Opens at: http://localhost:8501
 
 
 ================================================================
 TROUBLESHOOTING
 ================================================================
 
-Problem : "python is not recognized"
-Fix     : Python is not on your PATH. Reinstall Python and
-          check "Add Python to PATH" during setup.
+Problem : "Application startup failed" / asyncpg password error
+Fix     : Docker Desktop is not running or the container is not
+          started. Follow these steps in order:
+            1. Open Docker Desktop, wait for whale icon to settle
+            2. cd "...\SHIELD"
+            3. docker compose up -d
+            4. docker compose ps  — confirm STATUS is "healthy"
+            5. Restart the backend: python run.py
 
-Problem : Backend venv\Scripts\activate not recognised
-Fix     : Make sure you are inside the backend/ folder,
-          not the SHIELD root.
-          Run: cd "...\SHIELD\backend"
+Problem : docker compose ps shows "starting" not "healthy"
+Fix     : The container needs more time. Wait 15 seconds and
+          run docker compose ps again. If it never becomes
+          healthy: docker compose logs db
+
+Problem : "docker is not recognized"
+Fix     : Docker Desktop is not installed or not on PATH.
+          Install from https://www.docker.com/products/docker-desktop
+          then restart your terminal.
+
+Problem : Port binding error / "access permissions" on Docker start
+Fix     : Windows (Hyper-V/WSL) reserves large port ranges including
+          5433-5532. The docker-compose.yml is already set to use
+          port 5400 which is outside all reserved ranges. If you still
+          see this error, check excluded ranges with:
+              netsh int ipv4 show excludedportrange protocol=tcp
+          Then pick any port not in those ranges and update both
+          docker-compose.yml and DATABASE_URL in backend\.env.
+
+Problem : Port 5432 already in use (local PostgreSQL conflict)
+Fix     : Your local PostgreSQL owns 5432. The docker-compose.yml
+          and DATABASE_URL are already set to port 5400 to avoid
+          this. If you still see the error confirm backend\.env has:
+              DATABASE_URL=postgresql+asyncpg://shield:shield@localhost:5400/shield_db
+
+Problem : /logs page shows "Could not load logs" (503)
+Fix     : DATABASE_URL is not set in backend\.env, or Docker is
+          not running. Check: docker compose ps
+
+Problem : "No module named 'groq'"
+Fix     : Run inside the activated venv:
+              pip install "groq>=1.7.0"
+
+Problem : "python is not recognized"
+Fix     : Python is not on PATH. Reinstall Python and check
+          "Add Python to PATH" during setup.
+
+Problem : venv\Scripts\activate not recognised
+Fix     : You are not inside the backend/ folder. Run:
+              cd "...\SHIELD\backend"
+          then activate.
 
 Problem : "npm is not recognized"
 Fix     : Node.js is not installed. Download from https://nodejs.org/
 
 Problem : Frontend shows "Failed to fetch" or API errors
-Fix     : Make sure the backend is running in Terminal 1 first.
-          Check http://localhost:8000/health — it should return:
-          {"status":"healthy","model_loaded":true,...}
+Fix     : The backend is not running. Start Terminal 2 first.
+          Check: http://localhost:8000/health
 
 Problem : Backend crashes — model file not found
 Fix     : Confirm xgb_shield_model.joblib is in SHIELD/model/
-          Check MODEL_PATH in backend/.env points to the right path.
-          Default value: ../model/xgb_shield_model.joblib
+          Check MODEL_PATH in backend\.env:
+              MODEL_PATH=../model/xgb_shield_model.joblib
 
-Problem : Port 8000 already in use (backend)
-Fix     : Edit backend/.env and change PORT=8000 to PORT=8001
-          Then update frontend/.env.local:
-          NEXT_PUBLIC_API_URL=http://localhost:8001
+Problem : Port 8000 already in use
+Fix     : Edit backend\.env:  PORT=8001
+          Edit frontend\.env.local:
+              NEXT_PUBLIC_API_URL=http://localhost:8001
 
-Problem : Port 3000 already in use (frontend)
-Fix     : Next.js will automatically try port 3001, 3002 etc.
-          Check the terminal output for the actual URL.
+Problem : Port 3000 already in use
+Fix     : Next.js auto-tries 3001, 3002 etc. Check terminal output.
 
-Problem : Port 8501 already in use (Streamlit)
-Fix     : streamlit run app.py --server.port 8502
-
-Problem : SHAP errors or slow first prediction
-Fix     : The SHAP explainer is built once on backend startup.
-          The first POST /predict call may take a few seconds.
-          Subsequent calls will be faster.
+Problem : SHAP slow on first prediction
+Fix     : Normal. TreeExplainer is built once at startup.
+          First call takes a few seconds; subsequent calls are fast.
 
 
 ================================================================
-API QUICK REFERENCE (v2 backend)
+API QUICK REFERENCE (v1.0.2)
 ================================================================
 
-GET  http://localhost:8000/health
-     → Checks model and explainer are loaded
+GET  /health
+     → Model, explainer, and Groq status
 
-GET  http://localhost:8000/features
-     → Returns all 20 feature labels, median defaults,
-       and both test profiles (healthy / distressed)
+GET  /features
+     → 20 feature labels, medians, preset profiles
 
-POST http://localhost:8000/predict
-     → Body: JSON with 20 float fields (see README.md)
+POST /predict
+     → Body:
+         {
+           "meta": {
+             "company_name": "Syarikat ABC Sdn Bhd",
+             "ssm_number":   "1234567-A",
+             "loan_amount":  500000,
+             "evaluator":    "analyst"
+           },
+           "financials": {
+             "roa_a": 0.586,
+             "roa_b": 0.588,
+             ... (20 float fields, normalised 0-1)
+           }
+         }
      → Returns: probability, classification, SHAP values,
                 advisory report
+
+GET  /logs?limit=200
+     → All past evaluations, newest first
+     → Requires DATABASE_URL and Docker to be running
 
 Full interactive docs: http://localhost:8000/docs
 

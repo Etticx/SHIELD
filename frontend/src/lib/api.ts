@@ -4,9 +4,10 @@
 // =============================================================================
 
 import type {
-  SMEFinancialData,
+  PredictRequest,
   PredictionResponse,
   FeaturesResponse,
+  LogEntry,
 } from "./types";
 
 const BASE = "/api";
@@ -24,15 +25,22 @@ export async function fetchFeatures(): Promise<FeaturesResponse> {
   return handleResponse<FeaturesResponse>(res);
 }
 
+/** POST /predict — now requires metadata + financials in one payload. */
 export async function predict(
-  data: SMEFinancialData
+  request: PredictRequest,
 ): Promise<PredictionResponse> {
   const res = await fetch(`${BASE}/predict`, {
-    method: "POST",
+    method:  "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body:    JSON.stringify(request),
   });
   return handleResponse<PredictionResponse>(res);
+}
+
+/** GET /logs — returns all past evaluations, newest first. */
+export async function fetchLogs(): Promise<LogEntry[]> {
+  const res = await fetch(`${BASE}/logs`, { cache: "no-store" });
+  return handleResponse<LogEntry[]>(res);
 }
 
 export async function healthCheck(): Promise<{ status: string }> {

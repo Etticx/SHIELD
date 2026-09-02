@@ -84,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem("shield_workspace"); // clear active workspace on logout
     setSplashPending(false);
     setUser(null);
   }, []);

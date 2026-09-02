@@ -1,7 +1,9 @@
 # SHIELD — Project Context for AI Assistant
 
-> Hand this document to any AI assistant (Gemini, ChatGPT, etc.) to get accurate,
+> Hand this document to any AI assistant (Gemini, ChatGPT, Kiro, etc.) to get accurate,
 > context-aware help without re-explaining the project from scratch.
+>
+> **Current version: v1.0.3**
 
 ---
 
@@ -15,7 +17,11 @@ using a trained XGBoost model with SHAP explainability.
 - **Academic context:** FYP / Degree Project — for demonstration purposes only.
 - **Dataset:** Italian bankruptcy dataset (2023), 20 normalised financial ratios as features.
 - **Model:** XGBoost binary classifier, trained offline, saved as `model/xgb_shield_model.joblib`.
-- **Explainability:** SHAP `TreeExplainer` runs per-request and returns feature-level contributions.
+- **Explainability:** SHAP `TreeExplainer` runs per-request, returns per-feature contributions.
+- **AI Advisory:** Groq API (`openai/gpt-oss-120b`) generates dynamic natural-language credit
+  analysis from SHAP values. Falls back to rule-based text if key is missing or API fails.
+- **Audit Persistence:** Every evaluation is saved to a PostgreSQL database (via Docker) for
+  audit trail purposes. Fully optional — app works without it.
 
 ---
 
@@ -26,12 +32,13 @@ using a trained XGBoost model with SHAP explainability.
 |---|---|
 | Framework | Next.js 14 (App Router) |
 | Language | TypeScript |
-| Styling | Tailwind CSS v3 |
+| Styling | Tailwind CSS v3 with custom design tokens |
 | Charts | Recharts 2 |
-| Icons | Lucide React |
-| Fonts | Ubuntu (headings), Lato (body) — Google Fonts |
+| Icons | Lucide React (no emojis anywhere in the UI) |
+| Fonts | Ubuntu (headings), Lato (body), JetBrains Mono (numbers) — Google Fonts |
 | Auth | Client-side only, hardcoded demo credentials in `auth.tsx` |
 | API calls | Proxied via Next.js rewrites (`/api/*` → FastAPI on port 8000) |
+| State | Workspace state persisted in `sessionStorage` (survives navigation, clears on logout) |
 
 ### Backend
 | Item | Detail |
@@ -43,6 +50,15 @@ using a trained XGBoost model with SHAP explainability.
 | Data | pandas 2.2.2, numpy 1.26.4 |
 | Server | Uvicorn with standard extras |
 | Config | pydantic-settings, reads from `backend/.env` |
+| AI Advisory | Groq SDK (`groq>=1.7.0`), model `openai/gpt-oss-120b` |
+| Database ORM | SQLAlchemy 2.0.30 async + asyncpg 0.29.0 |
+
+### Infrastructure
+| Item | Detail |
+|---|---|
+| Database | PostgreSQL 15 (Alpine) via Docker Compose |
+| Port | 5400 (5432 is reserved by local PostgreSQL install; Windows Hyper-V reserves 5433–5532) |
+| Volume | `shield_pgdata` — named Docker volume, data persists across container restarts |
 
 ---
 
@@ -50,98 +66,201 @@ using a trained XGBoost model with SHAP explainability.
 
 ```
 SHIELD/
-├── frontend/                        # Next.js app
+├── docker-compose.yml               ← PostgreSQL 15 local dev container (port 5400)
+├── UPDATE.md                        ← This file — project context for AI assistants
+├── SETUP_AND_RUN.txt                ← Full setup guide for running locally
+├── app.py                           ← Legacy Streamlit app (v1, still works)
+│
+├── frontend/                        # Next.js app (main UI)
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── layout.tsx           # Root layout, fonts, metadata, favicon
-│   │   │   ├── page.tsx             # Main dashboard page (3-column grid)
-│   │   │   └── globals.css          # Tailwind base + custom CSS variables
+│   │   │   ├── layout.tsx           # Root layout: fonts, metadata, favicon, AppShell wrapper
+│   │   │   ├── page.tsx             # Dashboard: empty state → gate modal → 3-col workspace
+│   │   │   ├── globals.css          # Tailwind base + .panel, .btn-primary, .input-field, .section-label
+│   │   │   └── logs/
+│   │   │       └── page.tsx         # Audit log table: expandable rows, SHAP preview, risk badges
 │   │   ├── components/
-│   │   │   ├── AppShell.tsx         # Auth gate: login → splash → dashboard
-│   │   │   ├── LoginPage.tsx        # JuneBank login screen
-│   │   │   ├── Navbar.tsx           # Fixed top nav with profile dropdown
-│   │   │   ├── SplashScreen.tsx     # Animated splash (plays once after login)
-│   │   │   ├── InputForm.tsx        # 20-field form with CSV upload & presets
-│   │   │   ├── RiskGauge.tsx        # SVG semicircle gauge + risk breakdown
-│   │   │   ├── ShapChart.tsx        # Recharts horizontal SHAP bar chart
-│   │   │   └── AdvisoryReport.tsx   # AI advisory tone + drivers + recommendation
+│   │   │   ├── AppShell.tsx         # Auth gate: LoginPage → SplashScreen → Navbar + dashboard
+│   │   │   ├── LoginPage.tsx        # JuneBank login screen with eagle watermark + help modal
+│   │   │   ├── Navbar.tsx           # Fixed top nav (Home/Logs/Dashboard/Contact) + profile dropdown
+│   │   │   ├── SplashScreen.tsx     # Video splash (plays once per login session, not on refresh)
+│   │   │   ├── InputForm.tsx        # 20-field form: profile selector, CSV upload, 4 grouped sections, sticky CTA
+│   │   │   ├── RiskGauge.tsx        # SVG semicircle gauge + classification badge + confidence breakdown
+│   │   │   ├── ShapChart.tsx        # Top-5 ranked table + Recharts horizontal bar chart (expand toggle)
+│   │   │   └── AdvisoryReport.tsx   # Groq/rule-based advisory: tone banner + risk drivers + recommendation
 │   │   └── lib/
-│   │       ├── api.ts               # fetch wrappers for /predict, /features, /health
-│   │       ├── auth.tsx             # AuthContext + AuthProvider + useAuth hook
-│   │       ├── types.ts             # TypeScript interfaces (mirrors Pydantic models)
+│   │       ├── api.ts               # fetch wrappers: predict(), fetchLogs(), fetchFeatures(), healthCheck()
+│   │       ├── auth.tsx             # AuthContext, AuthProvider, useAuth — session + workspace cleared on logout
+│   │       ├── types.ts             # TypeScript interfaces mirroring all backend Pydantic models
 │   │       └── constants.ts         # MEDIAN_DEFAULTS, PROFILE_HEALTHY, PROFILE_DISTRESSED, FEATURE_LABELS
-│   ├── public/                      # Static assets
-│   │   ├── JuneBank.png             # Bank logo (used in Navbar + LoginPage)
-│   │   ├── JuneBankEagle.png        # Eagle silhouette (watermark on all pages)
+│   ├── public/
+│   │   ├── JuneBank.png             # Bank wordmark logo
+│   │   ├── JuneBankEagle.png        # Eagle silhouette (ghosted watermark on all pages)
 │   │   ├── JuneBankLoading.mp4      # Splash screen video
-│   │   ├── favicon.ico
-│   │   ├── favicon-16x16.png
-│   │   ├── favicon-32x32.png
-│   │   ├── apple-touch-icon.png
-│   │   ├── android-chrome-192x192.png
-│   │   ├── android-chrome-512x512.png
+│   │   ├── favicon.ico / *.png      # Favicon set
 │   │   └── site.webmanifest
 │   ├── next.config.mjs              # API rewrite: /api/* → http://localhost:8000/*
 │   ├── tailwind.config.ts           # Custom design tokens (brand-*, risk-*)
-│   └── package.json
+│   ├── postcss.config.mjs
+│   ├── tsconfig.json
+│   └── package.json                 # lucide-react, recharts, clsx, next, react
 │
 ├── backend/
-│   ├── main.py                      # FastAPI app, all routes, SHAP logic
-│   ├── config.py                    # pydantic-settings, reads .env
-│   ├── run.py                       # Convenience launcher (python run.py)
-│   ├── requirements.txt
-│   └── .env                         # model_path, cors_origins, host, port
+│   ├── main.py                      # FastAPI app: all routes, SHAP logic, Groq engine, DB persistence
+│   ├── database.py                  # SQLAlchemy async engine, Evaluation ORM model, session helpers
+│   ├── config.py                    # pydantic-settings: MODEL_PATH, CORS_ORIGINS, HOST, PORT, GROQ_API_KEY, DATABASE_URL
+│   ├── run.py                       # Convenience launcher → python run.py
+│   ├── requirements.txt             # All Python dependencies
+│   ├── .env                         # Local secrets (gitignored — never committed)
+│   └── .env.example                 # Template with all keys and descriptions
 │
 ├── model/
-│   └── xgb_shield_model.joblib      # Trained XGBoost model (binary classifier)
+│   └── xgb_shield_model.joblib      # Trained XGBoost binary classifier
 │
-├── data/                            # Raw + processed datasets (not deployed)
-├── notebooks/                       # Jupyter notebooks for preprocessing + training
-├── reports/                         # Confusion matrix, ROC curve, model comparison PNGs
-└── pics/                            # Brand assets + favicon source files
+├── data/
+│   ├── df_cleaned_original.csv
+│   ├── X_train_processed_8020.csv
+│   ├── X_test_processed_8020.csv
+│   ├── y_train_processed_8020.csv
+│   └── y_test_processed_8020.csv
+│
+├── notebooks/
+│   ├── Preprocessing_SHIELD.ipynb
+│   ├── preprocessing_shield.py
+│   ├── Development_SHIELD.ipynb
+│   └── development_shield.py
+│
+└── pics/                            # Brand assets and favicon sources
+    ├── JuneBank.png
+    ├── JuneBankEagle.png
+    ├── JuneBankBG.png
+    └── favicon/
 ```
 
 ---
 
 ## Key Design Decisions
 
+### Dashboard Flow — 3 States (v1.3+)
+The main `page.tsx` has three distinct UI states:
+
+1. **Empty State** — shown on fresh login or after clicking "New Evaluation". Displays a
+   centered landing screen with a single `+ Start New SME Evaluation` CTA.
+2. **Gate Modal** — triggered by the CTA. Collects `company_name`, `ssm_number`, and
+   `loan_amount`. `evaluator` is auto-filled from `useAuth()`. Validates all fields before
+   proceeding.
+3. **Workspace** — the full 3-column sticky layout. A `SessionHeader` bar at the top shows
+   the active company name, SSM, loan amount, and evaluator, with a yellow `New Evaluation`
+   button to reset back to the empty state.
+
+### Workspace Persistence (v1.4)
+- `sessionMeta` and `result` are serialised to `sessionStorage` under `shield_workspace`.
+- On mount, the page reads this key and rehydrates instantly — navigating to `/logs` and back
+  restores the exact state the officer was working in.
+- Logout removes both `shield_auth` and `shield_workspace` so the next login starts fresh.
+- `New Evaluation` button explicitly calls `clearWorkspace()` before resetting state.
+- A `hydrated` flag prevents a flash of the empty state before the key is read.
+
+### Layout — "Sticky Analytics" (v1.2)
+- Normal page scroll — no fixed-viewport tricks.
+- **Left column (400px):** InputForm drives page height. 20 fields in a 2-column grid,
+  grouped into 4 labelled sections. CTA is `sticky bottom-4`.
+- **Middle + right columns:** `position: sticky; top: 20px` — stay in view as the left
+  column scrolls. Zero empty whitespace on the right side.
+
+### InputForm — Field Groups
+20 fields in 4 labelled sections, each a 2-column grid:
+- **Profitability & Earnings** — `roa_a`, `roa_b`, `persistent_eps`, `net_profit_paid_in_capital`, `net_income_total_assets`
+- **Per-Share Value** — `net_value_per_share_a/b/c`, `per_share_net_profit`, `net_income_equity`
+- **Leverage & Solvency** — `debt_ratio`, `net_worth_assets`, `borrowing_dependency`, `liability_to_equity`, `equity_to_liability`
+- **Debt Service & Interest** — `interest_expense_ratio`, `continuous_interest_rate`, `retained_earnings`, `total_income_expense`, `interest_coverage_ratio`
+
+### Audit Persistence Layer
+- `backend/database.py` — SQLAlchemy 2.x async engine. `Evaluation` ORM model stores one
+  row per `/predict` call.
+- **Evaluation columns:** `id`, `company_name`, `ssm_number`, `loan_amount`, `evaluator`,
+  `evaluated_at`, `probability_default`, `risk_classification`, `financial_inputs` (JSON),
+  `shap_breakdown` (JSON), `advisory_report` (text).
+- Tables are created automatically on first backend startup (`CREATE TABLE IF NOT EXISTS`).
+- DB failure is **non-blocking** — if PostgreSQL is down, the prediction still returns
+  normally, a warning is logged, and the response is not affected.
+- `DATABASE_URL` absent → persistence silently disabled, app fully functional.
+
+### POST /predict — Updated Request Shape
+The predict endpoint now takes a wrapped payload (not bare financials):
+```json
+{
+  "meta": {
+    "company_name": "Syarikat ABC Sdn Bhd",
+    "ssm_number":   "1234567-A",
+    "loan_amount":  500000,
+    "evaluator":    "analyst"
+  },
+  "financials": {
+    "roa_a": 0.586,
+    ...20 normalised float fields...
+  }
+}
+```
+
+### GET /logs
+- Returns all past evaluations from PostgreSQL, newest first (max 200 rows).
+- Returns HTTP 503 if `DATABASE_URL` is not configured.
+- Frontend `/logs` page shows: Date/time, Company, SSM, Loan Amount, Risk badge,
+  P(Default) %, Evaluator. Each row expands to show the advisory summary and top-5 SHAP
+  drivers inline.
+
 ### Authentication
-- **Client-side only**, no backend auth. Credentials are hardcoded in `frontend/src/lib/auth.tsx`.
+- **Client-side only** — no backend auth endpoint.
+- Credentials hardcoded in `frontend/src/lib/auth.tsx`.
 - Two demo users: `admin / admin` and `analyst / junebank1`.
-- Session persisted in `sessionStorage` (survives refresh, cleared on tab close).
-- Splash screen plays once per login, not on refresh — controlled by in-memory `splashPending` flag.
+- `isLoggedIn` persisted in `sessionStorage` (survives refresh, clears on tab close).
+- `splashPending` is in-memory only — splash plays once per login action, not on refresh.
+- Logout clears both `shield_auth` and `shield_workspace`.
 
-### API Proxy
-- Next.js rewrites `/api/*` to `http://localhost:8000/*` (configured in `next.config.mjs`).
-- This avoids CORS issues in development. In production, the rewrite target would point to the deployed backend URL.
-- Frontend never calls the backend URL directly — always through `/api`.
+### Groq AI Advisory Engine
+- Two sequential Groq API calls per prediction: explanation + recommendation.
+- System prompt: "Senior Credit Risk Analyst at JuneBank under BNM regulatory guidelines."
+- Model: `openai/gpt-oss-120b` (free plan: 1,000 req/day, 200K tokens/day).
+- `temperature=0.3`, `max_tokens=800`, `top_p=0.9`.
+- Falls back to rule-based text on any error — app never crashes.
+- `advisory_source`: `"groq"` | `"rule-based"` | `"rate-limited"`.
+- Frontend splits LLM prose into numbered sentences; recommendation into numbered action steps.
 
-### Feature Engineering
-- All 20 input features are **pre-normalised floats in [0, 1]** from the preprocessing step.
-- The model was trained on specific column names with leading spaces (e.g. `" Debt ratio %"`).
-- The frontend uses clean camelCase keys (`debt_ratio`); the backend maps them back to the exact column names before inference.
+### RiskGauge
+- Pure SVG semicircle — no third-party gauge library.
+- All percentage values use `toFixed(2)` for consistency with the logs table (e.g. `0.01%`
+  not `0.0%`). This fixed a visual mismatch where the gauge showed `0.0%` and the bar
+  showed `0.01%` for the same underlying value.
+- Percentage text positioned inside the arc bowl at `y = CY - 8`.
+- Colour thresholds: green < 30%, amber 30–50%, orange 50–70%, red ≥ 70%.
 
-### SHAP
-- `TreeExplainer` is instantiated **once at startup** using the `lifespan` context manager and reused for every request — no re-loading overhead per request.
-- Returns all 20 SHAP values per prediction, sorted by absolute value descending.
-- The advisory report is generated purely from SHAP values and the predicted probability — no LLM involved.
+### Icons
+- All icons from `lucide-react` — no emojis anywhere in the codebase.
 
-### Risk Gauge (`RiskGauge.tsx`)
-- Pure SVG, no third-party gauge library.
-- Fixed 180° semicircle (speedometer style): `M 20 100 A 80 80 0 0 1 180 100`.
-- Fill is controlled by `strokeDasharray` + `strokeDashoffset` on the same path — no endpoint angle math.
-- Color thresholds: green (<30%), amber (30–50%), orange (50–70%), red (≥70%).
+### Design System (Tailwind tokens — `tailwind.config.ts`)
+| Token | Value | Use |
+|---|---|---|
+| `brand-cream` | `#FCFAF8` | Page background |
+| `brand-panel` | `#FFFFFF` | Card / panel background |
+| `brand-yellow` | `#FFD100` | JuneBank accent, CTA, active states |
+| `brand-yellowHover` | (darker shade) | Hover state for yellow buttons |
+| `brand-charcoal` | `#1A1A1A` | Primary text |
+| `brand-muted` | `#6B6B6B` | Secondary text, labels |
+| `brand-subtext` | `#9A9A9A` | Captions, metadata |
+| `brand-border` | `#E8E4DE` | All borders |
+| `risk-high` | `#DC2626` | Red — distressed |
+| `risk-highBg` | `rgba(220,38,38,0.08)` | Red tinted background |
+| `risk-low` | `#16A34A` | Green — healthy |
+| `risk-lowBg` | `rgba(22,163,74,0.08)` | Green tinted background |
+| `risk-amber` | `#D97706` | Orange — elevated risk |
 
-### Design System (Tailwind tokens)
-Custom tokens defined in `tailwind.config.ts`:
-- `brand-cream` — page background
-- `brand-panel` — card/panel background
-- `brand-yellow` / `brand-yellowHover` — JuneBank accent color
-- `brand-charcoal` — primary text
-- `brand-muted` / `brand-subtext` — secondary text
-- `risk-high` / `risk-highBg` — red risk colors
-- `risk-low` / `risk-lowBg` — green health colors
-- `risk-amber` — orange for elevated risk
+Custom CSS classes in `globals.css`:
+- `.panel` — white card with border, rounded-xl, shadow
+- `.section-label` — tiny all-caps label above section headings
+- `.btn-primary` — solid yellow CTA button
+- `.btn-ghost` — bordered secondary button
+- `.input-field` — styled number/text input
 
 ---
 
@@ -149,120 +268,67 @@ Custom tokens defined in `tailwind.config.ts`:
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/` | Health check, returns `{status: "ok"}` |
-| GET | `/health` | Model + explainer loaded status |
-| GET | `/features` | Feature registry with labels, medians, and preset profiles |
-| POST | `/predict` | Main prediction endpoint |
-
-### POST /predict
-
-**Request body** — 20 floats matching `SMEFinancialData`:
-```json
-{
-  "roa_a": 0.586,
-  "roa_b": 0.588,
-  "continuous_interest_rate": 0.781,
-  ... (20 fields total)
-}
-```
-
-**Response** — `PredictionResponse`:
-```json
-{
-  "probability": 0.884,
-  "probability_pct": 88.4,
-  "classification": "High Risk",
-  "is_high_risk": true,
-  "shap_base_value": -3.1234,
-  "shap_features": [
-    {
-      "label": "Debt Ratio %",
-      "value": 0.525,
-      "shap_value": 1.234,
-      "direction": "risk"
-    },
-    ...
-  ],
-  "advisory": {
-    "tone": "Critical Risk Detected. ...",
-    "tone_level": "critical",
-    "risk_drivers": [{"label": "...", "shap_value": 1.234}],
-    "protective_factors": [{"label": "...", "shap_value": -0.567}],
-    "recommendation": "Loan approval should be approached with caution. ..."
-  }
-}
-```
+| GET | `/` | Health check — `{status: "ok"}` |
+| GET | `/health` | Model, explainer, Groq, and DB status |
+| GET | `/features` | 20 feature labels, medians, preset profiles |
+| POST | `/predict` | XGBoost + SHAP + Groq advisory + DB save |
+| GET | `/logs?limit=200` | All past evaluations, newest first |
 
 ---
 
-## The 20 Input Features
+## Environment Variables (`backend/.env`)
 
-All values normalised to [0, 1] via preprocessing:
-
-| Frontend key | Display label |
-|---|---|
-| `roa_a` | ROA(A) — Before Interest & % After Tax |
-| `roa_b` | ROA(B) — Before Interest & Depreciation After Tax |
-| `continuous_interest_rate` | Continuous Interest Rate (After Tax) |
-| `net_value_per_share_b` | Net Value Per Share (B) |
-| `net_value_per_share_a` | Net Value Per Share (A) |
-| `net_value_per_share_c` | Net Value Per Share (C) |
-| `persistent_eps` | Persistent EPS in the Last Four Seasons |
-| `per_share_net_profit` | Per Share Net Profit Before Tax |
-| `interest_expense_ratio` | Interest Expense Ratio |
-| `debt_ratio` | Debt Ratio % |
-| `net_worth_assets` | Net Worth / Assets |
-| `borrowing_dependency` | Borrowing Dependency |
-| `net_profit_paid_in_capital` | Net Profit Before Tax / Paid-in Capital |
-| `retained_earnings` | Retained Earnings to Total Assets |
-| `total_income_expense` | Total Income / Total Expense |
-| `net_income_total_assets` | Net Income to Total Assets |
-| `net_income_equity` | Net Income to Stockholder's Equity |
-| `liability_to_equity` | Liability to Equity |
-| `interest_coverage_ratio` | Interest Coverage Ratio (Interest Expense to EBIT) |
-| `equity_to_liability` | Equity to Liability |
+| Variable | Required | Description |
+|---|---|---|
+| `MODEL_PATH` | Yes | Path to `.joblib` model, relative to `backend/` |
+| `CORS_ORIGINS` | Yes | Comma-separated allowed origins |
+| `HOST` | Yes | Uvicorn host, default `0.0.0.0` |
+| `PORT` | Yes | Uvicorn port, default `8000` |
+| `LOG_LEVEL` | Yes | `debug` / `info` / `warning` / `error` |
+| `GROQ_API_KEY` | No | Free key from console.groq.com. Absent → rule-based fallback. |
+| `DATABASE_URL` | No | `postgresql+asyncpg://shield:shield@localhost:5400/shield_db`. Absent → no persistence. |
 
 ---
 
 ## How to Run Locally
 
-### Backend
-```bash
-cd backend
-pip install -r requirements.txt
-python run.py
-# Runs on http://localhost:8000
+Three terminals required for the full stack. DB is optional.
+
+```
+Terminal 1 — Database (optional):
+  cd SHIELD
+  docker compose up -d
+  docker compose ps       ← wait for STATUS "healthy"
+
+Terminal 2 — Backend:
+  cd SHIELD\backend
+  venv\Scripts\activate
+  python run.py           ← http://localhost:8000
+
+Terminal 3 — Frontend:
+  cd SHIELD\frontend
+  npm run dev             ← http://localhost:3000
 ```
 
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-# Runs on http://localhost:3000
-```
-
-The frontend proxies `/api/*` to `http://localhost:8000` via Next.js rewrites — no manual CORS config needed.
+Login credentials: `admin / admin` or `analyst / junebank1`
 
 ---
 
-## Deployment Plan (intended)
+## Known Port Notes
 
-| Part | Target | Notes |
-|---|---|---|
-| Frontend | Vercel (free) | Set root dir to `frontend`, add `NEXT_PUBLIC_API_URL` env var |
-| Backend | Oracle Cloud Free Tier (ARM VM) | 1–2 OCPU + 4–8 GB RAM, always-free, no sleep |
-
-Backend memory at startup: ~350–420 MB (XGBoost + SHAP + pandas loaded into memory).
-Minimum recommended RAM: 768 MB. Oracle ARM free tier (up to 24 GB total) is ideal.
+- Local PostgreSQL install occupies port **5432** — Docker container uses **5400** instead.
+- Windows Hyper-V/WSL reserves ports **5433–5532** — do not use these for Docker mappings.
+- If port 5400 is unavailable, edit `docker-compose.yml` and `DATABASE_URL` in `.env` to
+  any free port outside the excluded ranges (check with `netsh int ipv4 show excludedportrange protocol=tcp`).
 
 ---
 
-## What Is NOT Implemented Yet
+## What Is NOT Implemented
 
-- Real authentication (currently hardcoded demo credentials)
-- `/logs`, `/dashboard`, `/contact` navbar routes (links exist, pages do not)
-- Settings page (menu item exists but does nothing)
-- Password reset flow (button shows placeholder alert)
-- Real database or audit logging
+- Real authentication (hardcoded credentials in `auth.tsx`)
+- `/dashboard` and `/contact` navbar routes — links exist, pages do not
+- Settings page — menu item exists, does nothing
+- Password reset — shows a placeholder `alert()`
 - Rate limiting or API key protection on the backend
+- Production deployment (local dev only)
+- The `/logs` page requires Docker + DATABASE_URL — shows a 503 error state if unconfigured

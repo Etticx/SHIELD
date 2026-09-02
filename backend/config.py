@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     port: int = 8000
     log_level: str = "info"
     groq_api_key: str | None = None  # Set GROQ_API_KEY in .env to enable AI advisory
+    database_url: str | None = None  # Set DATABASE_URL in .env to enable audit persistence
 
     @property
     def cors_origins_list(self) -> list[str]:

@@ -10,3 +10,5 @@ shap==0.45.1
 joblib==1.4.2
 python-dotenv==1.0.1
 groq>=1.7.0
+sqlalchemy==2.0.30
+asyncpg==0.29.0

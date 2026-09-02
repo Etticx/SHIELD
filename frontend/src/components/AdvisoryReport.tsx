@@ -185,9 +185,8 @@ export default function AdvisoryReport({ advisory }: Props) {
   return (
     <div className="flex flex-col gap-4 animate-fade-in">
 
-      {/* ── Section Header ─────────────────────────────────────── */}
-      <div className="flex items-center justify-between">
-        <p className="section-label">AI Advisory Report</p>
+      {/* ── Source badge (replaces full section header — title rendered by page.tsx) ── */}
+      <div className="flex justify-end">
         <SourceBadge source={advisory_source} />
       </div>
 
