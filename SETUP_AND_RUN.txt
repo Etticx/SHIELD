@@ -1,6 +1,7 @@
 ================================================================
   SHIELD — SME Health Indicator and Evaluator for Loan Decision
-  Setup & Run Guide  |  v1.0.2 (FastAPI + Next.js + PostgreSQL)
+  Setup & Run Guide  |  v1.0.3 (FastAPI + Next.js + PostgreSQL)
+  Platforms: Windows 10/11  |  macOS (Apple Silicon M1/M2/M3/M4)
 ================================================================
 
 PROJECT STRUCTURE
@@ -147,6 +148,8 @@ FIRST-TIME SETUP — run these steps once
         npm install
 
     This may take a minute. Wait for it to complete.
+
+    npm run dev
 
 
 ================================================================
@@ -384,4 +387,421 @@ Full interactive docs: http://localhost:8000/docs
 
 ================================================================
   End of Guide
+================================================================
+
+
+================================================================
+  macOS SETUP GUIDE (Apple Silicon — M1 / M2 / M3 / M4)
+  Complete first-timer walkthrough from zero to running app
+================================================================
+
+WHAT YOU NEED TO UNDERSTAND FIRST
+----------------------------------
+The project has three parts that all need to run at the same time:
+
+  1. DATABASE  — PostgreSQL stores all evaluation history
+  2. BACKEND   — FastAPI (Python) runs the AI model
+  3. FRONTEND  — Next.js (Node.js) serves the website
+
+Think of it like three engines. All three must be running before
+the app works. You will open three Terminal windows, one for each.
+
+The code lives on GitHub already, so there is nothing to copy from
+your Windows machine. You just download it fresh on your Mac.
+
+
+================================================================
+STEP 0 — Tools you need to install (do this once, ever)
+================================================================
+
+Open the Terminal app on your Mac.
+(Press Cmd + Space, type "Terminal", press Enter)
+
+------- 0a. Homebrew ----------------------------------------
+Homebrew is the Mac package manager. It installs everything else.
+
+Paste this entire line into Terminal and press Enter:
+
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+It will ask for your Mac password (nothing shows as you type —
+that is normal). Press Enter when prompted. Takes ~3 minutes.
+
+After it finishes, it will print two commands starting with
+"echo" and "eval". Run BOTH of them. They look like this
+(your username will differ):
+
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/YOURNAME/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+Verify Homebrew works:
+
+    brew --version
+
+You should see something like: Homebrew 4.x.x
+
+
+------- 0b. Python 3.11 ------------------------------------
+macOS ships with an old Python. Install the right version:
+
+    brew install python@3.11
+
+Verify:
+
+    python3.11 --version
+
+You should see: Python 3.11.x
+
+
+------- 0c. Node.js 20 -------------------------------------
+
+    brew install node@20
+    brew link node@20
+
+Verify:
+
+    node --version     <- should show v20.x.x
+    npm --version      <- should show 10.x.x
+
+
+------- 0d. Git --------------------------------------------
+Git is probably already on your Mac, but make sure:
+
+    git --version
+
+If it says "command not found", run:
+
+    brew install git
+
+
+------- 0e. Database: PostgreSQL via Docker (recommended) --
+
+Docker is the cleanest way. Download Docker Desktop for Mac
+(Apple Silicon version):
+
+    https://www.docker.com/products/docker-desktop
+
+Download, open the .dmg file, drag Docker to Applications.
+Open Docker from Applications. Wait for the whale icon in
+your top menu bar to stop animating (~30 seconds).
+
+Verify:
+
+    docker --version
+
+ALTERNATIVE — No Docker (PostgreSQL via Homebrew):
+If you do not want Docker at all, run instead:
+
+    brew install postgresql@15
+    brew services start postgresql@15
+
+    # Create the database and user:
+    psql postgres -c "CREATE USER shield WITH PASSWORD 'shield';"
+    psql postgres -c "CREATE DATABASE shield_db OWNER shield;"
+
+Then in your backend .env file use this DATABASE_URL instead:
+
+    DATABASE_URL=postgresql+asyncpg://shield:shield@localhost:5432/shield_db
+
+Note: Homebrew PostgreSQL uses port 5432, not 5400.
+      Docker maps to 5400 to avoid conflicts on Windows.
+      On a fresh Mac, 5432 is free so we use it directly.
+
+
+================================================================
+STEP 1 — Get the code
+================================================================
+
+In Terminal, navigate to wherever you want the project to live.
+Your Documents folder is a good choice:
+
+    cd ~/Documents
+
+Clone the repository from GitHub:
+
+    git clone https://github.com/Etticx/SHIELD.git
+
+Move into the project folder:
+
+    cd SHIELD
+
+You now have the full project on your Mac. Verify it:
+
+    ls
+
+You should see: backend  data  docker-compose.yml  frontend  model  ...
+
+
+================================================================
+STEP 2 — Start the Database
+================================================================
+
+--- If you chose Docker (recommended): --------------------
+
+Make sure Docker Desktop is open (whale icon in menu bar).
+
+In your Terminal (inside the SHIELD folder):
+
+    docker compose up -d
+
+First time: Docker downloads postgres:15-alpine (~100 MB).
+Grab a coffee.
+
+Check it started correctly:
+
+    docker compose ps
+
+You should see shield_postgres with STATUS "healthy".
+If it says "starting", wait 15 seconds and run the command again.
+
+--- If you chose Homebrew PostgreSQL: ---------------------
+
+PostgreSQL is already running from Step 0e (brew services start).
+Nothing extra to do here.
+
+
+================================================================
+STEP 3 — Set up the Backend (Python / FastAPI)
+================================================================
+
+Open a NEW Terminal window.
+(Right-click Terminal in your Dock → New Window, or Cmd+N)
+
+Navigate to the backend folder:
+
+    cd ~/Documents/SHIELD/backend
+
+Create a virtual environment.
+A virtual environment is an isolated Python sandbox — it keeps
+the project's Python packages separate from everything else on
+your Mac. You only do this ONCE:
+
+    python3.11 -m venv venv
+
+Activate the virtual environment:
+
+    source venv/bin/activate
+
+Your Terminal prompt now shows (venv) at the start.
+This tells you the sandbox is active. ALWAYS do this before
+running any backend command.
+
+Install all Python dependencies (first time only):
+
+    pip install -r requirements.txt
+
+This installs: fastapi, xgboost, shap, pandas, numpy, groq, etc.
+Takes 2–5 minutes. You will see a lot of text scrolling — normal.
+
+Create your .env file (first time only):
+
+    cp .env.example .env
+
+Open the .env file in a text editor to add your keys:
+
+    open -e .env
+
+This opens TextEdit. Set these values:
+
+  If using Docker PostgreSQL (port 5400):
+    DATABASE_URL=postgresql+asyncpg://shield:shield@localhost:5400/shield_db
+
+  If using Homebrew PostgreSQL (port 5432):
+    DATABASE_URL=postgresql+asyncpg://shield:shield@localhost:5432/shield_db
+
+  Optional (for AI advisory):
+    GROQ_API_KEY=your_key_here
+    (Get a free key at https://console.groq.com)
+
+Save and close TextEdit.
+
+Start the backend:
+
+    python run.py
+
+You should see:
+
+    INFO  Loading XGBoost model ...
+    INFO  Building SHAP TreeExplainer ...
+    INFO  Initialising Groq advisory engine ...
+    INFO  Database ready — evaluations table confirmed.
+    INFO  SHIELD backend ready.
+    INFO  Uvicorn running on http://0.0.0.0:8000
+
+Leave this Terminal window open. The backend must keep running.
+
+
+================================================================
+STEP 4 — Set up the Frontend (Next.js)
+================================================================
+
+Open ANOTHER new Terminal window (third one).
+
+Navigate to the frontend folder:
+
+    cd ~/Documents/SHIELD/frontend
+
+Install Node.js dependencies (first time only):
+
+    npm install
+
+This installs all JavaScript packages. Takes 1–2 minutes.
+You will see a progress bar.
+
+Check the .env.local file to make sure it points at your backend:
+
+    cat .env.local
+
+You should see:
+
+    NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+
+That is correct — leave it as is.
+
+Start the frontend:
+
+    npm run dev
+
+You should see:
+
+    ▲ Next.js 14.x.x
+    - Local:        http://localhost:3000
+    - Environments: .env.local
+
+Leave this Terminal window open too.
+
+
+================================================================
+RUNNING THE APP
+================================================================
+
+Once all three are running, open your browser and go to:
+
+    http://localhost:3000
+
+Login credentials:
+
+    Username: admin      Password: admin
+    Username: analyst    Password: junebank1
+
+
+================================================================
+EVERY TIME YOU WANT TO RUN IT AGAIN
+================================================================
+
+You only do the install steps (pip install, npm install) once.
+Every subsequent time, just:
+
+TERMINAL 1 (Database — Docker):
+    cd ~/Documents/SHIELD
+    docker compose up -d
+
+    (or if using Homebrew: brew services start postgresql@15
+     — but it probably auto-starts on login already)
+
+TERMINAL 2 (Backend):
+    cd ~/Documents/SHIELD/backend
+    source venv/bin/activate
+    python run.py
+
+TERMINAL 3 (Frontend):
+    cd ~/Documents/SHIELD/frontend
+    npm run dev
+
+Then open http://localhost:3000
+
+
+================================================================
+STOPPING EVERYTHING
+================================================================
+
+Frontend + Backend : Press Ctrl + C in each terminal
+
+Database (Docker)  : In the SHIELD root folder:
+                         docker compose down
+
+    (To also wipe all saved evaluation data:
+         docker compose down -v)
+
+Database (Homebrew): brew services stop postgresql@15
+
+
+================================================================
+GETTING LATEST CODE UPDATES FROM GITHUB
+================================================================
+
+Whenever new code is pushed to GitHub, pull it to your Mac:
+
+    cd ~/Documents/SHIELD
+    git pull origin master
+
+If the backend dependencies changed (new packages added):
+
+    cd backend
+    source venv/bin/activate
+    pip install -r requirements.txt
+
+If the frontend dependencies changed:
+
+    cd ../frontend
+    npm install
+
+Then restart all three servers.
+
+
+================================================================
+MAC TROUBLESHOOTING
+================================================================
+
+Problem : "brew: command not found"
+Fix     : Homebrew did not add itself to your PATH.
+          Run the two "echo" and "eval" lines printed at the
+          end of the Homebrew installation again.
+
+Problem : "python3.11: command not found"
+Fix     : Run: brew install python@3.11
+          Then: brew link python@3.11
+
+Problem : "source venv/bin/activate" — no error but no (venv)
+Fix     : Make sure you are inside backend/ folder:
+              cd ~/Documents/SHIELD/backend
+          Then run the activate command again.
+
+Problem : pip install fails with "error: externally-managed-environment"
+Fix     : You are using the system Python, not the venv.
+          Run: source venv/bin/activate   first.
+
+Problem : Port 5432 already in use
+Fix     : You have a local PostgreSQL running. Either stop it:
+              brew services stop postgresql@15
+          Or use Docker on port 5400 instead.
+
+Problem : Docker "Cannot connect to Docker daemon"
+Fix     : Docker Desktop is not open. Open it from Applications
+          and wait for the whale icon to stop animating.
+
+Problem : "npm run dev" — "next: command not found"
+Fix     : npm install did not run. Run it now:
+              cd ~/Documents/SHIELD/frontend
+              npm install
+
+Problem : Frontend loads but shows "Failed to fetch"
+Fix     : Backend is not running. Go to Terminal 2 and run:
+              python run.py
+          Then refresh the browser.
+
+Problem : SHAP/numpy build error during pip install
+Fix     : You are on Apple Silicon (M1–M4). Some packages
+          build from source. Make sure Xcode tools are installed:
+              xcode-select --install
+          Then retry: pip install -r requirements.txt
+
+Problem : git pull shows merge conflicts
+Fix     : You have local uncommitted changes. Reset to match GitHub:
+              git fetch origin
+              git reset --hard origin/master
+          WARNING: This discards any local edits you made.
+
+================================================================
+  End of macOS Guide
 ================================================================
