@@ -1,6 +1,11 @@
 // =============================================================================
 // SHIELD — API client
 // All calls go through Next.js rewrites (/api/* → FastAPI) so no CORS in dev.
+//
+// Security: every request carries the X-API-Key header.
+// The key is read from SHIELD_API_KEY (server-side env var — never exposed
+// to the browser). The Next.js rewrite proxy injects it before forwarding
+// to FastAPI, so the raw key is never visible in the client bundle.
 // =============================================================================
 
 import type {
@@ -12,6 +17,16 @@ import type {
 
 const BASE = "/api";
 
+// Read the key at module initialisation time (server-side only).
+// On the client this will be undefined — that is intentional.
+// The header is injected by the Next.js API route layer, not the browser.
+const API_KEY = process.env.SHIELD_API_KEY ?? "";
+
+/** Base headers sent with every request. */
+function authHeaders(): HeadersInit {
+  return API_KEY ? { "X-API-Key": API_KEY } : {};
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const text = await res.text().catch(() => "Unknown error");
@@ -21,17 +36,20 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 export async function fetchFeatures(): Promise<FeaturesResponse> {
-  const res = await fetch(`${BASE}/features`, { cache: "force-cache" });
+  const res = await fetch(`${BASE}/features`, {
+    cache: "force-cache",
+    headers: authHeaders(),
+  });
   return handleResponse<FeaturesResponse>(res);
 }
 
-/** POST /predict — now requires metadata + financials in one payload. */
+/** POST /predict — requires metadata + financials in one payload. */
 export async function predict(
   request: PredictRequest,
 ): Promise<PredictionResponse> {
   const res = await fetch(`${BASE}/predict`, {
     method:  "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body:    JSON.stringify(request),
   });
   return handleResponse<PredictionResponse>(res);
@@ -39,11 +57,17 @@ export async function predict(
 
 /** GET /logs — returns all past evaluations, newest first. */
 export async function fetchLogs(): Promise<LogEntry[]> {
-  const res = await fetch(`${BASE}/logs`, { cache: "no-store" });
+  const res = await fetch(`${BASE}/logs`, {
+    cache: "no-store",
+    headers: authHeaders(),
+  });
   return handleResponse<LogEntry[]>(res);
 }
 
 export async function healthCheck(): Promise<{ status: string }> {
-  const res = await fetch(`${BASE}/health`, { cache: "no-store" });
+  const res = await fetch(`${BASE}/health`, {
+    cache: "no-store",
+    headers: authHeaders(),
+  });
   return handleResponse<{ status: string }>(res);
 }

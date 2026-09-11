@@ -25,8 +25,9 @@ import pandas as pd
 import shap
 import joblib
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Security
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, Field
 
 from config import settings
@@ -209,7 +210,29 @@ app_state = AppState()
 
 
 # ---------------------------------------------------------------------------
-# Lifespan
+# API Key security dependency
+#
+# How it works:
+#   - FastAPI reads the "X-API-Key" header from every incoming request.
+#   - If API_KEY is not set in .env, the check is skipped entirely
+#     (backwards-compatible for local dev without a key configured).
+#   - If API_KEY is set, the header value must match exactly.
+#   - Any mismatch returns 401 Unauthorized — the route never executes.
+#   - Declare `key: str = Security(verify_api_key)` on any route to protect it.
+# ---------------------------------------------------------------------------
+_api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+async def verify_api_key(key: str | None = Security(_api_key_header)) -> None:
+    """Dependency — enforces X-API-Key header when API_KEY is configured."""
+    if not settings.api_key:
+        # No key configured → open access (development mode)
+        return
+    if key != settings.api_key:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing API key. Include X-API-Key header.",
+        )
 # ---------------------------------------------------------------------------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -565,7 +588,7 @@ async def get_features() -> dict:
 
 
 @app.post("/predict", response_model=PredictionResponse, tags=["Prediction"])
-async def predict(request: PredictRequest) -> PredictionResponse:
+async def predict(request: PredictRequest, _: None = Security(verify_api_key)) -> PredictionResponse:
     """Main prediction endpoint — runs XGBoost + SHAP + Groq advisory, then persists to DB."""
     if app_state.model is None or app_state.explainer is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Try again shortly.")
@@ -654,7 +677,7 @@ async def predict(request: PredictRequest) -> PredictionResponse:
 
 
 @app.get("/logs", response_model=list[LogEntry], tags=["Logs"])
-async def get_logs(limit: int = 200) -> list[LogEntry]:
+async def get_logs(limit: int = 200, _: None = Security(verify_api_key)) -> list[LogEntry]:
     """Return past evaluations, newest first. Max 200 rows per call."""
     from sqlalchemy import select, desc
 
