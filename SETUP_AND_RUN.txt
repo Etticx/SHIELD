@@ -227,10 +227,10 @@ TERMINAL 3 — Frontend (Next.js)
 
        npm run dev
 
-   Dashboard:  http://localhost:3000
-   Logs page:  http://localhost:3000/logs
+   Dashboard:  http://localhost:5000
+   Logs page:  http://localhost:5000/logs
 
-   Open http://localhost:3000 in your browser.
+   Open http://localhost:5000 in your browser.
 
 ------------------------------------------------------------
 STOPPING
@@ -665,7 +665,7 @@ Start the frontend:
 You should see:
 
     ▲ Next.js 14.x.x
-    - Local:        http://localhost:3000
+    - Local:        http://localhost:5000
     - Environments: .env.local
 
 Leave this Terminal window open too.
@@ -677,7 +677,7 @@ RUNNING THE APP
 
 Once all three are running, open your browser and go to:
 
-    http://localhost:3000
+    http://localhost:5000
 
 Login credentials:
 
@@ -708,7 +708,7 @@ TERMINAL 3 (Frontend):
     cd ~/Documents/SHIELD/frontend
     npm run dev
 
-Then open http://localhost:3000
+Then open http://localhost:5000
 
 
 ================================================================
