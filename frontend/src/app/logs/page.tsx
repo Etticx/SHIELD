@@ -3,25 +3,38 @@
 // =============================================================================
 // SHIELD — Evaluation Logs Page  (/logs)
 //
+// v2 additions:
+//   • Search bar     — filters by company name or SSM number (case-insensitive)
+//   • Risk filter    — All / High Risk / Low Risk dropdown
+//   • Evaluator filter — All / per-officer dropdown (dynamic from data)
+//   • Column sorting — click any column header to sort asc/desc
+//   • Results count  — "Showing X of Y" live feedback
+//
 // Each row owns its own contentRef + useReactToPrint hook so the Download PDF
 // button can be called without violating React hook rules.
-// ReportTemplate is rendered hidden (print-only CSS class) inside each LogRow
-// and shown only when the browser print dialog fires.
 // =============================================================================
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
   RefreshCw, AlertTriangle, CheckCircle,
   Calendar, Building2, Hash, DollarSign,
   User, ChevronDown, ChevronUp, Loader2,
   ClipboardList, ServerOff, Download,
+  Search, X, ChevronsUpDown, ArrowUp, ArrowDown,
+  Filter,
 } from "lucide-react";
 import clsx from "clsx";
 
 import { fetchLogs } from "@/lib/api";
 import type { LogEntry } from "@/lib/types";
 import ReportTemplate from "@/components/ReportTemplate";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+type SortKey = "evaluated_at" | "company_name" | "loan_amount" | "probability_default";
+type SortDir = "asc" | "desc";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -56,6 +69,18 @@ function RiskBadge({ classification }: { classification: LogEntry["risk_classifi
       {classification}
     </span>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Sort icon
+// ---------------------------------------------------------------------------
+function SortIcon({ col, sortKey, sortDir }: {
+  col: SortKey; sortKey: SortKey; sortDir: SortDir;
+}) {
+  if (col !== sortKey) return <ChevronsUpDown size={10} className="text-brand-border" />;
+  return sortDir === "asc"
+    ? <ArrowUp size={10} className="text-brand-charcoal" />
+    : <ArrowDown size={10} className="text-brand-charcoal" />;
 }
 
 // ---------------------------------------------------------------------------
@@ -114,50 +139,27 @@ function DetailDrawer({ entry }: { entry: LogEntry }) {
 }
 
 // ---------------------------------------------------------------------------
-// Log row — owns its own ref + print hook so hooks are not called conditionally
+// Log row
 // ---------------------------------------------------------------------------
 function LogRow({ entry }: { entry: LogEntry }) {
   const [expanded, setExpanded] = useState(false);
   const { date, time } = formatDate(entry.evaluated_at);
-
   const reportRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
     contentRef: reportRef,
     documentTitle: `SHIELD_Report_${entry.company_name.replace(/\s+/g, "_")}_${entry.id}`,
     fonts: [
-      {
-        family: "Ubuntu",
-        source: "https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKfw72.woff2",
-        weight: "700",
-      },
-      {
-        family: "Lato",
-        source: "https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2",
-        weight: "400",
-      },
-      {
-        family: "Lato",
-        source: "https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2",
-        weight: "700",
-      },
+      { family: "Ubuntu", source: "https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKfw72.woff2", weight: "700" },
+      { family: "Lato", source: "https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2", weight: "400" },
+      { family: "Lato", source: "https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2", weight: "700" },
     ],
   });
 
   return (
     <>
-      {/*
-        ReportTemplate CANNOT be a sibling of <tr> inside <tbody> — the browser
-        silently drops nodes that violate table structure, so the ref stays null.
-        Instead we portal it outside the table entirely using a <td>-free div
-        that lives before the table row fragment. We use a zero-size absolutely
-        positioned wrapper so it takes no layout space but IS in the DOM.
-        react-to-print reads the ref'd node from there.
-      */}
       <tr style={{ display: "none" }}>
-        <td>
-          <ReportTemplate ref={reportRef} log={entry} />
-        </td>
+        <td><ReportTemplate ref={reportRef} log={entry} /></td>
       </tr>
 
       <tr
@@ -215,28 +217,18 @@ function LogRow({ entry }: { entry: LogEntry }) {
         {/* Actions */}
         <td className="px-4 py-3 whitespace-nowrap">
           <div className="flex items-center justify-end gap-1">
-
-            {/* Download PDF */}
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePrint();
-              }}
+              onClick={(e) => { e.stopPropagation(); handlePrint(); }}
               className="flex items-center gap-1.5 text-xs font-semibold
                          text-brand-charcoal bg-brand-yellow hover:bg-brand-yellowHover
                          transition-colors duration-150 px-2.5 py-1.5 rounded-lg shadow-sm"
-              aria-label="Download PDF report"
               title="Download PDF"
             >
-              <Download size={12} />
-              PDF
+              <Download size={12} /> PDF
             </button>
-
-            {/* Expand toggle */}
             <button
               className="text-brand-muted hover:text-brand-charcoal transition-colors p-1.5 rounded-lg
                          border border-brand-border hover:border-brand-charcoal/30"
-              aria-label={expanded ? "Collapse details" : "Expand details"}
               onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
             >
               {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
@@ -251,6 +243,42 @@ function LogRow({ entry }: { entry: LogEntry }) {
 }
 
 // ---------------------------------------------------------------------------
+// Sortable column header
+// ---------------------------------------------------------------------------
+function ColHeader({
+  label, icon: Icon, sortKey, activeKey, activeDir, onSort, align = "left",
+}: {
+  label: string;
+  icon?: React.ElementType;
+  sortKey?: SortKey;
+  activeKey: SortKey;
+  activeDir: SortDir;
+  onSort: (k: SortKey) => void;
+  align?: "left" | "right";
+}) {
+  const sortable = !!sortKey;
+  return (
+    <th
+      className={clsx(
+        "px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-brand-muted",
+        "select-none whitespace-nowrap",
+        sortable && "cursor-pointer hover:text-brand-charcoal transition-colors",
+        align === "right" && "text-right"
+      )}
+      onClick={sortable ? () => onSort(sortKey!) : undefined}
+    >
+      <span className={clsx("inline-flex items-center gap-1.5", align === "right" && "justify-end w-full")}>
+        {Icon && <Icon size={10} />}
+        {label}
+        {sortable && (
+          <SortIcon col={sortKey!} sortKey={activeKey} sortDir={activeDir} />
+        )}
+      </span>
+    </th>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 export default function LogsPage() {
@@ -258,6 +286,16 @@ export default function LogsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ── Filter state ──────────────────────────────────────────────────────────
+  const [search, setSearch] = useState("");
+  const [riskFilter, setRiskFilter] = useState<"all" | "High Risk" | "Low Risk">("all");
+  const [evaluatorFilter, setEvaluatorFilter] = useState<string>("all");
+
+  // ── Sort state ────────────────────────────────────────────────────────────
+  const [sortKey, setSortKey] = useState<SortKey>("evaluated_at");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+
+  // ── Load ──────────────────────────────────────────────────────────────────
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -273,12 +311,63 @@ export default function LogsPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  // ── Unique evaluators for dropdown ────────────────────────────────────────
+  const evaluators = useMemo(
+    () => ["all", ...Array.from(new Set(logs.map((l) => l.evaluator))).sort()],
+    [logs]
+  );
+
+  // ── Sort handler ─────────────────────────────────────────────────────────
+  function handleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  }
+
+  // ── Filtered + sorted rows ────────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return logs
+      .filter((l) => {
+        if (riskFilter !== "all" && l.risk_classification !== riskFilter) return false;
+        if (evaluatorFilter !== "all" && l.evaluator !== evaluatorFilter) return false;
+        if (q && !l.company_name.toLowerCase().includes(q) && !l.ssm_number.toLowerCase().includes(q)) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        let av: number | string;
+        let bv: number | string;
+        switch (sortKey) {
+          case "evaluated_at": av = a.evaluated_at; bv = b.evaluated_at; break;
+          case "company_name": av = a.company_name; bv = b.company_name; break;
+          case "loan_amount": av = a.loan_amount; bv = b.loan_amount; break;
+          case "probability_default": av = a.probability_default; bv = b.probability_default; break;
+          default: av = a.evaluated_at; bv = b.evaluated_at;
+        }
+        if (av < bv) return sortDir === "asc" ? -1 : 1;
+        if (av > bv) return sortDir === "asc" ? 1 : -1;
+        return 0;
+      });
+  }, [logs, search, riskFilter, evaluatorFilter, sortKey, sortDir]);
+
+  const hasActiveFilters = search !== "" || riskFilter !== "all" || evaluatorFilter !== "all";
+
+  function clearFilters() {
+    setSearch("");
+    setRiskFilter("all");
+    setEvaluatorFilter("all");
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-brand-cream">
       <div className="relative z-10 flex flex-col min-h-screen">
 
         {/* ── Page header ───────────────────────────────────────────────── */}
-        <div className="px-6 pt-6 pb-4 flex items-center justify-between">
+        <div className="px-6 pt-6 pb-4 flex items-start justify-between border-b border-brand-border/60">
           <div>
             <p className="section-label">Audit Trail</p>
             <h1 className="text-2xl font-bold text-brand-charcoal font-heading">
@@ -291,7 +380,7 @@ export default function LogsPage() {
           <button
             onClick={load}
             disabled={loading}
-            className="btn-ghost flex items-center gap-1.5 px-3 py-2 text-sm"
+            className="btn-ghost flex items-center gap-1.5 px-3 py-2 text-sm mt-1 shrink-0"
           >
             <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
             Refresh
@@ -299,7 +388,7 @@ export default function LogsPage() {
         </div>
 
         {/* ── Main content ──────────────────────────────────────────────── */}
-        <div className="flex-1 px-6 pb-6">
+        <div className="flex-1 px-6 py-5 flex flex-col gap-4">
 
           {/* Loading */}
           {loading && (
@@ -327,7 +416,7 @@ export default function LogsPage() {
             </div>
           )}
 
-          {/* Empty state */}
+          {/* Empty — no data at all */}
           {!loading && !error && logs.length === 0 && (
             <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
               <div className="h-14 w-14 rounded-full bg-brand-panel border border-brand-border
@@ -343,72 +432,186 @@ export default function LogsPage() {
             </div>
           )}
 
-          {/* Table */}
+          {/* Search + filter toolbar + table */}
           {!loading && !error && logs.length > 0 && (
-            <div className="panel overflow-hidden">
+            <>
+              {/* ── Toolbar ─────────────────────────────────────────────── */}
+              <div className="flex flex-wrap items-center gap-3">
 
-              {/* Table meta bar */}
-              <div className="px-4 py-3 border-b border-brand-border flex items-center justify-between">
-                <p className="text-xs text-brand-muted">
-                  <span className="font-semibold text-brand-charcoal">{logs.length}</span>{" "}
-                  evaluation{logs.length !== 1 ? "s" : ""} on record
-                </p>
-                <div className="flex items-center gap-3 text-[10px] text-brand-muted">
-                  <span className="flex items-center gap-1">
-                    <AlertTriangle size={9} className="text-risk-high" /> High Risk
+                {/* Search */}
+                <div className="relative flex-1 min-w-[200px] max-w-sm">
+                  <Search
+                    size={13}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search company or SSM…"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="input-field pl-8 pr-8 text-sm h-9"
+                  />
+                  {search && (
+                    <button
+                      onClick={() => setSearch("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted
+                                 hover:text-brand-charcoal transition-colors"
+                    >
+                      <X size={13} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Risk filter */}
+                <div className="relative">
+                  <Filter
+                    size={12}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted"
+                  />
+                  <select
+                    value={riskFilter}
+                    onChange={(e) => setRiskFilter(e.target.value as typeof riskFilter)}
+                    className="input-field pl-8 pr-7 text-sm h-9 appearance-none cursor-pointer min-w-[140px]"
+                  >
+                    <option value="all">All Risk Levels</option>
+                    <option value="High Risk">High Risk</option>
+                    <option value="Low Risk">Low Risk</option>
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted"
+                  />
+                </div>
+
+                {/* Evaluator filter */}
+                <div className="relative">
+                  <User
+                    size={12}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted"
+                  />
+                  <select
+                    value={evaluatorFilter}
+                    onChange={(e) => setEvaluatorFilter(e.target.value)}
+                    className="input-field pl-8 pr-7 text-sm h-9 appearance-none cursor-pointer min-w-[150px]"
+                  >
+                    {evaluators.map((e) => (
+                      <option key={e} value={e}>
+                        {e === "all" ? "All Evaluators" : e}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted"
+                  />
+                </div>
+
+                {/* Clear filters */}
+                {hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    className="btn-ghost flex items-center gap-1.5 px-3 h-9 text-sm"
+                  >
+                    <X size={12} />
+                    Clear
+                  </button>
+                )}
+
+                {/* Results count — pushed to right */}
+                <div className="ml-auto text-xs text-brand-muted shrink-0">
+                  Showing{" "}
+                  <span className="font-semibold text-brand-charcoal font-mono">
+                    {filtered.length}
                   </span>
-                  <span className="flex items-center gap-1">
-                    <CheckCircle size={9} className="text-risk-low" /> Low Risk
-                  </span>
+                  {filtered.length !== logs.length && (
+                    <> of <span className="font-semibold text-brand-charcoal font-mono">{logs.length}</span></>
+                  )}{" "}
+                  evaluation{filtered.length !== 1 ? "s" : ""}
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left min-w-[800px]">
-                  <thead>
-                    <tr className="border-b border-brand-border bg-brand-bg/50">
-                      {[
-                        { Icon: Calendar, label: "Date & Time" },
-                        { Icon: Building2, label: "Company" },
-                        { Icon: Hash, label: "SSM No." },
-                        { Icon: DollarSign, label: "Loan Amount" },
-                        { Icon: null, label: "Risk" },
-                        { Icon: null, label: "P(Default)" },
-                        { Icon: User, label: "Evaluator" },
-                        { Icon: null, label: "Actions" },
-                      ].map(({ Icon, label }, i) => (
-                        <th
-                          key={i}
-                          className={clsx(
-                            "px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-brand-muted",
-                            (i === 3 || i === 5) && "text-right",
-                            i === 7 && "text-right"
-                          )}
-                        >
-                          <span className="flex items-center gap-1.5">
-                            {Icon && <Icon size={10} />}
-                            {label}
-                          </span>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
+              {/* ── Table ───────────────────────────────────────────────── */}
+              <div className="panel overflow-hidden">
 
-                  <tbody>
-                    {logs.map((entry) => (
-                      <LogRow key={entry.id} entry={entry} />
-                    ))}
-                  </tbody>
-                </table>
+                {/* No results after filtering */}
+                {filtered.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
+                    <Search size={22} className="text-brand-muted" />
+                    <div>
+                      <p className="text-sm font-semibold text-brand-charcoal mb-1">
+                        No results match your filters
+                      </p>
+                      <p className="text-xs text-brand-muted">
+                        Try adjusting your search or clearing the filters.
+                      </p>
+                    </div>
+                    <button onClick={clearFilters} className="btn-ghost text-sm px-4 py-2">
+                      Clear filters
+                    </button>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left min-w-[800px]">
+                      <thead>
+                        <tr className="border-b border-brand-border bg-brand-bg/50">
+                          <ColHeader
+                            label="Date & Time" icon={Calendar}
+                            sortKey="evaluated_at"
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                          />
+                          <ColHeader
+                            label="Company" icon={Building2}
+                            sortKey="company_name"
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                          />
+                          <ColHeader
+                            label="SSM No." icon={Hash}
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                          />
+                          <ColHeader
+                            label="Loan Amount" icon={DollarSign}
+                            sortKey="loan_amount"
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                            align="right"
+                          />
+                          <ColHeader
+                            label="Risk"
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                          />
+                          <ColHeader
+                            label="P(Default)"
+                            sortKey="probability_default"
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                            align="right"
+                          />
+                          <ColHeader
+                            label="Evaluator" icon={User}
+                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
+                          />
+                          {/* Actions — not sortable */}
+                          <th className="px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest
+                                         text-brand-muted text-right">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filtered.map((entry) => (
+                          <LogRow key={entry.id} entry={entry} />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
-            </div>
+            </>
           )}
 
         </div>
 
         {/* ── Footer ──────────────────────────────────────────────────────── */}
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
-                           justify-between text-brand-muted text-xs">
+                           justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
           <span>JuneBank Internal Tools · XGBoost + SHAP</span>
         </footer>
