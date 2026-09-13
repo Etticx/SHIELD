@@ -107,26 +107,26 @@ streamlit run app.py
 
 ```json
 {
-  "roa_a": 0.5598,
-  "roa_b": 0.5523,
-  "continuous_interest_rate": 0.7816,
-  "net_value_per_share_b": 0.1844,
-  "net_value_per_share_a": 0.1844,
-  "net_value_per_share_c": 0.1844,
-  "persistent_eps": 0.2245,
-  "per_share_net_profit": 0.1797,
-  "interest_expense_ratio": 0.6307,
-  "debt_ratio": 0.1114,
-  "net_worth_assets": 0.8886,
-  "borrowing_dependency": 0.3726,
-  "net_profit_paid_in_capital": 0.1785,
-  "retained_earnings": 0.9377,
-  "total_income_expense": 0.0023,
-  "net_income_total_assets": 0.8106,
-  "net_income_equity": 0.8412,
-  "liability_to_equity": 0.2788,
-  "interest_coverage_ratio": 0.5653,
-  "equity_to_liability": 0.0338
+  "roa_c": 0.4725,
+  "roa_a": 0.5321,
+  "continuous_interest_rate": 0.7815,
+  "net_value_per_share_b": 0.1732,
+  "net_value_per_share_a": 0.1732,
+  "net_value_per_share_c": 0.1734,
+  "persistent_eps": 0.2116,
+  "per_share_net_profit": 0.1689,
+  "interest_expense_ratio": 0.6306,
+  "debt_ratio": 0.1561,
+  "net_worth_assets": 0.8439,
+  "borrowing_dependency": 0.3774,
+  "net_profit_paid_in_capital": 0.1680,
+  "retained_earnings": 0.9292,
+  "total_income_expense": 0.0022,
+  "net_income_total_assets": 0.7935,
+  "net_income_equity": 0.8399,
+  "liability_to_equity": 0.2820,
+  "interest_coverage_ratio": 0.5652,
+  "equity_to_liability": 0.0232
 }
 ```
 

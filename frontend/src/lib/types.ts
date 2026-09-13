@@ -7,8 +7,8 @@
 // Financial input (20 normalised ratios)
 // ---------------------------------------------------------------------------
 export interface SMEFinancialData {
+  roa_c: number;
   roa_a: number;
-  roa_b: number;
   continuous_interest_rate: number;
   net_value_per_share_b: number;
   net_value_per_share_a: number;

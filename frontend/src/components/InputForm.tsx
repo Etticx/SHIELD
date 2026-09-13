@@ -71,8 +71,8 @@ const FIELD_GROUPS: Array<{
       label: "Profitability & Earnings",
       Icon: TrendingUp,
       fields: [
+        "roa_c",
         "roa_a",
-        "roa_b",
         "persistent_eps",
         "net_profit_paid_in_capital",
         "net_income_total_assets",
@@ -153,8 +153,8 @@ function downloadCsv(content: string, filename: string) {
 }
 
 const CSV_HEADER_TO_KEY: Record<string, keyof SMEFinancialData> = {
+  " ROA(C) before interest and depreciation before interest": "roa_c",
   " ROA(A) before interest and % after tax": "roa_a",
-  " ROA(B) before interest and depreciation after tax": "roa_b",
   " Continuous interest rate (after tax)": "continuous_interest_rate",
   " Net Value Per Share (B)": "net_value_per_share_b",
   " Net Value Per Share (A)": "net_value_per_share_a",
