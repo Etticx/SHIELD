@@ -19,11 +19,9 @@ import {
   TrendingUp,
   TrendingDown,
   Lightbulb,
-  Sparkles,
-  Clock,
-  Minus,
 } from "lucide-react";
 import type { AdvisoryReport as AdvisoryReportType } from "@/lib/types";
+import InfoTooltip from "@/components/InfoTooltip";
 
 interface Props {
   advisory: AdvisoryReportType;
@@ -137,31 +135,6 @@ function FactorRow({
   );
 }
 
-function SourceBadge({ source }: { source: AdvisoryReportType["advisory_source"] }) {
-  if (source === "groq") {
-    return (
-      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border text-brand-yellow border-brand-yellow/40 bg-brand-yellow/10">
-        <Sparkles size={9} />
-        Groq AI
-      </span>
-    );
-  }
-  if (source === "rate-limited") {
-    return (
-      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border text-risk-amber border-risk-amber/40 bg-risk-amber/10">
-        <Clock size={9} />
-        API limit reached
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border text-brand-muted border-brand-border bg-brand-bg">
-      <Minus size={9} />
-      Rule-based
-    </span>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
@@ -178,17 +151,11 @@ export default function AdvisoryReport({ advisory }: Props) {
   const config = TONE_CONFIG[tone_level];
   const { Icon } = config;
   const isGroq = advisory_source === "groq";
-
   const explanationSentences = isGroq ? splitSentences(tone) : [tone];
   const recommendationPoints = isGroq ? splitRecommendation(recommendation) : [recommendation];
 
   return (
     <div className="flex flex-col gap-4 animate-fade-in">
-
-      {/* ── Source badge (replaces full section header — title rendered by page.tsx) ── */}
-      <div className="flex justify-end">
-        <SourceBadge source={advisory_source} />
-      </div>
 
       {/* ── Tone / Explanation Banner ───────────────────────────── */}
       <div className={clsx("rounded-lg border overflow-hidden", config.border)}>
@@ -230,6 +197,10 @@ export default function AdvisoryReport({ advisory }: Props) {
           <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-risk-high/70 mb-2">
             <TrendingUp size={11} className="text-risk-high/70" />
             Key Risk Drivers
+            <InfoTooltip
+              size={11}
+              text="Each SHAP value shows how much this feature pushed the default probability up (+) or down (−) from the base value. A larger positive number means this metric is a stronger driver of distress for this SME."
+            />
           </p>
           {risk_drivers.map((d) => (
             <FactorRow key={d.label} label={d.label} value={d.shap_value} direction="risk" />
@@ -243,6 +214,10 @@ export default function AdvisoryReport({ advisory }: Props) {
           <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-semibold text-risk-low/70 mb-2">
             <TrendingDown size={11} className="text-risk-low/70" />
             Protective Factors
+            <InfoTooltip
+              size={11}
+              text="These features have negative SHAP values, meaning they reduce the predicted probability of default. The more negative the value, the stronger the protective effect of that metric for this SME."
+            />
           </p>
           {protective_factors.map((d) => (
             <FactorRow key={d.label} label={d.label} value={d.shap_value} direction="protective" />

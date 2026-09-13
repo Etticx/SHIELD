@@ -31,7 +31,9 @@ import {
   PROFILE_HEALTHY,
   PROFILE_DISTRESSED,
   FEATURE_LABELS,
+  FIELD_TOOLTIPS,
 } from "@/lib/constants";
+import InfoTooltip from "@/components/InfoTooltip";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -375,14 +377,17 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
             <div className="grid grid-cols-2 gap-x-3 gap-y-3">
               {groupFields.map((key) => {
                 const fieldLabel = FEATURE_LABELS[key];
+                const tooltipText = FIELD_TOOLTIPS[key];
                 return (
                   <div key={key} className="flex flex-col gap-1">
                     <label
                       htmlFor={`field-${key}`}
-                      className="text-[0.67rem] leading-tight text-brand-subtext truncate"
-                      title={fieldLabel}
+                      className="text-[0.67rem] leading-tight text-brand-subtext flex items-center gap-1"
                     >
-                      {fieldLabel}
+                      <span className="truncate flex-1" title={fieldLabel}>
+                        {fieldLabel}
+                      </span>
+                      <InfoTooltip text={tooltipText} />
                     </label>
                     <input
                       id={`field-${key}`}

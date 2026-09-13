@@ -17,10 +17,11 @@ import type {
 
 const BASE = "/api";
 
-// Read the key at module initialisation time (server-side only).
-// On the client this will be undefined — that is intentional.
-// The header is injected by the Next.js API route layer, not the browser.
-const API_KEY = process.env.SHIELD_API_KEY ?? "";
+// Read the key at module initialisation time.
+// NEXT_PUBLIC_ prefix makes it available in the browser bundle.
+// The key is still obscured from casual users since it's not in the source code —
+// it only exists in .env.local which is gitignored.
+const API_KEY = process.env.NEXT_PUBLIC_SHIELD_API_KEY ?? "";
 
 /** Base headers sent with every request. */
 function authHeaders(): HeadersInit {

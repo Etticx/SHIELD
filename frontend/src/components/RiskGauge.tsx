@@ -15,6 +15,7 @@ import { useMemo } from "react";
 import clsx from "clsx";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 import type { PredictionResponse } from "@/lib/types";
+import InfoTooltip from "@/components/InfoTooltip";
 
 interface Props {
   result: PredictionResponse;
@@ -158,9 +159,13 @@ export default function RiskGauge({ result }: Props) {
       {/* ── Model metadata ─────────────────────────────────────────────────── */}
       <div className="border-t border-brand-border pt-3 flex items-center justify-between text-[11px] text-brand-muted">
         <span>XGBoost + SHAP</span>
-        <span>
+        <span className="flex items-center gap-1.5">
           Base value:{" "}
           <span className="font-mono text-brand-subtext">{shap_base_value.toFixed(4)}</span>
+          <InfoTooltip
+            size={11}
+            text="The SHAP base value is the model's average predicted default probability across the entire training dataset. Each feature's SHAP value is an adjustment from this baseline — positive values push the final probability up, negative values push it down."
+          />
         </span>
       </div>
 

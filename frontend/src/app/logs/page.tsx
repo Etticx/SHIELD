@@ -3,15 +3,13 @@
 // =============================================================================
 // SHIELD — Evaluation Logs Page  (/logs)
 //
-// v2 additions:
-//   • Search bar     — filters by company name or SSM number (case-insensitive)
-//   • Risk filter    — All / High Risk / Low Risk dropdown
-//   • Evaluator filter — All / per-officer dropdown (dynamic from data)
-//   • Column sorting — click any column header to sort asc/desc
-//   • Results count  — "Showing X of Y" live feedback
+// Personal view — shows only the logged-in officer's own evaluations.
+// Fetches all logs from the API then filters client-side by evaluator === username.
 //
-// Each row owns its own contentRef + useReactToPrint hook so the Download PDF
-// button can be called without violating React hook rules.
+//   • Search bar     — filters by company name or SSM number
+//   • Risk filter    — All / High Risk / Low Risk
+//   • Column sorting — click any sortable header
+//   • Results count  — "Showing X of Y" live feedback
 // =============================================================================
 
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
@@ -19,7 +17,7 @@ import { useReactToPrint } from "react-to-print";
 import {
   RefreshCw, AlertTriangle, CheckCircle,
   Calendar, Building2, Hash, DollarSign,
-  User, ChevronDown, ChevronUp, Loader2,
+  ChevronDown, ChevronUp, Loader2,
   ClipboardList, ServerOff, Download,
   Search, X, ChevronsUpDown, ArrowUp, ArrowDown,
   Filter,
@@ -27,6 +25,7 @@ import {
 import clsx from "clsx";
 
 import { fetchLogs } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import type { LogEntry } from "@/lib/types";
 import ReportTemplate from "@/components/ReportTemplate";
 
@@ -282,26 +281,26 @@ function ColHeader({
 // Page
 // ---------------------------------------------------------------------------
 export default function LogsPage() {
-  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const { user } = useAuth();
+  const [allLogs, setAllLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // ── Filter state ──────────────────────────────────────────────────────────
   const [search, setSearch] = useState("");
   const [riskFilter, setRiskFilter] = useState<"all" | "High Risk" | "Low Risk">("all");
-  const [evaluatorFilter, setEvaluatorFilter] = useState<string>("all");
 
   // ── Sort state ────────────────────────────────────────────────────────────
   const [sortKey, setSortKey] = useState<SortKey>("evaluated_at");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
-  // ── Load ──────────────────────────────────────────────────────────────────
+  // ── Load — fetch all, then filter to this officer ─────────────────────────
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const data = await fetchLogs();
-      setLogs(data);
+      setAllLogs(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load logs.");
     } finally {
@@ -311,10 +310,10 @@ export default function LogsPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // ── Unique evaluators for dropdown ────────────────────────────────────────
-  const evaluators = useMemo(
-    () => ["all", ...Array.from(new Set(logs.map((l) => l.evaluator))).sort()],
-    [logs]
+  // Only this officer's evaluations
+  const logs = useMemo(
+    () => allLogs.filter((l) => l.evaluator === user?.username),
+    [allLogs, user]
   );
 
   // ── Sort handler ─────────────────────────────────────────────────────────
@@ -333,7 +332,6 @@ export default function LogsPage() {
     return logs
       .filter((l) => {
         if (riskFilter !== "all" && l.risk_classification !== riskFilter) return false;
-        if (evaluatorFilter !== "all" && l.evaluator !== evaluatorFilter) return false;
         if (q && !l.company_name.toLowerCase().includes(q) && !l.ssm_number.toLowerCase().includes(q)) return false;
         return true;
       })
@@ -351,14 +349,13 @@ export default function LogsPage() {
         if (av > bv) return sortDir === "asc" ? 1 : -1;
         return 0;
       });
-  }, [logs, search, riskFilter, evaluatorFilter, sortKey, sortDir]);
+  }, [logs, search, riskFilter, sortKey, sortDir]);
 
-  const hasActiveFilters = search !== "" || riskFilter !== "all" || evaluatorFilter !== "all";
+  const hasActiveFilters = search !== "" || riskFilter !== "all";
 
   function clearFilters() {
     setSearch("");
     setRiskFilter("all");
-    setEvaluatorFilter("all");
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -374,7 +371,7 @@ export default function LogsPage() {
               Evaluation Logs
             </h1>
             <p className="text-sm text-brand-muted mt-0.5">
-              All past SME evaluations, newest first. Click a row to expand, or download a PDF report.
+              Your personal evaluation history, newest first. Click a row to expand, or download a PDF report.
             </p>
           </div>
           <button
@@ -426,7 +423,7 @@ export default function LogsPage() {
               <div>
                 <p className="text-sm font-semibold text-brand-charcoal mb-1">No evaluations yet</p>
                 <p className="text-xs text-brand-muted">
-                  Run your first SME evaluation from the dashboard to see it here.
+                  Your completed evaluations will appear here. Run your first one from the home page.
                 </p>
               </div>
             </div>
@@ -483,28 +480,7 @@ export default function LogsPage() {
                   />
                 </div>
 
-                {/* Evaluator filter */}
-                <div className="relative">
-                  <User
-                    size={12}
-                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted"
-                  />
-                  <select
-                    value={evaluatorFilter}
-                    onChange={(e) => setEvaluatorFilter(e.target.value)}
-                    className="input-field pl-8 pr-7 text-sm h-9 appearance-none cursor-pointer min-w-[150px]"
-                  >
-                    {evaluators.map((e) => (
-                      <option key={e} value={e}>
-                        {e === "all" ? "All Evaluators" : e}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    size={12}
-                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted"
-                  />
-                </div>
+                {/* Evaluator filter — removed: logs are personal (filtered by session user) */}
 
                 {/* Clear filters */}
                 {hasActiveFilters && (
@@ -583,10 +559,6 @@ export default function LogsPage() {
                             sortKey="probability_default"
                             activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
                             align="right"
-                          />
-                          <ColHeader
-                            label="Evaluator" icon={User}
-                            activeKey={sortKey} activeDir={sortDir} onSort={handleSort}
                           />
                           {/* Actions — not sortable */}
                           <th className="px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest
