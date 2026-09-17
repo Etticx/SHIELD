@@ -107,7 +107,7 @@ FIRST-TIME SETUP — run these steps once
 
         pip install -r requirements.txt
 
-    This installs: fastapi, uvicorn, xgboost, shap, sqlalchemy,
+    This installs: fastapi, uvicorn, scikit-learn, shap, sqlalchemy,
                    asyncpg, groq, pandas, numpy, joblib, etc.
 
 2e. Create your .env file (first time only):
@@ -201,7 +201,7 @@ TERMINAL 2 — Backend (FastAPI)
 
    You should see these lines on startup (order may vary):
 
-       INFO  Loading XGBoost model ...
+       INFO  Loading Random Forest model ...
        INFO  Building SHAP TreeExplainer ...
        INFO  Initialising Groq advisory engine ...
        INFO  Database ready — evaluations table confirmed.
@@ -590,7 +590,7 @@ Install all Python dependencies (first time only):
 
     pip install -r requirements.txt
 
-This installs: fastapi, xgboost, shap, pandas, numpy, groq, etc.
+This installs: fastapi, scikit-learn, shap, pandas, numpy, groq, etc.
 Takes 2–5 minutes. You will see a lot of text scrolling — normal.
 
 Create your .env file (first time only):
@@ -621,7 +621,7 @@ Start the backend:
 
 You should see:
 
-    INFO  Loading XGBoost model ...
+    INFO  Loading Random Forest model ...
     INFO  Building SHAP TreeExplainer ...
     INFO  Initialising Groq advisory engine ...
     INFO  Database ready — evaluations table confirmed.

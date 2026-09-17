@@ -4,29 +4,30 @@
 // =============================================================================
 
 // ---------------------------------------------------------------------------
-// Financial input (20 normalised ratios)
+// Financial input — 20 features in the exact order of model.feature_names_in_
+// Keys are snake_case; order mirrors the RF model's training columns.
 // ---------------------------------------------------------------------------
 export interface SMEFinancialData {
-  roa_c: number;
-  roa_a: number;
-  continuous_interest_rate: number;
-  net_value_per_share_b: number;
-  net_value_per_share_a: number;
-  net_value_per_share_c: number;
-  persistent_eps: number;
-  per_share_net_profit: number;
-  interest_expense_ratio: number;
-  debt_ratio: number;
-  net_worth_assets: number;
-  borrowing_dependency: number;
-  net_profit_paid_in_capital: number;
-  retained_earnings: number;
-  total_income_expense: number;
-  net_income_total_assets: number;
-  net_income_equity: number;
-  liability_to_equity: number;
-  interest_coverage_ratio: number;
-  equity_to_liability: number;
+  roa_c_before_interest_and_depreciation_before_interest: number;
+  roa_a_before_interest_and_percent_after_tax:            number;
+  roa_b_before_interest_and_depreciation_after_tax:       number;
+  continuous_interest_rate_after_tax:                     number;
+  net_value_per_share_b:                                  number;
+  net_value_per_share_a:                                  number;
+  persistent_eps_in_the_last_four_seasons:                number;
+  per_share_net_profit_before_tax:                        number;
+  interest_expense_ratio:                                 number;
+  debt_ratio_percent:                                     number;
+  net_worth_assets:                                       number;
+  borrowing_dependency:                                   number;
+  net_profit_before_tax_paid_in_capital:                  number;
+  retained_earnings_to_total_assets:                      number;
+  net_income_to_total_assets:                             number;
+  net_income_to_stockholders_equity:                      number;
+  liability_to_equity:                                    number;
+  degree_of_financial_leverage_dfl:                       number;
+  interest_coverage_ratio:                                number;
+  equity_to_liability:                                    number;
 }
 
 // ---------------------------------------------------------------------------
@@ -69,7 +70,7 @@ export interface AdvisoryReport {
 export interface PredictionResponse {
   probability:     number;
   probability_pct: number;
-  classification:  "High Risk" | "Low Risk";
+  classification:  "Low Risk" | "Moderate Risk" | "High Risk" | "Critical Risk";
   is_high_risk:    boolean;
   shap_base_value: number;
   shap_features:   ShapFeature[];
@@ -87,7 +88,7 @@ export interface LogEntry {
   evaluator:           string;
   evaluated_at:        string;   // ISO-8601
   probability_default: number;
-  risk_classification: "High Risk" | "Low Risk";
+  risk_classification: "Low Risk" | "Moderate Risk" | "High Risk" | "Critical Risk";
   financial_inputs:    SMEFinancialData;
   shap_breakdown:      ShapFeature[];
   advisory_report:     string;
@@ -106,6 +107,8 @@ export interface FeaturesResponse {
   features: FeatureMeta[];
   profiles: {
     healthy:    SMEFinancialData;
+    moderate:   SMEFinancialData;
+    critical:   SMEFinancialData;
     distressed: SMEFinancialData;
   };
 }

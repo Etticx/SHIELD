@@ -12,11 +12,11 @@
 **SHIELD** (SME Health Indicator and Evaluator for Loan Decisions) is a Final Year Project
 for a fictitious bank called **JuneBank**. It is a web-based credit risk evaluation tool
 that predicts the probability of financial default for Small & Medium Enterprises (SMEs)
-using a trained XGBoost model with SHAP explainability.
+using a trained Random Forest model with SHAP explainability.
 
 - **Academic context:** FYP / Degree Project — for demonstration purposes only.
 - **Dataset:** Italian bankruptcy dataset (2023), 20 normalised financial ratios as features.
-- **Model:** XGBoost binary classifier, trained offline, saved as `model/xgb_shield_model.joblib`.
+- **Model:** Random Forest binary classifier, trained offline, saved as `model/rf_shield_model.joblib`.
 - **Explainability:** SHAP `TreeExplainer` runs per-request, returns per-feature contributions.
 - **AI Advisory:** Groq API (`openai/gpt-oss-120b`) generates dynamic natural-language credit
   analysis from SHAP values. Falls back to rule-based text if key is missing or API fails.
@@ -45,7 +45,7 @@ using a trained XGBoost model with SHAP explainability.
 |---|---|
 | Framework | FastAPI 0.111 |
 | Language | Python 3.11+ |
-| Model | XGBoost 2.0.3 |
+| Model | Random Forest (scikit-learn) |
 | Explainability | SHAP 0.45.1 |
 | Data | pandas 2.2.2, numpy 1.26.4 |
 | Server | Uvicorn with standard extras |
@@ -115,7 +115,7 @@ SHIELD/
 │   └── .env.example                 # Template with all keys and descriptions
 │
 ├── model/
-│   └── xgb_shield_model.joblib      # Trained XGBoost binary classifier
+│   └── rf_shield_model.joblib       # Trained Random Forest binary classifier
 │
 ├── data/
 │   ├── df_cleaned_original.csv
@@ -271,7 +271,7 @@ Custom CSS classes in `globals.css`:
 | GET | `/` | Health check — `{status: "ok"}` |
 | GET | `/health` | Model, explainer, Groq, and DB status |
 | GET | `/features` | 20 feature labels, medians, preset profiles |
-| POST | `/predict` | XGBoost + SHAP + Groq advisory + DB save |
+| POST | `/predict` | Random Forest + SHAP + Groq advisory + DB save |
 | GET | `/logs?limit=200` | All past evaluations, newest first |
 
 ---

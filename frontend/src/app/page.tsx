@@ -441,7 +441,7 @@ export default function DashboardPage() {
               </h1>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Start a new evaluation to assess an SME&apos;s probability of default
-                using the XGBoost model with SHAP explainability and AI advisory.
+                using the Random Forest model with SHAP explainability and AI advisory.
               </p>
             </div>
             <button
@@ -510,7 +510,7 @@ export default function DashboardPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
+          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
         </footer>
 
       </div>

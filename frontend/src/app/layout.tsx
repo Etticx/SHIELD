@@ -23,7 +23,7 @@ const lato = Lato({
 export const metadata: Metadata = {
   title: "SHIELD | SME Risk Evaluator — JuneBank",
   description:
-    "Early warning intelligence for better lending. JuneBank SHIELD evaluates SME credit risk using XGBoost + SHAP explainability.",
+    "Early warning intelligence for better lending. JuneBank SHIELD evaluates SME credit risk using Random Forest + SHAP explainability.",
   icons: {
     icon: [
       { url: "/favicon.ico" },

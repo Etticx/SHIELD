@@ -1,14 +1,46 @@
+# =============================================================================
+# SHIELD Backend — Python dependencies
+# Pinned to exact versions matching the development venv.
+# Install with: pip install -r requirements.txt
+# =============================================================================
+
+# --- Web framework -----------------------------------------------------------
 fastapi==0.111.0
 uvicorn[standard]==0.29.0
+starlette==0.37.2
+python-multipart==0.0.9
+
+# --- Data validation & settings ----------------------------------------------
 pydantic==2.7.1
 pydantic-settings==2.2.1
-python-multipart==0.0.9
+python-dotenv==1.0.1
+
+# --- Machine learning --------------------------------------------------------
+# scikit-learn is the core RF classifier; imbalanced-learn is required to
+# unpickle the saved pipeline (used during model training for resampling).
+# Pin to 1.6.1 — the version used when the model was trained — to avoid
+# InconsistentVersionWarning and potential unpickling issues.
+scikit-learn==1.6.1
+imbalanced-learn==0.12.4
+joblib==1.4.2
+
+# --- Explainability ----------------------------------------------------------
+shap==0.45.1
+numba==0.67.0
+llvmlite==0.49.0
+
+# --- Data processing ---------------------------------------------------------
 pandas==2.2.2
 numpy==1.26.4
-xgboost==2.0.3
-shap==0.45.1
-joblib==1.4.2
-python-dotenv==1.0.1
-groq>=1.7.0
+scipy==1.17.1
+
+# --- Database ----------------------------------------------------------------
 sqlalchemy==2.0.30
 asyncpg==0.29.0
+
+# --- AI advisory (Groq) ------------------------------------------------------
+groq>=1.7.0
+httpx==0.28.1
+
+# --- Utilities ---------------------------------------------------------------
+orjson==3.12.0

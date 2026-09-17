@@ -37,6 +37,8 @@ import {
   DollarSign,
   AlertTriangle,
   ShieldCheck,
+  ShieldAlert,
+  Flame,
   Building2,
   Hash,
   Download,
@@ -53,9 +55,10 @@ import type { LogEntry } from "@/lib/types";
 
 // Risk-semantic palette for donut segments
 const DONUT_COLORS: Record<string, string> = {
-  "High Risk": "#DC2626",   // brand risk-high red
-  Medium: "#D97706",   // brand risk-amber
-  "Low Risk": "#16A34A",   // brand risk-low green
+  "Low Risk": "#16A34A",   // green
+  "Moderate Risk": "#CA8A04",   // yellow
+  "High Risk": "#D97706",   // amber
+  "Critical Risk": "#DC2626",   // red
 };
 
 const CHARCOAL = "#1A1A1A";
@@ -113,15 +116,13 @@ function buildVolumeData(logs: LogEntry[], maxDays = 7) {
 }
 
 function buildDonutData(logs: LogEntry[]) {
-  const counts = { "High Risk": 0, "Low Risk": 0 };
-  for (const log of logs) {
-    if (log.risk_classification === "High Risk") counts["High Risk"]++;
-    else counts["Low Risk"]++;
-  }
-  return [
-    { name: "High Risk", value: counts["High Risk"] },
-    { name: "Low Risk", value: counts["Low Risk"] },
-  ].filter((d) => d.value > 0);
+  const counts: Record<string, number> = {
+    "Low Risk": 0, "Moderate Risk": 0, "High Risk": 0, "Critical Risk": 0,
+  };
+  for (const log of logs) counts[log.risk_classification] = (counts[log.risk_classification] ?? 0) + 1;
+  return Object.entries(counts)
+    .map(([name, value]) => ({ name, value }))
+    .filter((d) => d.value > 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -244,21 +245,25 @@ function KpiCard({ icon, label, value, sub, accentBar }: KpiCardProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Risk badge (table)
+// Risk badge (table) — 4-tier colour coding
 // ---------------------------------------------------------------------------
 function RiskBadge({ classification }: { classification: LogEntry["risk_classification"] }) {
-  const isHigh = classification === "High Risk";
+  const cfg = {
+    "Low Risk": { Icon: ShieldCheck, cls: "text-[#166534] bg-[rgba(22,163,74,0.07)]  border-[rgba(22,163,74,0.25)]" },
+    "Moderate Risk": { Icon: ShieldAlert, cls: "text-[#854D0E] bg-[rgba(202,138,4,0.07)]  border-[rgba(202,138,4,0.25)]" },
+    "High Risk": { Icon: AlertTriangle, cls: "text-[#92400E] bg-[rgba(217,119,6,0.07)]  border-[rgba(217,119,6,0.25)]" },
+    "Critical Risk": { Icon: Flame, cls: "text-[#991B1B] bg-[rgba(220,38,38,0.07)]  border-[rgba(220,38,38,0.25)]" },
+  }[classification] ?? { Icon: ShieldCheck, cls: "text-[#166534] bg-[rgba(22,163,74,0.07)] border-[rgba(22,163,74,0.25)]" };
+
   return (
     <span
       className={clsx(
         "inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[0.65rem] font-bold",
         "border tracking-wide uppercase",
-        isHigh
-          ? "text-[#991B1B] bg-[rgba(220,38,38,0.07)] border-[rgba(220,38,38,0.25)]"
-          : "text-[#166534] bg-[rgba(22,163,74,0.07)] border-[rgba(22,163,74,0.25)]"
+        cfg.cls,
       )}
     >
-      {isHigh ? <AlertTriangle size={8} /> : <ShieldCheck size={8} />}
+      <cfg.Icon size={8} />
       {classification}
     </span>
   );
@@ -348,7 +353,7 @@ export default function DashboardPage() {
   // ── KPI calculations ──────────────────────────────────────────────────────
   const totalCount = logs.length;
   const totalVolume = useMemo(() => logs.reduce((s, l) => s + l.loan_amount, 0), [logs]);
-  const highRiskLogs = useMemo(() => logs.filter((l) => l.risk_classification === "High Risk"), [logs]);
+  const highRiskLogs = useMemo(() => logs.filter((l) => l.risk_classification !== "Low Risk"), [logs]);
   const lowRiskLogs = useMemo(() => logs.filter((l) => l.risk_classification === "Low Risk"), [logs]);
   const highRiskPct = totalCount > 0 ? (highRiskLogs.length / totalCount) * 100 : 0;
   const lowRiskPct = totalCount > 0 ? (lowRiskLogs.length / totalCount) * 100 : 0;
@@ -476,18 +481,18 @@ export default function DashboardPage() {
 
                 <KpiCard
                   icon={<AlertTriangle size={14} />}
-                  label="High Risk Rate"
+                  label="Distressed Rate"
                   value={totalCount > 0 ? `${highRiskPct.toFixed(1)}%` : "—"}
                   sub={
                     totalCount > 0
-                      ? `${highRiskLogs.length} of ${totalCount} classified High Risk`
+                      ? `${highRiskLogs.length} of ${totalCount} flagged as distressed`
                       : "No data"
                   }
                 />
 
                 <KpiCard
                   icon={<ShieldCheck size={14} />}
-                  label="Low Risk Rate"
+                  label="Healthy Rate"
                   value={totalCount > 0 ? `${lowRiskPct.toFixed(1)}%` : "—"}
                   sub={
                     totalCount > 0
@@ -713,7 +718,7 @@ export default function DashboardPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
+          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
         </footer>
 
         {/* ── Hidden print template — mounted in DOM for react-to-print ────── */}

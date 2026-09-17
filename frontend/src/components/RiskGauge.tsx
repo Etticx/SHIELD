@@ -1,19 +1,12 @@
 "use client";
 
 // =============================================================================
-// SHIELD — RiskGauge Component  (v1.1 layout)
-//
-// Changes from v1.0:
-//   • Removed "Top 5 Features" snapshot — now lives in ShapChart for better
-//     information architecture (all SHAP data in one place).
-//   • Gauge SVG scaled down slightly to fit the narrower half-width column.
-//   • Confidence breakdown cards tightened.
-//   • SHAP base value retained as a footnote.
+// SHIELD — RiskGauge Component  (v1.2 — 4-tier classification)
 // =============================================================================
 
 import { useMemo } from "react";
 import clsx from "clsx";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Flame, ShieldAlert } from "lucide-react";
 import type { PredictionResponse } from "@/lib/types";
 import InfoTooltip from "@/components/InfoTooltip";
 
@@ -21,23 +14,88 @@ interface Props {
   result: PredictionResponse;
 }
 
-function gaugeColor(pct: number): string {
-  if (pct >= 70) return "#DC2626";
-  if (pct >= 50) return "#D97706";
-  if (pct >= 30) return "#CA8A04";
-  return "#16A34A";
+// ---------------------------------------------------------------------------
+// 4-tier helpers
+// ---------------------------------------------------------------------------
+type Tier = "low" | "moderate" | "high" | "critical";
+
+function getTier(pct: number): Tier {
+  if (pct >= 80) return "critical";
+  if (pct >= 60) return "high";
+  if (pct >= 30) return "moderate";
+  return "low";
 }
 
+function gaugeColor(tier: Tier): string {
+  switch (tier) {
+    case "critical": return "#DC2626";   // red
+    case "high": return "#EA580C";   // orange
+    case "moderate": return "#CA8A04";   // yellow
+    case "low": return "#16A34A";   // green
+  }
+}
+
+const TIER_CONFIG: Record<Tier, {
+  icon: React.ElementType;
+  label: string;          // banner label
+  health: string;         // "Financially Healthy" | "Financially Distressed"
+  badgeBg: string;
+  badgeText: string;
+  badgeBorder: string;
+  cardLabel: string;      // left confidence card label
+}> = {
+  low: {
+    icon: CheckCircle,
+    label: "LOW RISK",
+    health: "Financially Healthy",
+    badgeBg: "bg-risk-lowBg",
+    badgeText: "text-risk-low",
+    badgeBorder: "border-risk-low/30",
+    cardLabel: "Healthy",
+  },
+  moderate: {
+    icon: ShieldAlert,
+    label: "MODERATE RISK",
+    health: "Financially Distressed",
+    badgeBg: "bg-risk-moderateBg",
+    badgeText: "text-risk-moderate",
+    badgeBorder: "border-risk-moderate/30",
+    cardLabel: "At Risk",
+  },
+  high: {
+    icon: AlertTriangle,
+    label: "HIGH RISK",
+    health: "Financially Distressed",
+    badgeBg: "bg-risk-highBg",
+    badgeText: "text-risk-high",
+    badgeBorder: "border-risk-high/30",
+    cardLabel: "At Risk",
+  },
+  critical: {
+    icon: Flame,
+    label: "CRITICAL RISK",
+    health: "Financially Distressed",
+    badgeBg: "bg-risk-criticalBg",
+    badgeText: "text-risk-critical",
+    badgeBorder: "border-risk-critical/30",
+    cardLabel: "At Risk",
+  },
+};
+
 export default function RiskGauge({ result }: Props) {
-  const { probability_pct, is_high_risk, shap_base_value } = result;
-  const color = useMemo(() => gaugeColor(probability_pct), [probability_pct]);
+  const { probability_pct, shap_base_value } = result;
+
+  const tier = useMemo(() => getTier(probability_pct), [probability_pct]);
+  const color = useMemo(() => gaugeColor(tier), [tier]);
+  const config = TIER_CONFIG[tier];
+  const Icon = config.icon;
 
   // ── Gauge geometry ─────────────────────────────────────────────────────────
   const R = 80;
   const CX = 100;
   const CY = 100;
   const STROKE = 16;
-  const ARC = Math.PI * R;   // ≈ 251.33 — exact semicircle length
+  const ARC = Math.PI * R;
 
   const D = `M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY}`;
   const pct = Math.min(100, Math.max(0, probability_pct));
@@ -75,7 +133,7 @@ export default function RiskGauge({ result }: Props) {
             filter="url(#glow)"
           />
 
-          {/* Percentage readout — centred inside the arc bowl */}
+          {/* Percentage readout */}
           <text
             x={CX} y={CY - 8}
             textAnchor="middle"
@@ -102,15 +160,16 @@ export default function RiskGauge({ result }: Props) {
         </svg>
       </div>
 
-      {/* ── Classification badge ───────────────────────────────────────────── */}
+      {/* ── Classification banner ──────────────────────────────────────────── */}
       <div className={clsx(
         "flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 font-bold text-sm",
-        is_high_risk
-          ? "bg-risk-highBg text-risk-high border border-risk-high/30"
-          : "bg-risk-lowBg text-risk-low border border-risk-low/30"
+        "border",
+        config.badgeBg,
+        config.badgeText,
+        config.badgeBorder,
       )}>
-        {is_high_risk ? <AlertTriangle size={15} /> : <CheckCircle size={15} />}
-        <span>{is_high_risk ? "Financially Distressed — HIGH RISK" : "Financially Healthy — LOW RISK"}</span>
+        <Icon size={15} />
+        <span>{config.health} — {config.label}</span>
       </div>
 
       {/* ── Probability bar ────────────────────────────────────────────────── */}
@@ -129,28 +188,31 @@ export default function RiskGauge({ result }: Props) {
             className="h-full rounded-full transition-all duration-700"
             style={{
               width: `${probability_pct}%`,
-              background: "linear-gradient(90deg, #16A34A, #D97706, #DC2626)",
+              background: "linear-gradient(90deg, #16A34A, #CA8A04, #D97706, #DC2626)",
             }}
           />
         </div>
         <div className="flex justify-between text-[10px] text-brand-muted mt-1">
           <span>0% — Low</span>
-          <span>50% Threshold</span>
-          <span>High — 100%</span>
+          <span>30% Moderate</span>
+          <span>60% High</span>
+          <span>80% Critical</span>
         </div>
       </div>
 
       {/* ── Confidence breakdown ───────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-3">
+        {/* Left — always green: "Healthy" probability */}
         <div className="bg-risk-lowBg border border-risk-low/20 rounded-lg px-3 py-2.5 text-center">
           <p className="text-[10px] uppercase tracking-widest text-risk-low/70 mb-0.5">Healthy</p>
           <p className="text-xl font-black text-risk-low tabular-nums">
             {(100 - probability_pct).toFixed(2)}%
           </p>
         </div>
-        <div className="bg-risk-highBg border border-risk-high/20 rounded-lg px-3 py-2.5 text-center">
-          <p className="text-[10px] uppercase tracking-widest text-risk-high/70 mb-0.5">Distressed</p>
-          <p className="text-xl font-black text-risk-high tabular-nums">
+        {/* Right — always red: "Distressed" probability */}
+        <div className="bg-risk-criticalBg border border-risk-critical/20 rounded-lg px-3 py-2.5 text-center">
+          <p className="text-[10px] uppercase tracking-widest text-risk-critical/70 mb-0.5">Distressed</p>
+          <p className="text-xl font-black text-risk-critical tabular-nums">
             {probability_pct.toFixed(2)}%
           </p>
         </div>
@@ -158,7 +220,7 @@ export default function RiskGauge({ result }: Props) {
 
       {/* ── Model metadata ─────────────────────────────────────────────────── */}
       <div className="border-t border-brand-border pt-3 flex items-center justify-between text-[11px] text-brand-muted">
-        <span>XGBoost + SHAP</span>
+        <span>Random Forest + SHAP</span>
         <span className="flex items-center gap-1.5">
           Base value:{" "}
           <span className="font-mono text-brand-subtext">{shap_base_value.toFixed(4)}</span>

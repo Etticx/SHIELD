@@ -1,27 +1,19 @@
 "use client";
 
 // =============================================================================
-// SHIELD — InputForm Component  (v1.2 — flat list, 2-col grid)
+// SHIELD — InputForm Component  (v1.3 — Random Forest / verified feature order)
 //
-// All 20 fields are visible at once in a compact 2-column grid, grouped
-// under 4 labelled sections (no tabs — everything scrollable).
-//
-// Structure:
-//   Profile selector
-//   CSV upload strip
-//   ── Profitability ──────── (5 fields, 2-col grid)
-//   ── Per-Share Value ─────── (5 fields, 2-col grid)
-//   ── Leverage & Solvency ── (5 fields, 2-col grid)
-//   ── Debt Service ──────── (5 fields, 2-col grid)
-//   [Evaluate Risk] CTA
+// Field order and keys match model.feature_names_in_ exactly.
+// All 20 fields visible at once in a compact 2-column grid, grouped under
+// 4 labelled sections (no tabs — everything scrollable).
 // =============================================================================
 
 import { useState, useRef, useCallback, ChangeEvent } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Upload, Download, ChevronDown,
-  Pencil, CheckCircle, XCircle, Check, Zap,
-  TrendingUp, BarChart2, Scale, Landmark,
+  Pencil, CheckCircle, AlertTriangle, Flame, Check, Zap,
+  TrendingUp, BarChart2, Scale, Landmark, Activity,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -29,6 +21,8 @@ import type { SMEFinancialData } from "@/lib/types";
 import {
   MEDIAN_DEFAULTS,
   PROFILE_HEALTHY,
+  PROFILE_MODERATE,
+  PROFILE_CRITICAL,
   PROFILE_DISTRESSED,
   FEATURE_LABELS,
   FIELD_TOOLTIPS,
@@ -38,7 +32,7 @@ import InfoTooltip from "@/components/InfoTooltip";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-type ProfileKey = "manual" | "healthy" | "distressed";
+type ProfileKey = "manual" | "healthy" | "moderate" | "critical" | "distressed";
 
 interface Props {
   onEvaluate: (data: SMEFinancialData) => void;
@@ -55,12 +49,14 @@ const PROFILES: Record<ProfileKey, {
   values: SMEFinancialData | null;
 }> = {
   manual: { label: "Manual Input", Icon: Pencil, iconClass: "text-brand-muted", values: null },
-  healthy: { label: "Profile A: Healthy SME", Icon: CheckCircle, iconClass: "text-risk-low", values: PROFILE_HEALTHY },
-  distressed: { label: "Profile B: Distressed SME", Icon: XCircle, iconClass: "text-risk-high", values: PROFILE_DISTRESSED },
+  healthy: { label: "Profile A: Low Risk", Icon: CheckCircle, iconClass: "text-risk-low", values: PROFILE_HEALTHY },
+  moderate: { label: "Profile B: Moderate Risk", Icon: Activity, iconClass: "text-risk-moderate", values: PROFILE_MODERATE },
+  critical: { label: "Profile C: High Risk", Icon: AlertTriangle, iconClass: "text-risk-high", values: PROFILE_CRITICAL },
+  distressed: { label: "Profile D: Critical Risk", Icon: Flame, iconClass: "text-risk-critical", values: PROFILE_DISTRESSED },
 };
 
 // ---------------------------------------------------------------------------
-// Field groups — all 20 fields, split into 4 labelled sections
+// Field groups — 20 keys in training-verified order, split into 4 sections
 // ---------------------------------------------------------------------------
 const FIELD_GROUPS: Array<{
   label: string;
@@ -68,36 +64,36 @@ const FIELD_GROUPS: Array<{
   fields: Array<keyof SMEFinancialData>;
 }> = [
     {
-      label: "Profitability & Earnings",
+      label: "Return on Assets",
       Icon: TrendingUp,
       fields: [
-        "roa_c",
-        "roa_a",
-        "persistent_eps",
-        "net_profit_paid_in_capital",
-        "net_income_total_assets",
+        "roa_c_before_interest_and_depreciation_before_interest",
+        "roa_a_before_interest_and_percent_after_tax",
+        "roa_b_before_interest_and_depreciation_after_tax",
+        "net_income_to_total_assets",
+        "net_income_to_stockholders_equity",
       ],
     },
     {
-      label: "Per-Share Value",
+      label: "Profitability & Earnings",
       Icon: BarChart2,
       fields: [
+        "persistent_eps_in_the_last_four_seasons",
+        "per_share_net_profit_before_tax",
+        "net_profit_before_tax_paid_in_capital",
         "net_value_per_share_a",
         "net_value_per_share_b",
-        "net_value_per_share_c",
-        "per_share_net_profit",
-        "net_income_equity",
       ],
     },
     {
       label: "Leverage & Solvency",
       Icon: Scale,
       fields: [
-        "debt_ratio",
+        "debt_ratio_percent",
         "net_worth_assets",
         "borrowing_dependency",
-        "liability_to_equity",
-        "equity_to_liability",
+        "degree_of_financial_leverage_dfl",
+        "retained_earnings_to_total_assets",
       ],
     },
     {
@@ -105,25 +101,26 @@ const FIELD_GROUPS: Array<{
       Icon: Landmark,
       fields: [
         "interest_expense_ratio",
-        "continuous_interest_rate",
-        "retained_earnings",
-        "total_income_expense",
         "interest_coverage_ratio",
+        "continuous_interest_rate_after_tax",
+        "liability_to_equity",
+        "equity_to_liability",
       ],
     },
   ];
 
 // ---------------------------------------------------------------------------
-// CSV helpers
+// CSV helpers — headers use the dataset's original labels (with leading space)
+// so uploaded files map correctly via CSV_HEADER_TO_KEY below.
 // ---------------------------------------------------------------------------
 function buildCsvTemplate(): string {
   const headers = [
+    " ROA(C) before interest and depreciation before interest",
     " ROA(A) before interest and % after tax",
     " ROA(B) before interest and depreciation after tax",
     " Continuous interest rate (after tax)",
     " Net Value Per Share (B)",
     " Net Value Per Share (A)",
-    " Net Value Per Share (C)",
     " Persistent EPS in the Last Four Seasons",
     " Per Share Net profit before tax",
     " Interest Expense Ratio",
@@ -132,10 +129,10 @@ function buildCsvTemplate(): string {
     " Borrowing dependency",
     " Net profit before tax/Paid-in capital",
     " Retained Earnings to Total Assets",
-    " Total income/Total expense",
     " Net Income to Total Assets",
     " Net Income to Stockholder's Equity",
     " Liability to Equity",
+    " Degree of Financial Leverage (DFL)",
     " Interest Coverage Ratio (Interest expense to EBIT)",
     " Equity to Liability",
   ];
@@ -152,25 +149,26 @@ function downloadCsv(content: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+// Maps dataset CSV header (with leading space) → Pydantic snake_case key
 const CSV_HEADER_TO_KEY: Record<string, keyof SMEFinancialData> = {
-  " ROA(C) before interest and depreciation before interest": "roa_c",
-  " ROA(A) before interest and % after tax": "roa_a",
-  " Continuous interest rate (after tax)": "continuous_interest_rate",
+  " ROA(C) before interest and depreciation before interest": "roa_c_before_interest_and_depreciation_before_interest",
+  " ROA(A) before interest and % after tax": "roa_a_before_interest_and_percent_after_tax",
+  " ROA(B) before interest and depreciation after tax": "roa_b_before_interest_and_depreciation_after_tax",
+  " Continuous interest rate (after tax)": "continuous_interest_rate_after_tax",
   " Net Value Per Share (B)": "net_value_per_share_b",
   " Net Value Per Share (A)": "net_value_per_share_a",
-  " Net Value Per Share (C)": "net_value_per_share_c",
-  " Persistent EPS in the Last Four Seasons": "persistent_eps",
-  " Per Share Net profit before tax": "per_share_net_profit",
+  " Persistent EPS in the Last Four Seasons": "persistent_eps_in_the_last_four_seasons",
+  " Per Share Net profit before tax": "per_share_net_profit_before_tax",
   " Interest Expense Ratio": "interest_expense_ratio",
-  " Debt ratio %": "debt_ratio",
+  " Debt ratio %": "debt_ratio_percent",
   " Net worth/Assets": "net_worth_assets",
   " Borrowing dependency": "borrowing_dependency",
-  " Net profit before tax/Paid-in capital": "net_profit_paid_in_capital",
-  " Retained Earnings to Total Assets": "retained_earnings",
-  " Total income/Total expense": "total_income_expense",
-  " Net Income to Total Assets": "net_income_total_assets",
-  " Net Income to Stockholder's Equity": "net_income_equity",
+  " Net profit before tax/Paid-in capital": "net_profit_before_tax_paid_in_capital",
+  " Retained Earnings to Total Assets": "retained_earnings_to_total_assets",
+  " Net Income to Total Assets": "net_income_to_total_assets",
+  " Net Income to Stockholder's Equity": "net_income_to_stockholders_equity",
   " Liability to Equity": "liability_to_equity",
+  " Degree of Financial Leverage (DFL)": "degree_of_financial_leverage_dfl",
   " Interest Coverage Ratio (Interest expense to EBIT)": "interest_coverage_ratio",
   " Equity to Liability": "equity_to_liability",
 };
@@ -300,12 +298,16 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
         {profile !== "manual" && (
           <p className={clsx(
             "mt-1.5 text-xs px-2 py-1 rounded flex items-center gap-1.5",
-            profile === "healthy" ? "text-risk-low bg-risk-lowBg" : "text-risk-high bg-risk-highBg"
+            profile === "healthy" && "text-risk-low      bg-risk-lowBg",
+            profile === "moderate" && "text-risk-moderate bg-risk-moderateBg",
+            profile === "critical" && "text-risk-high     bg-risk-highBg",
+            profile === "distressed" && "text-risk-critical bg-risk-criticalBg",
           )}>
             <Check size={10} />
-            {profile === "healthy"
-              ? "Healthy preset — P(default) ≈ 0.007%"
-              : "Distressed preset — P(default) ≈ 99.8%"}
+            {profile === "healthy" && "Profile A — verified P(default) = 0.00%  (Low Risk)"}
+            {profile === "moderate" && "Profile B — verified P(default) = 42.50%  (Moderate Risk)"}
+            {profile === "critical" && "Profile C — verified P(default) = 75.00%  (High Risk)"}
+            {profile === "distressed" && "Profile D — verified P(default) = 89.00%  (Critical Risk)"}
           </p>
         )}
       </div>
@@ -365,7 +367,6 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
       <div className="flex flex-col gap-5">
         {FIELD_GROUPS.map(({ label, Icon, fields: groupFields }) => (
           <div key={label}>
-            {/* Group header */}
             <div className="flex items-center gap-2 mb-2.5 pb-1.5 border-b border-brand-border">
               <Icon size={11} className="text-brand-muted shrink-0" />
               <p className="text-[0.68rem] font-bold uppercase tracking-widest text-brand-muted">
@@ -373,35 +374,30 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
               </p>
             </div>
 
-            {/* 2-column field grid */}
             <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-              {groupFields.map((key) => {
-                const fieldLabel = FEATURE_LABELS[key];
-                const tooltipText = FIELD_TOOLTIPS[key];
-                return (
-                  <div key={key} className="flex flex-col gap-1">
-                    <label
-                      htmlFor={`field-${key}`}
-                      className="text-[0.67rem] leading-tight text-brand-subtext flex items-center gap-1"
-                    >
-                      <span className="truncate flex-1" title={fieldLabel}>
-                        {fieldLabel}
-                      </span>
-                      <InfoTooltip text={tooltipText} />
-                    </label>
-                    <input
-                      id={`field-${key}`}
-                      type="number"
-                      step="0.0001"
-                      min="0"
-                      max="1"
-                      value={fields[key]}
-                      onChange={(e) => handleFieldChange(key, e.target.value)}
-                      className="input-field text-right py-1.5 text-xs"
-                    />
-                  </div>
-                );
-              })}
+              {groupFields.map((key) => (
+                <div key={key} className="flex flex-col gap-1">
+                  <label
+                    htmlFor={`field-${key}`}
+                    className="text-[0.67rem] leading-tight text-brand-subtext flex items-center gap-1"
+                  >
+                    <span className="truncate flex-1" title={FEATURE_LABELS[key]}>
+                      {FEATURE_LABELS[key]}
+                    </span>
+                    <InfoTooltip text={FIELD_TOOLTIPS[key]} />
+                  </label>
+                  <input
+                    id={`field-${key}`}
+                    type="number"
+                    step="0.0001"
+                    min="0"
+                    max="1"
+                    value={fields[key]}
+                    onChange={(e) => handleFieldChange(key, e.target.value)}
+                    className="input-field text-right py-1.5 text-xs"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         ))}

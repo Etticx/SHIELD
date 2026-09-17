@@ -15,7 +15,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
-  RefreshCw, AlertTriangle, CheckCircle,
+  RefreshCw, AlertTriangle, CheckCircle, ShieldAlert, Flame,
   Calendar, Building2, Hash, DollarSign,
   ChevronDown, ChevronUp, Loader2,
   ClipboardList, ServerOff, Download,
@@ -53,18 +53,23 @@ function formatDate(iso: string) {
 }
 
 // ---------------------------------------------------------------------------
-// Risk badge
+// Risk badge — 4-tier colour coding
 // ---------------------------------------------------------------------------
 function RiskBadge({ classification }: { classification: LogEntry["risk_classification"] }) {
-  const isHigh = classification === "High Risk";
+  const cfg = {
+    "Low Risk": { icon: CheckCircle, cls: "text-risk-low      bg-risk-lowBg      border-risk-low/30" },
+    "Moderate Risk": { icon: ShieldAlert, cls: "text-risk-moderate bg-risk-moderateBg border-risk-moderate/30" },
+    "High Risk": { icon: AlertTriangle, cls: "text-risk-high     bg-risk-highBg     border-risk-high/30" },
+    "Critical Risk": { icon: Flame, cls: "text-risk-critical bg-risk-criticalBg border-risk-critical/30" },
+  }[classification] ?? { icon: CheckCircle, cls: "text-risk-low bg-risk-lowBg border-risk-low/30" };
+
+  const Icon = cfg.icon;
   return (
     <span className={clsx(
       "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.68rem] font-semibold border",
-      isHigh
-        ? "text-risk-high bg-risk-highBg border-risk-high/30"
-        : "text-risk-low  bg-risk-lowBg  border-risk-low/30"
+      cfg.cls,
     )}>
-      {isHigh ? <AlertTriangle size={9} /> : <CheckCircle size={9} />}
+      <Icon size={9} />
       {classification}
     </span>
   );
@@ -202,7 +207,10 @@ function LogRow({ entry }: { entry: LogEntry }) {
         <td className="px-4 py-3 whitespace-nowrap text-right">
           <span className={clsx(
             "font-mono text-sm font-bold tabular-nums",
-            entry.risk_classification === "High Risk" ? "text-risk-high" : "text-risk-low"
+            entry.risk_classification === "Critical Risk" && "text-risk-critical",
+            entry.risk_classification === "High Risk" && "text-risk-high",
+            entry.risk_classification === "Moderate Risk" && "text-risk-moderate",
+            entry.risk_classification === "Low Risk" && "text-risk-low",
           )}>
             {(entry.probability_default * 100).toFixed(2)}%
           </span>
@@ -288,7 +296,7 @@ export default function LogsPage() {
 
   // ── Filter state ──────────────────────────────────────────────────────────
   const [search, setSearch] = useState("");
-  const [riskFilter, setRiskFilter] = useState<"all" | "High Risk" | "Low Risk">("all");
+  const [riskFilter, setRiskFilter] = useState<"all" | "Low Risk" | "Moderate Risk" | "High Risk" | "Critical Risk">("all");
 
   // ── Sort state ────────────────────────────────────────────────────────────
   const [sortKey, setSortKey] = useState<SortKey>("evaluated_at");
@@ -468,11 +476,13 @@ export default function LogsPage() {
                   <select
                     value={riskFilter}
                     onChange={(e) => setRiskFilter(e.target.value as typeof riskFilter)}
-                    className="input-field pl-8 pr-7 text-sm h-9 appearance-none cursor-pointer min-w-[140px]"
+                    className="input-field pl-8 pr-7 text-sm h-9 appearance-none cursor-pointer min-w-[160px]"
                   >
                     <option value="all">All Risk Levels</option>
-                    <option value="High Risk">High Risk</option>
                     <option value="Low Risk">Low Risk</option>
+                    <option value="Moderate Risk">Moderate Risk</option>
+                    <option value="High Risk">High Risk</option>
+                    <option value="Critical Risk">Critical Risk</option>
                   </select>
                   <ChevronDown
                     size={12}
@@ -585,7 +595,7 @@ export default function LogsPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
+          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
         </footer>
 
       </div>

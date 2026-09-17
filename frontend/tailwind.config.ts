@@ -21,11 +21,15 @@ const config: Config = {
           subtext:     "#9A9A9A",       // tertiary / captions
         },
         risk: {
-          high:    "#DC2626",
-          highBg:  "rgba(220,38,38,0.08)",
-          low:     "#16A34A",
-          lowBg:   "rgba(22,163,74,0.08)",
-          amber:   "#D97706",
+          low:          "#16A34A",
+          lowBg:        "rgba(22,163,74,0.08)",
+          moderate:     "#CA8A04",
+          moderateBg:   "rgba(202,138,4,0.08)",
+          high:         "#EA580C",
+          highBg:       "rgba(234,88,12,0.08)",
+          critical:     "#DC2626",
+          criticalBg:   "rgba(220,38,38,0.08)",
+          amber:        "#D97706",
         },
       },
       fontFamily: {

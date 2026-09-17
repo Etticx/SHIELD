@@ -50,8 +50,8 @@ inconsistent between loan officers. SHIELD addresses this by:
 ----------------------------------------------------------------
 
   Prediction Engine
-  • XGBoost binary classifier (bankruptcy / no bankruptcy)
-  • 20 normalised financial ratios as input features
+  • Random Forest binary classifier (bankruptcy / no bankruptcy)
+  • Top 20 Information Gain features as input (normalised [0,1])
   • Outputs probability of default (0–100%) + risk class
   • Risk gauge visualisation (green / amber / orange / red)
 
@@ -91,44 +91,57 @@ inconsistent between loan officers. SHIELD addresses this by:
   MACHINE LEARNING MODEL
 ----------------------------------------------------------------
 
-  Algorithm      : XGBoost (eXtreme Gradient Boosting)
+  Algorithm      : Random Forest Classifier
   Task           : Binary classification
                    (1 = bankrupt / high risk, 0 = healthy)
-  Train/Test     : 80/20 split
-  Saved as       : model/xgb_shield_model.joblib
+  Train/Test     : 80/20 split with 10-fold cross-validation
+  Saved as       : model/SHIELD_BestModel_RF_8020_CV10.joblib
+
+  Feature Selection : Top 20 features ranked by Information Gain
+                      (removed Net Value Per Share (C) and
+                       Total Income/Total Expense; added
+                       Degree of Financial Leverage (DFL) and
+                       ROA(B) Before Interest & Depreciation
+                       After Tax)
 
   Input Features (20 normalised financial ratios, all in [0,1]):
   ---------------------------------------------------------------
-   1. ROA(A) — Before Interest & % After Tax
-   2. ROA(B) — Before Interest & Depreciation After Tax
-   3. Continuous Interest Rate (After Tax)
-   4. Net Value Per Share (B)
-   5. Net Value Per Share (A)
-   6. Net Value Per Share (C)
-   7. Persistent EPS in the Last Four Seasons
-   8. Per Share Net Profit Before Tax
-   9. Interest Expense Ratio
-  10. Debt Ratio %
-  11. Net Worth / Assets
-  12. Borrowing Dependency
-  13. Net Profit Before Tax / Paid-in Capital
-  14. Retained Earnings to Total Assets
-  15. Total Income / Total Expense
-  16. Net Income to Total Assets
-  17. Net Income to Stockholder's Equity
-  18. Liability to Equity
-  19. Interest Coverage Ratio (Interest Expense to EBIT)
-  20. Equity to Liability
+   1. Persistent EPS in the Last Four Seasons
+   2. Net Profit Before Tax / Paid-in Capital
+   3. Borrowing Dependency
+   4. Per Share Net Profit Before Tax
+   5. Net Income to Stockholder's Equity
+   6. ROA(A) — Before Interest & % After Tax
+   7. Net Income to Total Assets
+   8. Interest Expense Ratio
+   9. Interest Coverage Ratio (Interest Expense to EBIT)
+  10. Continuous Interest Rate (After Tax)
+  11. Degree of Financial Leverage (DFL)
+  12. ROA(C) — Before Interest & Depreciation Before Interest
+  13. Retained Earnings to Total Assets
+  14. Debt Ratio %
+  15. Net Value Per Share (A)
+  16. Net Worth / Assets
+  17. Equity to Liability
+  18. Net Value Per Share (B)
+  19. ROA(B) — Before Interest & Depreciation After Tax
+  20. Liability to Equity
 
   Explainability : SHAP (SHapley Additive exPlanations)
-                   TreeExplainer — runs once per prediction
+                   TreeExplainer (interventional perturbation)
+                   Runs once per prediction request
                    Returns per-feature contribution values
                    Positive SHAP = pushes toward high risk
                    Negative SHAP = protective / lowers risk
+                   check_additivity=False applied to suppress
+                   benign floating-point warnings from large
+                   RF ensembles (values remain accurate)
 
   Preset Profiles (for demo/testing):
     Profile A — Healthy SME    (low default probability)
+                High profitability, strong equity, low debt
     Profile B — Distressed SME (high default probability)
+                Low profitability, low equity, high debt
     Median    — All features at dataset median values
 
 
@@ -138,7 +151,7 @@ inconsistent between loan officers. SHIELD addresses this by:
 
   MACHINE LEARNING
   ----------------
-  XGBoost 2.0.3          Core classification model
+  scikit-learn RF        Random Forest Classifier (core model)
   SHAP 0.45.1            Per-feature explainability
   scikit-learn           Preprocessing, train/test split
   pandas 2.2.2           Data loading and manipulation
@@ -208,7 +221,7 @@ inconsistent between loan officers. SHIELD addresses this by:
   GET  /health        Model, SHAP, Groq, and DB status
   GET  /features      Feature labels, medians, preset profiles
   POST /predict       Full evaluation pipeline:
-                        XGBoost → SHAP → Groq → DB save
+                        Random Forest → SHAP → Groq → DB save
   GET  /logs          All past evaluations (newest first)
 
 
@@ -245,7 +258,7 @@ inconsistent between loan officers. SHIELD addresses this by:
   │       ├── components/    UI components
   │       └── lib/           API client, auth, types, constants
   ├── model/
-  │   └── xgb_shield_model.joblib   Trained XGBoost model
+  │   └── SHIELD_BestModel_RF_8020_CV10.joblib   Trained RF model
   ├── data/                  Preprocessed train/test CSVs
   ├── notebooks/             Jupyter notebooks (EDA + training)
   ├── docker-compose.yml     PostgreSQL container definition

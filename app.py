@@ -524,7 +524,7 @@ def main():
     st.markdown("""
     <div class="shield-header">
         <h1>🛡️ SHIELD</h1>
-        <p>SME Health Indicator and Evaluator for Loan Decision &nbsp;|&nbsp; Powered by XGBoost + SHAP Explainability</p>
+        <p>SME Health Indicator and Evaluator for Loan Decision &nbsp;|&nbsp; Powered by Random Forest + SHAP Explainability</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -771,7 +771,7 @@ def main():
     st.markdown("---")
     st.markdown(
         "<div style='text-align:center; color:#484f58; font-size:0.78rem;'>"
-        "SHIELD · Final Year Project · XGBoost + SHAP · For academic use only"
+        "SHIELD · Final Year Project · Random Forest + SHAP · For academic use only"
         "</div>",
         unsafe_allow_html=True,
     )

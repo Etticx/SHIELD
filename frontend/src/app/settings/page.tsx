@@ -90,16 +90,16 @@ export default function SettingsPage() {
   const { user } = useAuth();
 
   // ── Profile state ──────────────────────────────────────────────────────────
-  const [fullName,    setFullName]    = useState("Muhd Alif Asyraf bin Mohd Azlan");
+  const [fullName, setFullName] = useState("Muhd Alif Asyraf bin Mohd Azlan");
   const [employeeRole, setEmployeeRole] = useState("AI Engineer");
-  const [profileFb,  setProfileFb]   = useState<FeedbackState>(null);
+  const [profileFb, setProfileFb] = useState<FeedbackState>(null);
   const [savingProfile, setSavingProfile] = useState(false);
 
   // ── Security state ─────────────────────────────────────────────────────────
   const [currentPw, setCurrentPw] = useState("");
-  const [newPw,     setNewPw]     = useState("");
+  const [newPw, setNewPw] = useState("");
   const [securityFb, setSecurityFb] = useState<FeedbackState>(null);
-  const [savingPw,  setSavingPw]   = useState(false);
+  const [savingPw, setSavingPw] = useState(false);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   function handleSaveProfile(e: React.FormEvent) {
@@ -338,8 +338,8 @@ export default function SettingsPage() {
                                 "h-1 w-8 rounded-sm transition-colors duration-200",
                                 level <= strength
                                   ? strength === 1 ? "bg-[#DC2626]"
-                                  : strength === 2 ? "bg-[#D97706]"
-                                  : "bg-[#16A34A]"
+                                    : strength === 2 ? "bg-[#D97706]"
+                                      : "bg-[#16A34A]"
                                   : "bg-brand-border"
                               )}
                             />
@@ -405,7 +405,7 @@ export default function SettingsPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
+          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
         </footer>
 
       </div>

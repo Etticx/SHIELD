@@ -283,7 +283,7 @@ const AnalyticsReportTemplate = forwardRef<HTMLDivElement, AnalyticsReportProps>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "5px", textAlign: "right" }}>
               <MetaField label="Report Generated" value={formatDateLong(generatedAt)} right />
-              <MetaField label="System" value="SHIELD · XGBoost Credit Risk Engine" right />
+              <MetaField label="System" value="SHIELD · Random Forest Credit Risk Engine" right />
             </div>
           </div>
 

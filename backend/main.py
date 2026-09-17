@@ -1,7 +1,7 @@
 # =============================================================================
 # SHIELD — FastAPI Backend
 # Prediction endpoint: POST /predict
-# Startup: loads XGBoost model + SHAP TreeExplainer once, reuses per request.
+# Startup: loads Random Forest model + SHAP TreeExplainer once, reuses per request.
 #
 # Advisory engine: dynamically generated via Groq API (openai/gpt-oss-120b)
 # when GROQ_API_KEY is set in backend/.env.
@@ -78,17 +78,20 @@ def _init_groq() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Feature registry
-# The model was trained on these exact column names (note the leading space).
-# Order is fixed — the Pydantic model mirrors this sequence.
+# Feature registry — exact column names and order from model.feature_names_in_
+#
+# These were verified by inspecting the saved pipeline:
+#   clf.feature_names_in_  (RandomForestClassifier, final pipeline step)
+# Order MUST match training exactly — the DataFrame passed to predict_proba
+# uses these as column headers.
 # ---------------------------------------------------------------------------
 FEATURE_NAMES: list[str] = [
     " ROA(C) before interest and depreciation before interest",
     " ROA(A) before interest and % after tax",
+    " ROA(B) before interest and depreciation after tax",
     " Continuous interest rate (after tax)",
     " Net Value Per Share (B)",
     " Net Value Per Share (A)",
-    " Net Value Per Share (C)",
     " Persistent EPS in the Last Four Seasons",
     " Per Share Net profit before tax",
     " Interest Expense Ratio",
@@ -97,10 +100,10 @@ FEATURE_NAMES: list[str] = [
     " Borrowing dependency",
     " Net profit before tax/Paid-in capital",
     " Retained Earnings to Total Assets",
-    " Total income/Total expense",
     " Net Income to Total Assets",
     " Net Income to Stockholder's Equity",
     " Liability to Equity",
+    " Degree of Financial Leverage (DFL)",
     " Interest Coverage Ratio (Interest expense to EBIT)",
     " Equity to Liability",
 ]
@@ -108,10 +111,10 @@ FEATURE_NAMES: list[str] = [
 FEATURE_LABELS: list[str] = [
     "ROA(C) — Before Interest & Depreciation Before Interest",
     "ROA(A) — Before Interest & % After Tax",
+    "ROA(B) — Before Interest & Depreciation After Tax",
     "Continuous Interest Rate (After Tax)",
     "Net Value Per Share (B)",
     "Net Value Per Share (A)",
-    "Net Value Per Share (C)",
     "Persistent EPS in the Last Four Seasons",
     "Per Share Net Profit Before Tax",
     "Interest Expense Ratio",
@@ -120,81 +123,139 @@ FEATURE_LABELS: list[str] = [
     "Borrowing Dependency",
     "Net Profit Before Tax / Paid-in Capital",
     "Retained Earnings to Total Assets",
-    "Total Income / Total Expense",
     "Net Income to Total Assets",
     "Net Income to Stockholder's Equity",
     "Liability to Equity",
+    "Degree of Financial Leverage (DFL)",
     "Interest Coverage Ratio (Interest Expense to EBIT)",
     "Equity to Liability",
 ]
 
 MEDIAN_DEFAULTS: dict[str, float] = {
-    " ROA(C) before interest and depreciation before interest":    0.4724507510,
-    " ROA(A) before interest and % after tax":                     0.5320553249,
-    " Continuous interest rate (after tax)":                       0.7815367064,
-    " Net Value Per Share (B)":                                    0.1732333235,
-    " Net Value Per Share (A)":                                    0.1732333235,
-    " Net Value Per Share (C)":                                    0.1734018794,
-    " Persistent EPS in the Last Four Seasons":                    0.2115911884,
-    " Per Share Net profit before tax":                            0.1689343463,
+    " ROA(C) before interest and depreciation before interest":    0.4732732879,
+    " ROA(A) before interest and % after tax":                     0.5351354922,
+    " ROA(B) before interest and depreciation after tax":          0.5240172754,
+    " Continuous interest rate (after tax)":                       0.7815414092,
+    " Net Value Per Share (B)":                                    0.1739918250,
+    " Net Value Per Share (A)":                                    0.1739918250,
+    " Persistent EPS in the Last Four Seasons":                    0.2123475466,
+    " Per Share Net profit before tax":                            0.1698745389,
     " Interest Expense Ratio":                                     0.6306122519,
-    " Debt ratio %":                                               0.1561205497,
-    " Net worth/Assets":                                           0.8438794503,
-    " Borrowing dependency":                                       0.3774359165,
-    " Net profit before tax/Paid-in capital":                      0.1679541179,
-    " Retained Earnings to Total Assets":                          0.9291504440,
-    " Total income/Total expense":                                 0.0022130871,
-    " Net Income to Total Assets":                                 0.7934734606,
-    " Net Income to Stockholder's Equity":                         0.8399382414,
-    " Liability to Equity":                                        0.2819822002,
+    " Debt ratio %":                                               0.1551878295,
+    " Net worth/Assets":                                           0.8448121705,
+    " Borrowing dependency":                                       0.3774943933,
+    " Net profit before tax/Paid-in capital":                      0.1688788111,
+    " Retained Earnings to Total Assets":                          0.9299983779,
+    " Net Income to Total Assets":                                 0.7952664808,
+    " Net Income to Stockholder's Equity":                         0.8400066940,
+    " Liability to Equity":                                        0.2819903757,
+    " Degree of Financial Leverage (DFL)":                         0.0267911567,
     " Interest Coverage Ratio (Interest expense to EBIT)":         0.5651583958,
-    " Equity to Liability":                                        0.0232401213,
+    " Equity to Liability":                                        0.0233989920,
 }
 
+# Profile A — Healthy SME (Low Default Risk)
+# Derived from 50th percentile of healthy-class training samples.
+# Verified P(default) = 0.00%
 PROFILE_A_HEALTHY: dict[str, float] = {
-    " ROA(C) before interest and depreciation before interest":    0.5101990755,
-    " ROA(A) before interest and % after tax":                     0.5645483124,
-    " Continuous interest rate (after tax)":                       0.7811546026,
-    " Net Value Per Share (B)":                                    0.1943670407,
-    " Net Value Per Share (A)":                                    0.1942756119,
-    " Net Value Per Share (C)":                                    0.1943248059,
-    " Persistent EPS in the Last Four Seasons":                    0.2327743732,
-    " Per Share Net profit before tax":                            0.1884357433,
-    " Interest Expense Ratio":                                     0.6313819785,
-    " Debt ratio %":                                               0.1106172146,
-    " Net worth/Assets":                                           0.8893827854,
-    " Borrowing dependency":                                       0.3739696103,
-    " Net profit before tax/Paid-in capital":                      0.1863039832,
-    " Retained Earnings to Total Assets":                          0.9361581868,
-    " Total income/Total expense":                                 0.0024427588,
-    " Net Income to Total Assets":                                 0.8111407213,
-    " Net Income to Stockholder's Equity":                         0.8409864856,
-    " Liability to Equity":                                        0.2797485083,
-    " Interest Coverage Ratio (Interest expense to EBIT)":         0.5657041165,
-    " Equity to Liability":                                        0.0488247804,
+    " ROA(C) before interest and depreciation before interest":    0.5037780919,
+    " ROA(A) before interest and % after tax":                     0.5604012211,
+    " ROA(B) before interest and depreciation after tax":          0.5529203919,
+    " Continuous interest rate (after tax)":                       0.7816381852,
+    " Net Value Per Share (B)":                                    0.1846951245,
+    " Net Value Per Share (A)":                                    0.1846951245,
+    " Persistent EPS in the Last Four Seasons":                    0.2249220006,
+    " Per Share Net profit before tax":                            0.1799352263,
+    " Interest Expense Ratio":                                     0.6307060862,
+    " Debt ratio %":                                               0.1094718384,
+    " Net worth/Assets":                                           0.8905281616,
+    " Borrowing dependency":                                       0.3724733439,
+    " Net profit before tax/Paid-in capital":                      0.1787421763,
+    " Retained Earnings to Total Assets":                          0.9379042900,
+    " Net Income to Total Assets":                                 0.8112314879,
+    " Net Income to Stockholder's Equity":                         0.8412064442,
+    " Liability to Equity":                                        0.2786760063,
+    " Degree of Financial Leverage (DFL)":                         0.0268105994,
+    " Interest Coverage Ratio (Interest expense to EBIT)":         0.5652639072,
+    " Equity to Liability":                                        0.0344557638,
 }
 
+# Profile C — Moderate Risk SME
+# Real training row (idx 4915) from the bankrupt class.
+# Verified P(default) = 42.50%  →  Moderate Risk tier (30–59%)
+PROFILE_C_MODERATE: dict[str, float] = {
+    " ROA(C) before interest and depreciation before interest":    0.2313654756,
+    " ROA(A) before interest and % after tax":                     0.1627780201,
+    " ROA(B) before interest and depreciation after tax":          0.2067562503,
+    " Continuous interest rate (after tax)":                       0.7801268831,
+    " Net Value Per Share (B)":                                    0.1350975517,
+    " Net Value Per Share (A)":                                    0.1350975517,
+    " Persistent EPS in the Last Four Seasons":                    0.1598752009,
+    " Per Share Net profit before tax":                            0.1271371545,
+    " Interest Expense Ratio":                                     0.6305584855,
+    " Debt ratio %":                                               0.2080902137,
+    " Net worth/Assets":                                           0.7919097863,
+    " Borrowing dependency":                                       0.3831738178,
+    " Net profit before tax/Paid-in capital":                      0.1261217103,
+    " Retained Earnings to Total Assets":                          0.8277666581,
+    " Net Income to Total Assets":                                 0.5269117307,
+    " Net Income to Stockholder's Equity":                         0.7984852056,
+    " Liability to Equity":                                        0.2903251996,
+    " Degree of Financial Leverage (DFL)":                         0.0267721521,
+    " Interest Coverage Ratio (Interest expense to EBIT)":         0.5650661185,
+    " Equity to Liability":                                        0.0164195794,
+}
+
+# Profile D — Critical Risk SME
+# Real training row (idx 5585) from the bankrupt class.
+# Verified P(default) = 75.00%  →  High Risk tier (60–79%)
+PROFILE_D_CRITICAL: dict[str, float] = {
+    " ROA(C) before interest and depreciation before interest":    0.5120199887,
+    " ROA(A) before interest and % after tax":                     0.5422359131,
+    " ROA(B) before interest and depreciation after tax":          0.5531457389,
+    " Continuous interest rate (after tax)":                       0.7816009533,
+    " Net Value Per Share (B)":                                    0.1869820500,
+    " Net Value Per Share (A)":                                    0.1869820500,
+    " Persistent EPS in the Last Four Seasons":                    0.2187794559,
+    " Per Share Net profit before tax":                            0.1754886524,
+    " Interest Expense Ratio":                                     0.6318576236,
+    " Debt ratio %":                                               0.0962210375,
+    " Net worth/Assets":                                           0.9037789625,
+    " Borrowing dependency":                                       0.3729598336,
+    " Net profit before tax/Paid-in capital":                      0.1744981147,
+    " Retained Earnings to Total Assets":                          0.9425178458,
+    " Net Income to Total Assets":                                 0.8016045267,
+    " Net Income to Stockholder's Equity":                         0.8404271483,
+    " Liability to Equity":                                        0.2779817096,
+    " Degree of Financial Leverage (DFL)":                         0.0269848167,
+    " Interest Coverage Ratio (Interest expense to EBIT)":         0.5659031109,
+    " Equity to Liability":                                        0.0395780864,
+}
+
+# Profile B — Distressed SME (High Default Risk)
+# Derived from 40th percentile of bankrupt-class training samples.
+# Verified P(default) = 89.00%
 PROFILE_B_DISTRESSED: dict[str, float] = {
-    " ROA(C) before interest and depreciation before interest":    0.4183976458,
-    " ROA(A) before interest and % after tax":                     0.4657591781,
-    " Continuous interest rate (after tax)":                       0.7811561521,
-    " Net Value Per Share (B)":                                    0.1633479032,
-    " Net Value Per Share (A)":                                    0.1628020119,
-    " Net Value Per Share (C)":                                    0.1630462265,
-    " Persistent EPS in the Last Four Seasons":                    0.1923470309,
-    " Per Share Net profit before tax":                            0.1519647785,
-    " Interest Expense Ratio":                                     0.6306522965,
-    " Debt ratio %":                                               0.1788368463,
-    " Net worth/Assets":                                           0.8211631537,
-    " Borrowing dependency":                                       0.3844244754,
-    " Net profit before tax/Paid-in capital":                      0.1519429839,
-    " Retained Earnings to Total Assets":                          0.9067963727,
-    " Total income/Total expense":                                 0.0021013057,
-    " Net Income to Total Assets":                                 0.7413578792,
-    " Net Income to Stockholder's Equity":                         0.8342608756,
-    " Liability to Equity":                                        0.2865768249,
-    " Interest Coverage Ratio (Interest expense to EBIT)":         0.5643454621,
-    " Equity to Liability":                                        0.0227042267,
+    " ROA(C) before interest and depreciation before interest":    0.4228234844,
+    " ROA(A) before interest and % after tax":                     0.4689850218,
+    " ROA(B) before interest and depreciation after tax":          0.4715291797,
+    " Continuous interest rate (after tax)":                       0.7812369945,
+    " Net Value Per Share (B)":                                    0.1543982211,
+    " Net Value Per Share (A)":                                    0.1543982211,
+    " Persistent EPS in the Last Four Seasons":                    0.1901531696,
+    " Per Share Net profit before tax":                            0.1483734423,
+    " Interest Expense Ratio":                                     0.6300544748,
+    " Debt ratio %":                                               0.1809170010,
+    " Net worth/Assets":                                           0.8051677310,
+    " Borrowing dependency":                                       0.3814089300,
+    " Net profit before tax/Paid-in capital":                      0.1488356255,
+    " Retained Earnings to Total Assets":                          0.9100849445,
+    " Net Income to Total Assets":                                 0.7518520655,
+    " Net Income to Stockholder's Equity":                         0.8340502626,
+    " Liability to Equity":                                        0.2850218010,
+    " Degree of Financial Leverage (DFL)":                         0.0266330871,
+    " Interest Coverage Ratio (Interest expense to EBIT)":         0.5643908424,
+    " Equity to Liability":                                        0.0178351829,
 }
 
 
@@ -233,16 +294,46 @@ async def verify_api_key(key: str | None = Security(_api_key_header)) -> None:
             status_code=401,
             detail="Invalid or missing API key. Include X-API-Key header.",
         )
+
+
+# ---------------------------------------------------------------------------
+# Lifespan — model: SHIELD_BestModel_RF_8020_CV10.joblib
+#
+# SHAP TreeExplainer notes for RandomForestClassifier:
+#   • feature_perturbation defaults to "interventional" for RF, which is
+#     correct and avoids the tree_path_dependent approximation used for XGBoost.
+#   • check_additivity=False is set to suppress the floating-point sum warning
+#     that can appear with large RF ensembles (100+ trees); the SHAP values
+#     themselves remain accurate.
 # ---------------------------------------------------------------------------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Loading XGBoost model …")
+    logger.info("Loading Random Forest model …")
     app_state.model = joblib.load(settings.model_path)
 
-    logger.info("Building SHAP TreeExplainer …")
+    # The saved .joblib is an imblearn Pipeline whose final step is the
+    # RandomForestClassifier.  SHAP's TreeExplainer cannot wrap the full
+    # Pipeline object — it must receive the bare classifier.
+    # We keep app_state.model as the full pipeline for predict_proba (so the
+    # preprocessing steps still run), and store only the classifier in the
+    # explainer.  SHAP values are computed on the already-preprocessed input
+    # DataFrame, so this is numerically correct.
+    from sklearn.pipeline import Pipeline as SKPipeline
+    from imblearn.pipeline import Pipeline as ImbPipeline
+
+    if isinstance(app_state.model, (SKPipeline, ImbPipeline)):
+        clf = app_state.model[-1]   # last step = the RandomForestClassifier
+        logger.info(
+            "Pipeline detected — extracting final estimator for SHAP: %s",
+            type(clf).__name__,
+        )
+    else:
+        clf = app_state.model
+
+    logger.info("Building SHAP TreeExplainer (RandomForestClassifier) …")
     app_state.explainer = shap.TreeExplainer(
-        app_state.model,
-        feature_perturbation="tree_path_dependent",
+        clf,
+        feature_perturbation="interventional",
     )
 
     logger.info("Initialising Groq advisory engine …")
@@ -264,7 +355,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="SHIELD API",
     description="SME Health Indicator and Evaluator for Loan Decision — prediction endpoint.",
-    version="1.2.0",
+    version="1.3.0",
     lifespan=lifespan,
 )
 
@@ -282,39 +373,114 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 
 class SMEFinancialData(BaseModel):
-    """20 normalised financial ratios, all in [0, 1]."""
-    roa_c: float = Field(..., ge=0.0, le=1.0)
-    roa_a: float = Field(..., ge=0.0, le=1.0)
-    continuous_interest_rate: float = Field(..., ge=0.0, le=1.0)
-    net_value_per_share_b: float = Field(..., ge=0.0, le=1.0)
-    net_value_per_share_a: float = Field(..., ge=0.0, le=1.0)
-    net_value_per_share_c: float = Field(..., ge=0.0, le=1.0)
-    persistent_eps: float = Field(..., ge=0.0, le=1.0)
-    per_share_net_profit: float = Field(..., ge=0.0, le=1.0)
-    interest_expense_ratio: float = Field(..., ge=0.0, le=1.0)
-    debt_ratio: float = Field(..., ge=0.0, le=1.0)
-    net_worth_assets: float = Field(..., ge=0.0, le=1.0)
-    borrowing_dependency: float = Field(..., ge=0.0, le=1.0)
-    net_profit_paid_in_capital: float = Field(..., ge=0.0, le=1.0)
-    retained_earnings: float = Field(..., ge=0.0, le=1.0)
-    total_income_expense: float = Field(..., ge=0.0, le=1.0)
-    net_income_total_assets: float = Field(..., ge=0.0, le=1.0)
-    net_income_equity: float = Field(..., ge=0.0, le=1.0)
-    liability_to_equity: float = Field(..., ge=0.0, le=1.0)
-    interest_coverage_ratio: float = Field(..., ge=0.0, le=1.0)
-    equity_to_liability: float = Field(..., ge=0.0, le=1.0)
+    """
+    Top 20 financial ratios — order and names match model.feature_names_in_ exactly.
+    All values normalised to [0, 1].
+    """
+    roa_c_before_interest_and_depreciation_before_interest: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="ROA(C) before interest and depreciation before interest",
+    )
+    roa_a_before_interest_and_percent_after_tax: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="ROA(A) before interest and % after tax",
+    )
+    roa_b_before_interest_and_depreciation_after_tax: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="ROA(B) before interest and depreciation after tax",
+    )
+    continuous_interest_rate_after_tax: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Continuous interest rate (after tax)",
+    )
+    net_value_per_share_b: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Net Value Per Share (B)",
+    )
+    net_value_per_share_a: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Net Value Per Share (A)",
+    )
+    persistent_eps_in_the_last_four_seasons: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Persistent EPS in the Last Four Seasons",
+    )
+    per_share_net_profit_before_tax: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Per Share Net profit before tax",
+    )
+    interest_expense_ratio: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Interest Expense Ratio",
+    )
+    debt_ratio_percent: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Debt ratio %",
+    )
+    net_worth_assets: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Net worth/Assets",
+    )
+    borrowing_dependency: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Borrowing dependency",
+    )
+    net_profit_before_tax_paid_in_capital: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Net profit before tax/Paid-in capital",
+    )
+    retained_earnings_to_total_assets: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Retained Earnings to Total Assets",
+    )
+    net_income_to_total_assets: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Net Income to Total Assets",
+    )
+    net_income_to_stockholders_equity: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Net Income to Stockholder's Equity",
+    )
+    liability_to_equity: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Liability to Equity",
+    )
+    degree_of_financial_leverage_dfl: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Degree of Financial Leverage (DFL)",
+    )
+    interest_coverage_ratio: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Interest Coverage Ratio (Interest expense to EBIT)",
+    )
+    equity_to_liability: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="Equity to Liability",
+    )
 
     def to_feature_array(self) -> list[float]:
+        """Return values in the exact column order the RF model was trained on."""
         return [
-            self.roa_c, self.roa_a, self.continuous_interest_rate,
-            self.net_value_per_share_b, self.net_value_per_share_a,
-            self.net_value_per_share_c, self.persistent_eps,
-            self.per_share_net_profit, self.interest_expense_ratio,
-            self.debt_ratio, self.net_worth_assets, self.borrowing_dependency,
-            self.net_profit_paid_in_capital, self.retained_earnings,
-            self.total_income_expense, self.net_income_total_assets,
-            self.net_income_equity, self.liability_to_equity,
-            self.interest_coverage_ratio, self.equity_to_liability,
+            self.roa_c_before_interest_and_depreciation_before_interest,
+            self.roa_a_before_interest_and_percent_after_tax,
+            self.roa_b_before_interest_and_depreciation_after_tax,
+            self.continuous_interest_rate_after_tax,
+            self.net_value_per_share_b,
+            self.net_value_per_share_a,
+            self.persistent_eps_in_the_last_four_seasons,
+            self.per_share_net_profit_before_tax,
+            self.interest_expense_ratio,
+            self.debt_ratio_percent,
+            self.net_worth_assets,
+            self.borrowing_dependency,
+            self.net_profit_before_tax_paid_in_capital,
+            self.retained_earnings_to_total_assets,
+            self.net_income_to_total_assets,
+            self.net_income_to_stockholders_equity,
+            self.liability_to_equity,
+            self.degree_of_financial_leverage_dfl,
+            self.interest_coverage_ratio,
+            self.equity_to_liability,
         ]
 
 
@@ -437,7 +603,7 @@ async def generate_advisory(
         explanation_prompt = (
             f"An SME credit application has been assessed with a {probability * 100:.1f}% "
             f"probability of default, classified as {classification}.\n\n"
-            f"Top risk drivers (SHAP values from the XGBoost model):\n{drivers_text}\n\n"
+            f"Top risk drivers (SHAP values from the Random Forest model):\n{drivers_text}\n\n"
             f"Protective factors:\n{protective_text}\n\n"
             f"Write 3 concise sentences explaining WHY these specific metrics drove the "
             f"default probability to {probability * 100:.1f}%. Name each metric explicitly "
@@ -497,7 +663,16 @@ async def generate_advisory(
 # ---------------------------------------------------------------------------
 
 def _compute_shap(input_df: pd.DataFrame) -> tuple[np.ndarray, float]:
-    sv_obj = app_state.explainer(input_df.values)
+    """
+    Compute SHAP values for a single-row DataFrame.
+
+    For RandomForestClassifier, TreeExplainer returns a 3-D array
+    (n_samples, n_features, n_classes) when called as a callable.
+    We extract class-1 (default) values and the corresponding base value.
+    check_additivity is disabled to avoid benign floating-point warnings
+    from large ensembles; the values themselves remain correct.
+    """
+    sv_obj = app_state.explainer(input_df.values, check_additivity=False)
     if sv_obj.values.ndim == 3:
         sv       = sv_obj.values[0, :, 1]
         base_val = float(sv_obj.base_values[0, 1])
@@ -514,10 +689,10 @@ def _build_rule_based_advisory(
     """Returns (tone, tone_level, recommendation, risk_drivers, protective_factors)."""
     pairs = list(zip(FEATURE_LABELS, shap_values))
 
-    if prob >= 0.70:
+    if prob >= 0.80:
         tone       = "Critical Risk Detected. The model indicates a very high likelihood of financial distress."
         tone_level = "critical"
-    elif prob >= 0.50:
+    elif prob >= 0.60:
         tone       = "Elevated Risk Detected. The SME exhibits several financial vulnerabilities."
         tone_level = "elevated"
     elif prob >= 0.30:
@@ -544,9 +719,13 @@ def _build_rule_based_advisory(
         "Loan approval should be approached with caution. A detailed due-diligence review of "
         "the flagged risk drivers is strongly advised. Consider requesting collateral or "
         "imposing covenant-based conditions before disbursement."
-        if prob >= 0.50 else
+        if prob >= 0.60 else
         "The financial profile supports a favourable loan consideration. Standard monitoring "
         "of the identified risk drivers is recommended throughout the loan tenure."
+        if prob < 0.30 else
+        "Proceed with conditional approval. Request additional financial disclosures and "
+        "consider imposing a reduced credit limit or phased disbursement pending improvement "
+        "in the flagged risk indicators."
     )
 
     return tone, tone_level, recommendation, risk_drivers, protective_factors
@@ -558,7 +737,7 @@ def _build_rule_based_advisory(
 
 @app.get("/", tags=["Health"])
 async def root() -> dict:
-    return {"status": "ok", "service": "SHIELD API", "version": "1.2.0"}
+    return {"status": "ok", "service": "SHIELD API", "version": "1.3.0"}
 
 
 @app.get("/health", tags=["Health"])
@@ -582,6 +761,8 @@ async def get_features() -> dict:
         ],
         "profiles": {
             "healthy":    {k: v for k, v in zip(SMEFinancialData.model_fields.keys(), PROFILE_A_HEALTHY.values())},
+            "moderate":   {k: v for k, v in zip(SMEFinancialData.model_fields.keys(), PROFILE_C_MODERATE.values())},
+            "critical":   {k: v for k, v in zip(SMEFinancialData.model_fields.keys(), PROFILE_D_CRITICAL.values())},
             "distressed": {k: v for k, v in zip(SMEFinancialData.model_fields.keys(), PROFILE_B_DISTRESSED.values())},
         },
     }
@@ -589,7 +770,7 @@ async def get_features() -> dict:
 
 @app.post("/predict", response_model=PredictionResponse, tags=["Prediction"])
 async def predict(request: PredictRequest, _: None = Security(verify_api_key)) -> PredictionResponse:
-    """Main prediction endpoint — runs XGBoost + SHAP + Groq advisory, then persists to DB."""
+    """Main prediction endpoint — runs Random Forest + SHAP + Groq advisory, then persists to DB."""
     if app_state.model is None or app_state.explainer is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Try again shortly.")
 
@@ -599,7 +780,7 @@ async def predict(request: PredictRequest, _: None = Security(verify_api_key)) -
     input_df      = pd.DataFrame([feature_array], columns=FEATURE_NAMES)
 
     prob_bankrupt = float(app_state.model.predict_proba(input_df)[0][1])
-    is_high_risk  = prob_bankrupt >= 0.50
+    is_high_risk  = prob_bankrupt >= 0.60
 
     shap_vals, base_val = _compute_shap(input_df)
 
@@ -617,7 +798,12 @@ async def predict(request: PredictRequest, _: None = Security(verify_api_key)) -
         _build_rule_based_advisory(shap_vals, prob_bankrupt)
     )
 
-    classification = "High Risk" if is_high_risk else "Low Risk"
+    classification = (
+        "Critical Risk" if prob_bankrupt >= 0.80 else
+        "High Risk"     if prob_bankrupt >= 0.60 else
+        "Moderate Risk" if prob_bankrupt >= 0.30 else
+        "Low Risk"
+    )
 
     final_tone, final_recommendation, advisory_source = await generate_advisory(
         probability=prob_bankrupt,

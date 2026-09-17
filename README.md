@@ -2,7 +2,7 @@
 
 > **JuneBank Internal Tools · Final Year Project · For academic use only**
 
-SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using an XGBoost model trained on 20 key financial ratios. SHAP provides full explainability for every prediction.
+SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using a Random Forest model trained on 20 key financial ratios. SHAP provides full explainability for every prediction.
 
 ---
 
@@ -39,7 +39,7 @@ SHIELD/
 │   └── package.json
 │
 ├── model/
-│   └── xgb_shield_model.joblib # Pre-trained XGBoost model
+│   └── rf_shield_model.joblib  # Pre-trained Random Forest model
 │
 ├── data/                       # Processed train/test CSVs
 ├── notebooks/                  # EDA & model development notebooks
@@ -159,7 +159,7 @@ streamlit run app.py
 
 | Layer      | Technology                                      |
 |------------|-------------------------------------------------|
-| ML Model   | XGBoost 2.0 · SHAP 0.45 · Joblib               |
+| ML Model   | Random Forest · SHAP 0.45 · Joblib              |
 | Backend    | FastAPI 0.111 · Uvicorn · Pydantic v2           |
 | Frontend   | Next.js 14 · React 18 · TypeScript              |
 | Styling    | Tailwind CSS 3.4 · JuneBank dark theme          |
@@ -168,4 +168,4 @@ streamlit run app.py
 
 ---
 
-*SHIELD · XGBoost + SHAP · JuneBank · Academic use only*
+*SHIELD · Random Forest + SHAP · JuneBank · Academic use only*
