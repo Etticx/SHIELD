@@ -265,7 +265,7 @@ export default function LoginPage() {
                           type="button"
                           onClick={() => setShowPw((v) => !v)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted
-                                     hover:text-brand-charcoal transition-colors text-xs"
+                                     hover:text-brand-charcoal transition-colors text-xs font-medium"
                           tabIndex={-1}
                           aria-label={showPw ? "Hide password" : "Show password"}
                         >

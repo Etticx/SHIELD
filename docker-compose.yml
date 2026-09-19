@@ -11,25 +11,3 @@
 #   DATABASE_URL=postgresql+asyncpg://shield:shield@localhost:5432/shield_db
 # =============================================================================
 
-services:
-  db:
-    image: postgres:15-alpine
-    container_name: shield_postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: shield
-      POSTGRES_PASSWORD: shield
-      POSTGRES_DB: shield_db
-    ports:
-      - "5400:5432"
-    volumes:
-      - shield_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U shield -d shield_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  shield_pgdata:
-    driver: local
