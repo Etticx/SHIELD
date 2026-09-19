@@ -1,6 +1,6 @@
-# 🛡️ SHIELD — SME Health Indicator and Evaluator for Loan Decision
+# SME Health Indicator and Evaluator for Loan Decision (SHIELD)
 
-> **JuneBank Internal Tools · Final Year Project · For academic use only**
+> **Final Year Project · For academic use only**
 
 SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using a Random Forest model trained on 20 key financial ratios. SHAP provides full explainability for every prediction.
 
