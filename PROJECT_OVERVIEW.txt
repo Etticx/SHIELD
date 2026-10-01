@@ -26,8 +26,7 @@ a full audit trail that the officer can review at any time.
 
 Academic context : Final Year Project (FYP) / Degree Project
                    For demonstration and academic use only.
-Dataset          : Italian company bankruptcy dataset (2023)
-                   ~96,000 companies, 20 financial ratio features
+
 
 
 ----------------------------------------------------------------

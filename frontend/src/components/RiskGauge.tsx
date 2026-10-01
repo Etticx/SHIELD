@@ -6,7 +6,7 @@
 
 import { useMemo } from "react";
 import clsx from "clsx";
-import { AlertTriangle, CheckCircle, Flame, ShieldAlert } from "lucide-react";
+
 import type { PredictionResponse } from "@/lib/types";
 import InfoTooltip from "@/components/InfoTooltip";
 
@@ -36,7 +36,6 @@ function gaugeColor(tier: Tier): string {
 }
 
 const TIER_CONFIG: Record<Tier, {
-  icon: React.ElementType;
   label: string;          // banner label
   health: string;         // "Financially Healthy" | "Financially Distressed"
   badgeBg: string;
@@ -45,7 +44,6 @@ const TIER_CONFIG: Record<Tier, {
   cardLabel: string;      // left confidence card label
 }> = {
   low: {
-    icon: CheckCircle,
     label: "LOW RISK",
     health: "Financially Healthy",
     badgeBg: "bg-risk-lowBg",
@@ -54,7 +52,6 @@ const TIER_CONFIG: Record<Tier, {
     cardLabel: "Healthy",
   },
   moderate: {
-    icon: ShieldAlert,
     label: "MODERATE RISK",
     health: "Financially Distressed",
     badgeBg: "bg-risk-moderateBg",
@@ -63,7 +60,6 @@ const TIER_CONFIG: Record<Tier, {
     cardLabel: "At Risk",
   },
   high: {
-    icon: AlertTriangle,
     label: "HIGH RISK",
     health: "Financially Distressed",
     badgeBg: "bg-risk-highBg",
@@ -72,7 +68,6 @@ const TIER_CONFIG: Record<Tier, {
     cardLabel: "At Risk",
   },
   critical: {
-    icon: Flame,
     label: "CRITICAL RISK",
     health: "Financially Distressed",
     badgeBg: "bg-risk-criticalBg",
@@ -88,7 +83,6 @@ export default function RiskGauge({ result }: Props) {
   const tier = useMemo(() => getTier(probability_pct), [probability_pct]);
   const color = useMemo(() => gaugeColor(tier), [tier]);
   const config = TIER_CONFIG[tier];
-  const Icon = config.icon;
 
   // ── Gauge geometry ─────────────────────────────────────────────────────────
   const R = 80;
@@ -168,7 +162,6 @@ export default function RiskGauge({ result }: Props) {
         config.badgeText,
         config.badgeBorder,
       )}>
-        <Icon size={15} />
         <span>{config.health} — {config.label}</span>
       </div>
 
