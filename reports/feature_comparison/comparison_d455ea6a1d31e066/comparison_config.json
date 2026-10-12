@@ -1,0 +1,26 @@
+{
+  "ig_run": "reports\\focused_improvement\\ba8ead7ba47c9dce",
+  "all_run": "reports\\feature_comparison\\39ae14b6a0e54b68",
+  "config": {
+    "seed": 42,
+    "folds": 5,
+    "test_size": 0.2,
+    "top_k": 20,
+    "smote_neighbors": 5,
+    "target_precision": 0.7,
+    "target_recall": 0.7,
+    "model_jobs": 2,
+    "include_leaf_variants": true,
+    "evaluate_holdout": true,
+    "feature_mode": "ig20",
+    "version": "shield-focused-threshold-v2"
+  },
+  "comparison_version": "shield-all-features-v1",
+  "raw_columns": 97,
+  "all_financial_predictors": 95,
+  "constant_predictors_retained": [
+    " Net Income Flag"
+  ],
+  "membership_verified": "identical companies, labels, train/holdout split and training CV folds",
+  "source": "Original data/bankruptcy_italian_companies_2023.xlsx converted to CSV without IG or SMOTE; full arm excludes Company/Bankrupt and retains all 95 financial predictors"
+}

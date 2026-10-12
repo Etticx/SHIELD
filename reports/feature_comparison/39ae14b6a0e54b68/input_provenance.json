@@ -1,0 +1,28 @@
+{
+  "Recorded_Local_Date": "2026-10-11",
+  "Timezone": "Asia/Kuala_Lumpur",
+  "Original_Source_File": "data/bankruptcy_italian_companies_2023.xlsx",
+  "Original_Source_SHA256": "7892b62135008eb3b3dc1f60d435494d824fb36db42c3633d8730841e52dd3bd",
+  "Original_Shape": [
+    6819,
+    97
+  ],
+  "All_Financial_Predictor_Shape": [
+    6819,
+    95
+  ],
+  "Excluded_Columns": [
+    "Company",
+    "Bankrupt"
+  ],
+  "Constant_Predictors_Retained": [
+    " Net Income Flag"
+  ],
+  "Original_Class_Counts": {
+    "Not Bankrupt": 6599,
+    "Bankrupt": 220
+  },
+  "Conversion": "Same original Excel-to-CSV conversion as phase 03; data, declared settings and package versions verified before reusing IG scores.",
+  "IG_Control_Run": "ba8ead7ba47c9dce",
+  "All_Feature_Run": "39ae14b6a0e54b68"
+}

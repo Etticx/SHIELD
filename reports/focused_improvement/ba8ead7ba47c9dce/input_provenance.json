@@ -1,0 +1,21 @@
+{
+  "Recorded_Local_Date": "2026-10-11",
+  "Timezone": "Asia/Kuala_Lumpur",
+  "Original_Source_File": "data/bankruptcy_italian_companies_2023.xlsx",
+  "Original_Source_SHA256": "7892b62135008eb3b3dc1f60d435494d824fb36db42c3633d8730841e52dd3bd",
+  "Conversion": "Original Excel read with bundled pandas/openpyxl, exported to CSV without IG or SMOTE, then loaded in the modelling environment.",
+  "Original_Shape": [
+    6819,
+    97
+  ],
+  "After_Removing_Company_And_Constant_Predictors": [
+    6819,
+    95
+  ],
+  "Original_Class_Counts": {
+    "Not Bankrupt": 6599,
+    "Bankrupt": 220
+  },
+  "Comparison_With_Previous_Preprocessed_CSV": "Same financial values within 4.999990421694633e-10; original CSV used rounded ratios. This run uses a fresh conversion of the raw Excel.",
+  "Reproduction_Note": "Historical run metadata/package versions were not supplied. This is a new run, not an exact reproduction of old percentages."
+}

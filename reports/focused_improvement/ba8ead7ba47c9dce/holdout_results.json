@@ -1,0 +1,116 @@
+[
+  {
+    "Model": "RandomForest",
+    "Experiment": "80-20 + CV=5 threshold study",
+    "Split": 0.2,
+    "CV": 5,
+    "Candidate": "RF_SMOTE025",
+    "Decision_Rule": "Reference default 0.5",
+    "Threshold": 0.5,
+    "Best_Params": {
+      "n_estimators": 200,
+      "max_depth": 10,
+      "min_samples_split": 2,
+      "min_samples_leaf": 1,
+      "max_features": "sqrt",
+      "class_weight": null
+    },
+    "Accuracy (%)": 95.52785923753666,
+    "Precision (%)": 38.666666666666664,
+    "Recall (%)": 65.9090909090909,
+    "F1-Score (%)": 48.739495798319325,
+    "ROC-AUC (%)": 94.24931129476583,
+    "F2-Score (%)": 57.76892430278885,
+    "Average Precision (%)": 50.181814224160746,
+    "TN": 1274,
+    "FP": 46,
+    "FN": 15,
+    "TP": 29,
+    "CV_F1_Mean (%)": null,
+    "Evaluation": "historically reused 80:20 holdout; exploratory",
+    "Precision_95CI": [
+      28.4552171134325,
+      49.98252331617777
+    ],
+    "Recall_95CI": [
+      51.13914121793823,
+      78.12418048065555
+    ]
+  },
+  {
+    "Model": "RandomForest",
+    "Experiment": "80-20 + CV=5 threshold study",
+    "Split": 0.2,
+    "CV": 5,
+    "Candidate": "RF_SMOTE025_LEAF3",
+    "Decision_Rule": "Selected candidate default 0.5",
+    "Threshold": 0.5,
+    "Best_Params": {
+      "n_estimators": 200,
+      "max_depth": 10,
+      "min_samples_split": 2,
+      "min_samples_leaf": 3,
+      "max_features": "sqrt",
+      "class_weight": null
+    },
+    "Accuracy (%)": 95.67448680351906,
+    "Precision (%)": 39.436619718309856,
+    "Recall (%)": 63.63636363636363,
+    "F1-Score (%)": 48.69565217391305,
+    "ROC-AUC (%)": 94.42493112947659,
+    "F2-Score (%)": 56.68016194331984,
+    "Average Precision (%)": 50.13614267494609,
+    "TN": 1277,
+    "FP": 43,
+    "FN": 16,
+    "TP": 28,
+    "CV_F1_Mean (%)": null,
+    "Evaluation": "historically reused 80:20 holdout; exploratory",
+    "Precision_95CI": [
+      28.893401292292896,
+      51.06423150059914
+    ],
+    "Recall_95CI": [
+      48.866376879043436,
+      76.2164702911798
+    ]
+  },
+  {
+    "Model": "RandomForest",
+    "Experiment": "80-20 + CV=5 threshold study",
+    "Split": 0.2,
+    "CV": 5,
+    "Candidate": "RF_SMOTE025_LEAF3",
+    "Decision_Rule": "Frozen OOF threshold",
+    "Threshold": 0.27969295288128426,
+    "Best_Params": {
+      "n_estimators": 200,
+      "max_depth": 10,
+      "min_samples_split": 2,
+      "min_samples_leaf": 3,
+      "max_features": "sqrt",
+      "class_weight": null
+    },
+    "Accuracy (%)": 93.03519061583577,
+    "Precision (%)": 28.92561983471074,
+    "Recall (%)": 79.54545454545455,
+    "F1-Score (%)": 42.42424242424242,
+    "ROC-AUC (%)": 94.42493112947659,
+    "F2-Score (%)": 58.92255892255892,
+    "Average Precision (%)": 50.13614267494609,
+    "TN": 1234,
+    "FP": 86,
+    "FN": 9,
+    "TP": 35,
+    "CV_F1_Mean (%)": null,
+    "Evaluation": "historically reused 80:20 holdout; exploratory",
+    "Precision_95CI": [
+      21.594050118091058,
+      37.55413632432331
+    ],
+    "Recall_95CI": [
+      65.49942193889834,
+      88.84674692991871
+    ]
+  }
+]

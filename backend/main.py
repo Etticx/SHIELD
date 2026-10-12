@@ -181,7 +181,7 @@ PROFILE_A_HEALTHY: dict[str, float] = {
 }
 
 # Profile C — Moderate Risk SME
-# Real training row (idx 4915) from the bankrupt class.
+# Original training row (idx 4915), non-bankrupt class (label 0).
 # Verified P(default) = 42.50%  →  Moderate Risk tier (30–59%)
 PROFILE_C_MODERATE: dict[str, float] = {
     " ROA(C) before interest and depreciation before interest":    0.2313654756,
@@ -207,7 +207,7 @@ PROFILE_C_MODERATE: dict[str, float] = {
 }
 
 # Profile D — Critical Risk SME
-# Real training row (idx 5585) from the bankrupt class.
+# SMOTE-generated training row (idx 5585) from the bankrupt class.
 # Verified P(default) = 75.00%  →  High Risk tier (60–79%)
 PROFILE_D_CRITICAL: dict[str, float] = {
     " ROA(C) before interest and depreciation before interest":    0.5120199887,
@@ -233,7 +233,7 @@ PROFILE_D_CRITICAL: dict[str, float] = {
 }
 
 # Profile B — Distressed SME (High Default Risk)
-# Derived from 40th percentile of bankrupt-class training samples.
+# Derived from per-feature 40th percentile of the SMOTE-balanced bankrupt class.
 # Verified P(default) = 89.00%
 PROFILE_B_DISTRESSED: dict[str, float] = {
     " ROA(C) before interest and depreciation before interest":    0.4228234844,

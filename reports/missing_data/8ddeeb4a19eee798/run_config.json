@@ -1,0 +1,101 @@
+{
+  "experiment_version": "shield-missing-data-v1",
+  "seed": 42,
+  "random_repeats": 20,
+  "missing_counts": [
+    1,
+    2,
+    5,
+    10,
+    20
+  ],
+  "methods": [
+    "native_nan",
+    "training_median"
+  ],
+  "thresholds": [
+    0.6,
+    0.5
+  ],
+  "tier_edges": [
+    0.3,
+    0.6,
+    0.8
+  ],
+  "bootstrap_draws": 500,
+  "groups": {
+    "earnings_history_missing": [
+      "Persistent EPS in the Last Four Seasons"
+    ],
+    "share_based_unavailable": [
+      "Persistent EPS in the Last Four Seasons",
+      "Per Share Net profit before tax",
+      "Net Value Per Share (A)",
+      "Net Value Per Share (B)"
+    ],
+    "leverage_records_missing": [
+      "Debt ratio %",
+      "Net worth/Assets",
+      "Borrowing dependency",
+      "Degree of Financial Leverage (DFL)",
+      "Retained Earnings to Total Assets"
+    ]
+  },
+  "packages": {
+    "scikit-learn": "1.6.1",
+    "imbalanced-learn": "0.12.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.2",
+    "joblib": "1.4.2",
+    "scipy": "1.17.1"
+  },
+  "test_usage": "historical test set reused in development; exploratory stress test",
+  "scope": "frozen RF predictions only; no SHAP/Groq/API validation; no Malaysian startup validation",
+  "model_sha256": "d5f0bdc55debf0ed91f9c8873679e6a4adefe98535789e0b7d6c9dc156832cf1",
+  "data_sha256": {
+    "preprocessed_dataset.csv": "c7a7e65702739dbb4c59698dad0d8332e1fcaf6314160862c7db2520f95ed1fe",
+    "X_train_processed_8020.csv": "dac67892f85ef8ca5c3372e5cb510a0b33f34feebbde3b8b80a5ac80830d8930",
+    "y_train_processed_8020.csv": "f03f968b3766fc906a8fcc3d8c93e7895c586679d416e80e54e328006cc43b74",
+    "X_test_processed_8020.csv": "689caa84a1edb06030db359603a1af894855ad4878130b3958d5b0a0af04d5bd",
+    "y_test_processed_8020.csv": "ade84681d03d9c068458092608b6ddf78b5ed5b6e808b35d0b156fc4d7825ab4"
+  },
+  "pipeline_steps": [
+    [
+      "smote",
+      "SMOTE"
+    ],
+    [
+      "model",
+      "RandomForestClassifier"
+    ]
+  ],
+  "feature_order": [
+    " ROA(C) before interest and depreciation before interest",
+    " ROA(A) before interest and % after tax",
+    " ROA(B) before interest and depreciation after tax",
+    " Continuous interest rate (after tax)",
+    " Net Value Per Share (B)",
+    " Net Value Per Share (A)",
+    " Persistent EPS in the Last Four Seasons",
+    " Per Share Net profit before tax",
+    " Interest Expense Ratio",
+    " Debt ratio %",
+    " Net worth/Assets",
+    " Borrowing dependency",
+    " Net profit before tax/Paid-in capital",
+    " Retained Earnings to Total Assets",
+    " Net Income to Total Assets",
+    " Net Income to Stockholder's Equity",
+    " Liability to Equity",
+    " Degree of Financial Leverage (DFL)",
+    " Interest Coverage Ratio (Interest expense to EBIT)",
+    " Equity to Liability"
+  ],
+  "original_training_rows": 5455,
+  "synthetic_training_rows": 5103,
+  "test_rows": 1364,
+  "test_bankrupt": 44,
+  "median_source": "verified original training prefix; synthetic SMOTE rows excluded",
+  "partition_verification": "source seed-42 stratified 80:20 split matches saved features within 1e-8 and labels exactly",
+  "run_id": "8ddeeb4a19eee798"
+}

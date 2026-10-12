@@ -1,0 +1,145 @@
+{
+  "config": {
+    "seed": 42,
+    "folds": 5,
+    "test_size": 0.2,
+    "top_k": 20,
+    "smote_neighbors": 5,
+    "target_precision": 0.7,
+    "target_recall": 0.7,
+    "model_jobs": 2,
+    "include_leaf_variants": true,
+    "evaluate_holdout": true,
+    "feature_mode": "all",
+    "version": "shield-focused-threshold-v2"
+  },
+  "candidates": [
+    {
+      "id": "RF_SMOTE025",
+      "model": "RandomForest",
+      "smote": 0.25,
+      "params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": "sqrt",
+        "class_weight": null
+      }
+    },
+    {
+      "id": "RF_SMOTE050",
+      "model": "RandomForest",
+      "smote": 0.5,
+      "params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "min_samples_leaf": 1,
+        "max_features": "sqrt",
+        "class_weight": null
+      }
+    },
+    {
+      "id": "XGB_SMOTE010",
+      "model": "XGBoost",
+      "smote": 0.1,
+      "params": {
+        "n_estimators": 100,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "id": "XGB_SMOTE050",
+      "model": "XGBoost",
+      "smote": 0.5,
+      "params": {
+        "n_estimators": 100,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "id": "RF_NO_SMOTE",
+      "model": "RandomForest",
+      "smote": null,
+      "params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": "sqrt",
+        "class_weight": null
+      }
+    },
+    {
+      "id": "RF_NO_SMOTE_WEIGHTED",
+      "model": "RandomForest",
+      "smote": null,
+      "params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": "sqrt",
+        "class_weight": "balanced_subsample"
+      }
+    },
+    {
+      "id": "XGB_NO_SMOTE",
+      "model": "XGBoost",
+      "smote": null,
+      "params": {
+        "n_estimators": 100,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "id": "RF_SMOTE025_LEAF3",
+      "model": "RandomForest",
+      "smote": 0.25,
+      "params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2,
+        "min_samples_leaf": 3,
+        "max_features": "sqrt",
+        "class_weight": null
+      }
+    },
+    {
+      "id": "RF_SMOTE025_LEAF3_FEATURES050",
+      "model": "RandomForest",
+      "smote": 0.25,
+      "params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2,
+        "min_samples_leaf": 3,
+        "max_features": 0.5,
+        "class_weight": null
+      }
+    }
+  ],
+  "packages": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.9.0",
+    "imbalanced-learn": "0.14.2",
+    "xgboost": "2.0.3",
+    "joblib": "1.4.2"
+  },
+  "python": "3.12.8",
+  "data_fingerprint": "a51c5af8c988dc8953cfd9c94683af0c1be26d645d0acf180d9e350bffb27241",
+  "source_note": "Original data/bankruptcy_italian_companies_2023.xlsx converted to CSV without IG or SMOTE; full arm excludes Company/Bankrupt and retains all 95 financial predictors",
+  "rows": 6819,
+  "predictors": 95,
+  "labels": {
+    "0": 6599,
+    "1": 220
+  },
+  "selection_policy": "both targets if feasible; otherwise max F2 with recall >= target",
+  "interpretation": "OOF threshold/candidate-selection scores are tuning scores; holdout was historically reused"
+}

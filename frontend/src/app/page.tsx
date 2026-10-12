@@ -3,7 +3,7 @@
 // =============================================================================
 // SHIELD — Main Dashboard Page  (v1.4 — persistent workspace)
 //
-// Workspace state (sessionMeta + result) is persisted to sessionStorage so
+// Workspace state (sessionMeta + financial draft + result) is persisted to sessionStorage so
 // navigating away and back restores exactly where the officer left off.
 //
 // Empty-state landing page shows ONLY when:
@@ -27,6 +27,8 @@ import ShapChart from "@/components/ShapChart";
 import AdvisoryReport from "@/components/AdvisoryReport";
 
 import { predict } from "@/lib/api";
+import { createFinancialDraft, assessReadiness } from "@/lib/readiness";
+import type { FinancialDraft } from "@/lib/readiness";
 import { useAuth } from "@/lib/auth";
 import type {
   EvaluationMeta,
@@ -42,6 +44,7 @@ const WORKSPACE_KEY = "shield_workspace";
 interface PersistedWorkspace {
   meta: EvaluationMeta;
   result: PredictionResponse | null;
+  draft?: FinancialDraft; // Older saved workspaces did not include input values.
 }
 
 function saveWorkspace(ws: PersistedWorkspace) {
@@ -62,7 +65,8 @@ function clearWorkspace() {
 // ---------------------------------------------------------------------------
 // Idle / Spinner helpers
 // ---------------------------------------------------------------------------
-function IdleMiddle() {
+function IdleMiddle({ draft }: { draft: FinancialDraft }) {
+  const readiness = assessReadiness(draft);
   return (
     <div className="flex flex-col items-center justify-center min-h-[280px] text-brand-muted gap-3 py-8">
       <div className="h-14 w-14 rounded-full border-2 border-brand-border flex items-center justify-center">
@@ -74,9 +78,16 @@ function IdleMiddle() {
           <circle cx="12" cy="12" r="2" />
         </svg>
       </div>
-      <p className="text-sm text-center leading-relaxed max-w-[160px]">
-        Fill in the financial metrics and click{" "}
-        <span className="text-brand-yellow font-semibold">Evaluate Risk</span>.
+      <p className="text-sm font-semibold text-brand-charcoal">
+        {readiness.ready ? "Ready to Evaluate" : "Insufficient Data"}
+      </p>
+      <p className="text-sm text-center leading-relaxed max-w-[240px]">
+        {readiness.ready
+          ? "All 20 metrics are provided. Click Evaluate Risk to calculate the assessment."
+          : `${readiness.provided} of 20 metrics provided. Complete the required inputs or request supporting records before evaluation.`}
+      </p>
+      <p className="text-xs text-center leading-relaxed max-w-[240px] text-brand-muted">
+        {readiness.ready ? "Input completeness does not verify the underlying records." : "No risk score has been calculated for these inputs."}
       </p>
     </div>
   );
@@ -309,6 +320,7 @@ export default function DashboardPage() {
 
   const [sessionMeta, setSessionMeta] = useState<EvaluationMeta | null>(null);
   const [result, setResult] = useState<PredictionResponse | null>(null);
+  const [draft, setDraft] = useState<FinancialDraft>(() => createFinancialDraft());
   const [showGate, setShowGate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -318,59 +330,83 @@ export default function DashboardPage() {
 
   // Skip the persistence useEffect on the initial mount
   const isFirstRender = useRef(true);
+  const evaluationVersion = useRef(0);
+
+  // A response arriving after navigation must not overwrite the saved draft.
+  useEffect(() => () => { evaluationVersion.current++; }, []);
 
   // ── Rehydrate from sessionStorage on mount ────────────────────────────────
   useEffect(() => {
     const saved = loadWorkspace();
     if (saved) {
       setSessionMeta(saved.meta);
-      setResult(saved.result);
+      if (saved.draft) {
+        setDraft(saved.draft);
+        setResult(assessReadiness(saved.draft).ready ? saved.result : null);
+      }
     }
     setHydrated(true);
   }, []);
 
-  // ── Persist to sessionStorage whenever meta or result changes ─────────────
+  // ── Persist the matching metadata, inputs and result ──────────────────────
   useEffect(() => {
     if (!hydrated) return;
     if (isFirstRender.current) { isFirstRender.current = false; return; }
     if (sessionMeta) {
-      saveWorkspace({ meta: sessionMeta, result });
+      saveWorkspace({ meta: sessionMeta, draft, result });
     }
-  }, [sessionMeta, result, hydrated]);
+  }, [sessionMeta, draft, result, hydrated]);
 
   // ── Gate submit ───────────────────────────────────────────────────────────
   const handleGateSubmit = useCallback((meta: EvaluationMeta) => {
+    evaluationVersion.current++;
     clearWorkspace();
     setSessionMeta(meta);
+    setDraft(createFinancialDraft());
     setResult(null);
+    setLoading(false);
     setShowGate(false);
     setError(null);
   }, []);
 
   // ── New Evaluation — back to empty state ──────────────────────────────────
   const handleReset = useCallback(() => {
+    evaluationVersion.current++;
     clearWorkspace();
     setSessionMeta(null);
+    setDraft(createFinancialDraft());
     setResult(null);
+    setLoading(false);
     setError(null);
   }, []);
 
+  const handleDraftChange = useCallback((nextDraft: FinancialDraft) => {
+    evaluationVersion.current++;
+    setDraft(nextDraft);
+    setResult(null);
+    setError(null);
+    setLoading(false);
+    if (sessionMeta) saveWorkspace({ meta: sessionMeta, draft: nextDraft, result: null });
+  }, [sessionMeta]);
+
   // ── Evaluate ──────────────────────────────────────────────────────────────
   const handleEvaluate = useCallback(async (financials: SMEFinancialData) => {
-    if (!sessionMeta) return;
+    if (!sessionMeta || !assessReadiness(draft).ready || loading) return;
+    const version = ++evaluationVersion.current;
     setLoading(true);
     setError(null);
     try {
       const response = await predict({ meta: sessionMeta, financials });
+      if (version !== evaluationVersion.current) return;
       setResult(response);
       // Persist result immediately so navigation away won't lose it
-      saveWorkspace({ meta: sessionMeta, result: response });
+      saveWorkspace({ meta: sessionMeta, draft, result: response });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unexpected error");
+      if (version === evaluationVersion.current) setError(err instanceof Error ? err.message : "Unexpected error");
     } finally {
-      setLoading(false);
+      if (version === evaluationVersion.current) setLoading(false);
     }
-  }, [sessionMeta]);
+  }, [sessionMeta, draft, loading]);
 
   // Don't render until sessionStorage has been read (prevents empty-state flash)
   if (!hydrated) return null;
@@ -466,7 +502,12 @@ export default function DashboardPage() {
                 <h2 className="text-brand-charcoal font-bold text-base font-heading">SME Financial Profile</h2>
               </div>
               <div className="px-5 py-4">
-                <InputForm onEvaluate={handleEvaluate} isLoading={loading} />
+                <InputForm
+                  draft={draft}
+                  onDraftChange={handleDraftChange}
+                  onEvaluate={handleEvaluate}
+                  isLoading={loading}
+                />
               </div>
             </section>
 
@@ -478,7 +519,7 @@ export default function DashboardPage() {
               <div className="px-5 py-4">
                 {loading ? <Spinner label="Computing model…" />
                   : result ? <RiskGauge result={result} />
-                    : <IdleMiddle />}
+                    : <IdleMiddle draft={draft} />}
               </div>
             </section>
 

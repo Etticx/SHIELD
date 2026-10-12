@@ -62,8 +62,8 @@ export const PROFILE_HEALTHY: SMEFinancialData = {
 
 // ---------------------------------------------------------------------------
 // Profile C — Moderate Risk SME
-// Source: Real training row (idx 4915), bankrupt class.
-// Verified by model: P(default) = 42.50%  →  Moderate Risk (30–49%)
+// Source: Original training row (idx 4915), non-bankrupt class (label 0).
+// Verified by model: P(default) = 42.50%  →  Moderate Risk (30–59%).
 // ---------------------------------------------------------------------------
 export const PROFILE_MODERATE: SMEFinancialData = {
   roa_c_before_interest_and_depreciation_before_interest:     0.2313654756,
@@ -89,9 +89,9 @@ export const PROFILE_MODERATE: SMEFinancialData = {
 };
 
 // ---------------------------------------------------------------------------
-// Profile D — Critical Risk SME
-// Source: Real training row (idx 5585), bankrupt class.
-// Verified by model: P(default) = 75.00%  →  Critical Risk (70–100%)
+// High Risk SME (shown as Profile C in the interface).
+// Source: SMOTE-generated training row (idx 5585), bankrupt class.
+// Verified by model: P(default) = 75.00%  →  High Risk (60–79%).
 // ---------------------------------------------------------------------------
 export const PROFILE_CRITICAL: SMEFinancialData = {
   roa_c_before_interest_and_depreciation_before_interest:     0.5120199887,
@@ -118,7 +118,7 @@ export const PROFILE_CRITICAL: SMEFinancialData = {
 
 // ---------------------------------------------------------------------------
 // Profile B — Distressed SME (High Default Risk)
-// Source: 40th percentile of bankrupt-class training samples.
+// Source: Per-feature 40th percentile of the SMOTE-balanced bankrupt class.
 // Verified by model: P(default) = 89.00%
 // ---------------------------------------------------------------------------
 export const PROFILE_DISTRESSED: SMEFinancialData = {

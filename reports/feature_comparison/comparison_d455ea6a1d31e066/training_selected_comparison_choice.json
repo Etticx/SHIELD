@@ -1,0 +1,6 @@
+{
+  "Feature_Mode": "all",
+  "Candidate": "RF_SMOTE050",
+  "Threshold": 0.34214242761085983,
+  "Selection_Data": "training OOF only; historical holdouts not used for selection"
+}

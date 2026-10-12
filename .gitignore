@@ -49,3 +49,8 @@ desktop.ini
 
 # ---- Large raw source data ----
 data/bankruptcy_italian_companies_2023.xlsx
+
+# Transient caches and synthetic verification outputs for the focused experiment
+reports/focused_improvement/*/pipeline_cache/
+reports/feature_comparison/*/pipeline_cache/
+reports/.focused_verification/

@@ -1,0 +1,87 @@
+SHIELD - FOCUSED IMPROVEMENT ROUND
+
+OUTCOME: Both precision/recall targets available on training OOF curves: False.
+Highest OOF precision with recall >= 70%: 32.89%.
+This round does not establish a permanent limit for the dataset.
+
+Run ID: 39ae14b6a0e54b68
+Source: Original data/bankruptcy_italian_companies_2023.xlsx converted to CSV without IG or SMOTE; full arm excludes Company/Bankrupt and retains all 95 financial predictors
+Seed: 42; split: 80:20; training CV: 5
+All financial predictors retained, including constants. No IG selection.
+Company identifier and Bankrupt target excluded from predictors. SMOTE: training folds only.
+Decision: score >= cutoff. Scores are not calibrated bankruptcy probabilities.
+All candidates use fixed, declared parameters; no grid search or nested CV.
+Threshold selection: both precision/recall targets if feasible; otherwise max F2 with recall floor.
+OOF results below are tuning scores after threshold/model selection, not independent performance.
+The old 80:20 holdout has already been used in historical experiments: further results are exploratory.
+A new split of these same companies cannot undo historical test reuse; external/new companies are preferable.
+
+TRAINING OOF THRESHOLD RESULTS
+
+RF_SMOTE025 | cutoff 0.33945967
+  Precision: 32.64% | Recall: 71.59% | F1: 44.84% | F2: 57.80%
+  Both targets available: False; maximum precision at target recall: 32.89%
+  Params: {"class_weight": null, "max_depth": 10, "max_features": "sqrt", "min_samples_leaf": 1, "min_samples_split": 2, "n_estimators": 200}
+
+RF_SMOTE050 | cutoff 0.34214243
+  Precision: 29.41% | Recall: 76.70% | F1: 42.52% | F2: 58.04%
+  Both targets available: False; maximum precision at target recall: 31.63%
+  Params: {"class_weight": null, "max_depth": 10, "max_features": "sqrt", "min_samples_leaf": 1, "min_samples_split": 5, "n_estimators": 200}
+
+XGB_SMOTE010 | cutoff 0.03508139
+  Precision: 28.42% | Recall: 76.70% | F1: 41.47% | F2: 57.25%
+  Both targets available: False; maximum precision at target recall: 31.47%
+  Params: {"learning_rate": 0.1, "max_depth": 6, "n_estimators": 100}
+
+XGB_SMOTE050 | cutoff 0.05421854
+  Precision: 25.68% | Recall: 80.11% | F1: 38.90% | F2: 56.26%
+  Both targets available: False; maximum precision at target recall: 30.85%
+  Params: {"learning_rate": 0.1, "max_depth": 6, "n_estimators": 100}
+
+RF_NO_SMOTE | cutoff 0.10564021
+  Precision: 26.38% | Recall: 73.30% | F1: 38.80% | F2: 54.07%
+  Both targets available: False; maximum precision at target recall: 27.31%
+  Params: {"class_weight": null, "max_depth": 10, "max_features": "sqrt", "min_samples_leaf": 1, "min_samples_split": 2, "n_estimators": 200}
+
+RF_NO_SMOTE_WEIGHTED | cutoff 0.25848242
+  Precision: 28.60% | Recall: 72.16% | F1: 40.97% | F2: 55.31%
+  Both targets available: False; maximum precision at target recall: 28.84%
+  Params: {"class_weight": "balanced_subsample", "max_depth": 10, "max_features": "sqrt", "min_samples_leaf": 1, "min_samples_split": 2, "n_estimators": 200}
+
+XGB_NO_SMOTE | cutoff 0.03654297
+  Precision: 31.88% | Recall: 70.45% | F1: 43.89% | F2: 56.72%
+  Both targets available: False; maximum precision at target recall: 31.88%
+  Params: {"learning_rate": 0.1, "max_depth": 6, "n_estimators": 100}
+
+RF_SMOTE025_LEAF3 | cutoff 0.25863762
+  Precision: 27.29% | Recall: 77.84% | F1: 40.41% | F2: 56.80%
+  Both targets available: False; maximum precision at target recall: 30.62%
+  Params: {"class_weight": null, "max_depth": 10, "max_features": "sqrt", "min_samples_leaf": 3, "min_samples_split": 2, "n_estimators": 200}
+
+RF_SMOTE025_LEAF3_FEATURES050 | cutoff 0.31231403
+  Precision: 30.49% | Recall: 71.02% | F1: 42.66% | F2: 56.10%
+  Both targets available: False; maximum precision at target recall: 30.49%
+  Params: {"class_weight": null, "max_depth": 10, "max_features": 0.5, "min_samples_leaf": 3, "min_samples_split": 2, "n_estimators": 200}
+
+Frozen choice before holdout: RF_SMOTE050 | cutoff 0.34214243
+
+EXPLORATORY HOLDOUT RESULTS
+
+RF_SMOTE025 | Reference default 0.5 | cutoff 0.50000000
+  Accuracy: 96.26% | Precision: 44.62% | Recall: 65.91% | F1: 53.21% | ROC-AUC: 94.97%
+  TN=1284; FP=36; FN=15; TP=29
+  Precision 95% Wilson interval: [33.169527476665515, 56.662181322196034]; Recall interval: [51.13914121793823, 78.12418048065555]
+
+RF_SMOTE050 | Selected candidate default 0.5 | cutoff 0.50000000
+  Accuracy: 95.53% | Precision: 38.67% | Recall: 65.91% | F1: 48.74% | ROC-AUC: 95.12%
+  TN=1274; FP=46; FN=15; TP=29
+  Precision 95% Wilson interval: [28.4552171134325, 49.98252331617777]; Recall interval: [51.13914121793823, 78.12418048065555]
+
+RF_SMOTE050 | Frozen OOF threshold | cutoff 0.34214243
+  Accuracy: 93.11% | Precision: 28.81% | Recall: 77.27% | F1: 41.98% | ROC-AUC: 95.12%
+  TN=1236; FP=84; FN=10; TP=34
+  Precision 95% Wilson interval: [21.412142325786593, 37.550922887030964]; Recall interval: [63.007641935363665, 87.15805240508284]
+
+References:
+https://scikit-learn.org/stable/modules/classification_threshold.html
+https://imbalanced-learn.org/stable/common_pitfalls.html

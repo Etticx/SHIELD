@@ -19,7 +19,11 @@ import clsx from "clsx";
 
 import type { SMEFinancialData } from "@/lib/types";
 import {
-  MEDIAN_DEFAULTS,
+  createFinancialDraft, assessReadiness, toFinancialData, parseFinancialCsv,
+  AVAILABILITY_LABELS,
+} from "@/lib/readiness";
+import type { FinancialDraft, ProfileKey, Availability } from "@/lib/readiness";
+import {
   PROFILE_HEALTHY,
   PROFILE_MODERATE,
   PROFILE_CRITICAL,
@@ -32,10 +36,10 @@ import InfoTooltip from "@/components/InfoTooltip";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-type ProfileKey = "manual" | "healthy" | "moderate" | "critical" | "distressed";
-
 interface Props {
   onEvaluate: (data: SMEFinancialData) => void;
+  draft: FinancialDraft;
+  onDraftChange: (draft: FinancialDraft) => void;
   isLoading: boolean;
 }
 
@@ -176,27 +180,35 @@ const CSV_HEADER_TO_KEY: Record<string, keyof SMEFinancialData> = {
 // ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
-export default function InputForm({ onEvaluate, isLoading }: Props) {
-  const [profile, setProfile] = useState<ProfileKey>("manual");
-  const [fields, setFields] = useState<SMEFinancialData>({ ...MEDIAN_DEFAULTS });
+export default function InputForm({ onEvaluate, draft, onDraftChange, isLoading }: Props) {
+  const profile = draft.profile;
+  const readiness = assessReadiness(draft);
   const [uploadMsg, setUploadMsg] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleProfileChange = useCallback((key: ProfileKey) => {
-    setProfile(key);
     const preset = PROFILES[key].values;
-    setFields(preset ? { ...preset } : { ...MEDIAN_DEFAULTS });
+    onDraftChange(createFinancialDraft(preset ?? undefined, key));
     setUploadMsg(null);
     setUploadError(null);
     if (fileRef.current) fileRef.current.value = "";
-  }, []);
+  }, [onDraftChange]);
 
   const handleFieldChange = useCallback((key: keyof SMEFinancialData, raw: string) => {
-    const num = parseFloat(raw);
-    setFields((prev) => ({ ...prev, [key]: isNaN(num) ? 0 : num }));
-  }, []);
+    onDraftChange({ ...draft, values: { ...draft.values, [key]: raw } });
+    setUploadMsg(null);
+  }, [draft, onDraftChange]);
+
+  const handleAvailabilityChange = (key: keyof SMEFinancialData, availability: Availability) => {
+    onDraftChange({
+      ...draft,
+      availability: { ...draft.availability, [key]: availability },
+      values: { ...draft.values, [key]: "" },
+    });
+    setUploadMsg(null);
+  };
 
   const handleFileUpload = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     setUploadMsg(null);
@@ -204,36 +216,17 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const text = await file.text();
-      const lines = text.split(/\r?\n/).filter((l) => l.trim());
-      if (lines.length < 2) throw new Error("File has no data rows.");
-      const rawHeaders = lines[0].split(",");
-      const rawValues = lines[1].split(",");
-      const parsed: Partial<SMEFinancialData> = {};
-      const missing: string[] = [];
-      for (const [csvHeader, key] of Object.entries(CSV_HEADER_TO_KEY)) {
-        const idx = rawHeaders.indexOf(csvHeader);
-        if (idx === -1) { missing.push(csvHeader.trim()); continue; }
-        const val = parseFloat(rawValues[idx]);
-        if (isNaN(val)) throw new Error(`Non-numeric value for "${csvHeader.trim()}".`);
-        parsed[key] = val;
-      }
-      if (missing.length > 0) {
-        throw new Error(
-          `Missing ${missing.length} column(s): ${missing.slice(0, 3).join(", ")}` +
-          (missing.length > 3 ? ` … (+${missing.length - 3} more)` : "") +
-          ". Download the template for required headers."
-        );
-      }
-      setFields(parsed as SMEFinancialData);
-      setProfile("manual");
-      setUploadMsg(`"${file.name}" loaded — all 20 fields updated.`);
+      const parsed = parseFinancialCsv(await file.text(), CSV_HEADER_TO_KEY);
+      onDraftChange(parsed);
+      setUploadMsg(`"${file.name}" loaded — ${assessReadiness(parsed).provided} of 20 metrics provided. Missing fields remain blank.`);
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Could not parse file.");
     }
-  }, []);
+  }, [onDraftChange]);
 
-  const handleSubmit = useCallback(() => onEvaluate(fields), [fields, onEvaluate]);
+  const handleSubmit = () => {
+    if (readiness.ready && !isLoading) onEvaluate(toFinancialData(draft));
+  };
 
   // ---------------------------------------------------------------------------
   // Render
@@ -241,12 +234,38 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
   return (
     <div className="flex flex-col gap-5">
 
+      <div className="rounded-lg border border-brand-border px-3 py-3 text-xs text-brand-subtext" aria-live="polite">
+        <p className="font-semibold text-brand-charcoal">
+          {readiness.ready ? "Ready to evaluate" : "Insufficient Data"}
+          <span className="ml-2 font-normal">{readiness.provided} / 20 metrics provided</span>
+        </p>
+        <p className="mt-1.5 leading-relaxed">
+          Provide normalised values supported by financial records. Leave unknown values blank,
+          or select why a metric is unavailable. Zero is a valid value when supported by the records.
+        </p>
+        {!readiness.ready && (
+          <details className="mt-2">
+            <summary className="cursor-pointer font-medium">View missing or invalid metrics</summary>
+            <ul className="mt-2 space-y-1 list-disc pl-4">
+              {readiness.missing.map((item) => <li key={item.key}>{item.label} — {item.reason}</li>)}
+              {readiness.invalid.map((item) => <li key={item.key}>{item.label} — enter a number between 0 and 1</li>)}
+            </ul>
+          </details>
+        )}
+        <p className="mt-2 leading-relaxed">
+          For new businesses, mark historical metrics as “Not enough history”. If a share-based metric
+          does not apply to the business structure, select “Not applicable”. Request supporting accounts
+          or refer the case for another assessment approach.
+        </p>
+      </div>
+
       {/* ── Profile selector ─────────────────────────────────────────────── */}
       <div>
-        <p className="section-label">Test Profile</p>
+        <p className="section-label">Manual Entry / Demo Profiles</p>
         <div className="relative">
           <button
             type="button"
+            disabled={isLoading}
             onClick={() => setDropdownOpen((v) => !v)}
             className="w-full flex items-center gap-2 bg-brand-bg border border-brand-border
                        rounded-lg px-3 py-2.5 text-sm text-brand-text
@@ -279,6 +298,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
                   <button
                     key={key}
                     type="button"
+                    disabled={isLoading}
                     onClick={() => { handleProfileChange(key); setDropdownOpen(false); }}
                     className={clsx(
                       "w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left",
@@ -304,10 +324,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
             profile === "distressed" && "text-risk-critical bg-risk-criticalBg",
           )}>
             <Check size={10} />
-            {profile === "healthy" && "Profile A — verified P(default) = 0.00%  (Low Risk)"}
-            {profile === "moderate" && "Profile B — verified P(default) = 42.50%  (Moderate Risk)"}
-            {profile === "critical" && "Profile C — verified P(default) = 75.00%  (High Risk)"}
-            {profile === "distressed" && "Profile D — verified P(default) = 89.00%  (Critical Risk)"}
+            Demo inputs loaded. Editing is allowed; results are calculated when you evaluate.
           </p>
         )}
       </div>
@@ -337,7 +354,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
             Drop a <span className="text-brand-yellow font-medium">.csv</span> or{" "}
             <span className="text-brand-yellow font-medium">click to browse</span>
             <span className="block text-brand-muted text-[0.68rem] mt-0.5">
-              First data row populates all 20 fields
+              First data row loads available values; blanks stay missing
             </span>
           </span>
           <input
@@ -346,6 +363,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
             type="file"
             accept=".csv"
             className="hidden"
+            disabled={isLoading}
             onChange={handleFileUpload}
           />
         </label>
@@ -381,7 +399,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
                     htmlFor={`field-${key}`}
                     className="text-[0.67rem] leading-tight text-brand-subtext flex items-center gap-1"
                   >
-                    <span className="truncate flex-1" title={FEATURE_LABELS[key]}>
+                    <span className="flex-1" title={FEATURE_LABELS[key]}>
                       {FEATURE_LABELS[key]}
                     </span>
                     <InfoTooltip text={FIELD_TOOLTIPS[key]} />
@@ -392,10 +410,24 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
                     step="0.0001"
                     min="0"
                     max="1"
-                    value={fields[key]}
+                    value={draft.values[key]}
+                    disabled={isLoading || draft.availability[key] !== "available"}
+                    placeholder="Not provided"
+                    aria-invalid={readiness.invalid.some((item) => item.key === key)}
                     onChange={(e) => handleFieldChange(key, e.target.value)}
                     className="input-field text-right py-1.5 text-xs"
                   />
+                  <select
+                    aria-label={`Availability of ${FEATURE_LABELS[key]}`}
+                    value={draft.availability[key]}
+                    disabled={isLoading}
+                    onChange={(e) => handleAvailabilityChange(key, e.target.value as Availability)}
+                    className="input-field py-1.5 text-xs"
+                  >
+                    {Object.entries(AVAILABILITY_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
                 </div>
               ))}
             </div>
@@ -407,7 +439,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
       <button
         type="button"
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabled={isLoading || !readiness.ready}
         className="btn-primary w-full flex items-center justify-center gap-2 sticky bottom-4"
       >
         {isLoading ? (
@@ -418,7 +450,7 @@ export default function InputForm({ onEvaluate, isLoading }: Props) {
         ) : (
           <>
             <Zap size={14} />
-            Evaluate Risk
+            {readiness.ready ? "Evaluate Risk" : "Complete Required Metrics"}
           </>
         )}
       </button>

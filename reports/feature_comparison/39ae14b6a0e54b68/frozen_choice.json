@@ -1,0 +1,8 @@
+{
+  "Candidate": "RF_SMOTE050",
+  "Threshold": 0.34214242761085983,
+  "Selection_Data": "training OOF only",
+  "Both_Targets_Feasible_OOF": false,
+  "Holdout_Status": "evaluated after freeze; historically reused and exploratory",
+  "Run_ID": "39ae14b6a0e54b68"
+}

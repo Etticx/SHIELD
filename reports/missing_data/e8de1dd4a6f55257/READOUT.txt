@@ -1,0 +1,19 @@
+SHIELD MISSING-DATA STRESS TEST
+
+Exploratory evaluation on the historical test partition; no retraining or production policy changes.
+Test companies: 1364; bankrupt: 44.
+Primary high-risk threshold is 0.60. Average precision summarises the precision-recall curve.
+Complete-input recall: 0.591; precision: 0.406; AP: 0.471; missed bankrupt: 18.
+
+native_nan: lowest single-missing recall is 0.545 when 'Borrowing dependency' is missing; AP=0.464; newly missed bankrupt=3.
+training_median: lowest single-missing recall is 0.000 when 'Continuous interest rate (after tax)' is missing; AP=0.227; newly missed bankrupt=26.
+
+Read scenario_metrics.csv for every metric and paired change from baseline.
+Random repetition spread measures variation in simulated masks, not a confidence interval across independent companies.
+baseline_bootstrap.csv gives conditional stratified company-bootstrap intervals; it does not correct historical test reuse.
+With 44 bankrupt companies, one changed detection alters recall by about 2.27 percentage points.
+The 20-missing scenario is a no-information control; a returned number is not a useful individual assessment.
+Share-based/historical group masks are proxies. Structurally undefined metrics must not be treated as observed financial values.
+Brier score is descriptive; probabilities from SMOTE training are not automatically calibrated real-world default probabilities.
+No result automatically approves a 19/20 gate. Define acceptable absolute detection/false-alarm performance and degradation before independent validation.
+Malaysia/new-business suitability, missingness related to distress, and SHAP/advisory behaviour need separate validation.

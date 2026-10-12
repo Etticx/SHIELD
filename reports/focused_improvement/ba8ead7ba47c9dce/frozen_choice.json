@@ -1,0 +1,8 @@
+{
+  "Candidate": "RF_SMOTE025_LEAF3",
+  "Threshold": 0.27969295288128426,
+  "Selection_Data": "training OOF only",
+  "Both_Targets_Feasible_OOF": false,
+  "Holdout_Status": "evaluated after freeze; historically reused and exploratory",
+  "Run_ID": "ba8ead7ba47c9dce"
+}

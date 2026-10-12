@@ -1,0 +1,99 @@
+SHIELD - ALL FINANCIAL PREDICTORS VERSUS IG TOP 20
+
+Top-20 IG: any candidate reaches both targets: False.
+All 95 financial predictors: any candidate reaches both targets: False.
+Maximum OOF precision at recall >=70%: IG=29.38%; All=32.89%.
+
+MATCHED RF SMOTE 0.25 AT CUTOFF 0.5 - EXPLORATORY HOLDOUT
+
+IG top 20: Precision 38.67% | Recall 65.91% | F1 48.74% | TP=29; FP=46
+All financial predictors: Precision 44.62% | Recall 65.91% | F1 53.21% | TP=29; FP=36
+
+Source: Original data/bankruptcy_italian_companies_2023.xlsx converted to CSV without IG or SMOTE; full arm excludes Company/Bankrupt and retains all 95 financial predictors
+Raw file has 97 columns, not 97 financial predictors.
+Company is an identifier; Bankrupt is the target. Both are excluded from predictors.
+All-feature arm: 95 financial predictors, no IG. Constants retained: [' Net Income Flag'].
+IG arm: previous cleaning removes constants, then training-fold IG selects top 20.
+Same seed=42, 80:20 split, five training CV folds, nine fixed candidates and threshold-selection rule.
+SMOTE remains training-fold only. No new models, parameter grids, or nested CV.
+Changing the feature count also changes the meaning of fractional/sqrt max_features in RF.
+OOF threshold/model-selection metrics are tuning scores. Reused historical holdout scores are exploratory.
+IG report: D:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\reports\focused_improvement\ba8ead7ba47c9dce
+All-feature report: D:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD\reports\feature_comparison\39ae14b6a0e54b68
+
+MATCHED TRAINING OOF RESULTS - SELECTED CUTOFFS
+
+RF_SMOTE025
+  IG20: P=27.37% | R=73.86% | F1=39.94% | F2=55.13% | cutoff=0.28940652
+  All:  P=32.64% | R=71.59% | F1=44.84% | F2=57.80% | cutoff=0.33945967
+  Max precision at recall >=70%: IG=27.51%; All=32.89%.
+
+RF_SMOTE050
+  IG20: P=22.59% | R=77.27% | F1=34.96% | F2=52.07% | cutoff=0.28668937
+  All:  P=29.41% | R=76.70% | F1=42.52% | F2=58.04% | cutoff=0.34214243
+  Max precision at recall >=70%: IG=25.15%; All=31.63%.
+
+XGB_SMOTE010
+  IG20: P=19.91% | R=76.70% | F1=31.62% | F2=48.84% | cutoff=0.05380583
+  All:  P=28.42% | R=76.70% | F1=41.47% | F2=57.25% | cutoff=0.03508139
+  Max precision at recall >=70%: IG=21.11%; All=31.47%.
+
+XGB_SMOTE050
+  IG20: P=18.32% | R=75.57% | F1=29.49% | F2=46.50% | cutoff=0.12556036
+  All:  P=25.68% | R=80.11% | F1=38.90% | F2=56.26% | cutoff=0.05421854
+  Max precision at recall >=70%: IG=19.32%; All=30.85%.
+
+RF_NO_SMOTE
+  IG20: P=29.14% | R=71.02% | F1=41.32% | F2=55.16% | cutoff=0.13188276
+  All:  P=26.38% | R=73.30% | F1=38.80% | F2=54.07% | cutoff=0.10564021
+  Max precision at recall >=70%: IG=29.38%; All=27.31%.
+
+RF_NO_SMOTE_WEIGHTED
+  IG20: P=26.07% | R=72.73% | F1=38.38% | F2=53.56% | cutoff=0.21963380
+  All:  P=28.60% | R=72.16% | F1=40.97% | F2=55.31% | cutoff=0.25848242
+  Max precision at recall >=70%: IG=26.96%; All=28.84%.
+
+XGB_NO_SMOTE
+  IG20: P=23.77% | R=71.59% | F1=35.69% | F2=51.05% | cutoff=0.03908040
+  All:  P=31.88% | R=70.45% | F1=43.89% | F2=56.72% | cutoff=0.03654297
+  Max precision at recall >=70%: IG=23.99%; All=31.88%.
+
+RF_SMOTE025_LEAF3
+  IG20: P=26.76% | R=75.57% | F1=39.52% | F2=55.37% | cutoff=0.27969295
+  All:  P=27.29% | R=77.84% | F1=40.41% | F2=56.80% | cutoff=0.25863762
+  Max precision at recall >=70%: IG=27.90%; All=30.62%.
+
+RF_SMOTE025_LEAF3_FEATURES050
+  IG20: P=24.86% | R=75.00% | F1=37.34% | F2=53.44% | cutoff=0.25130339
+  All:  P=30.49% | R=71.02% | F1=42.66% | F2=56.10% | cutoff=0.31231403
+  Max precision at recall >=70%: IG=25.88%; All=30.49%.
+
+EXPLORATORY HOLDOUT RESULTS - PER-ARM TRAINING-SELECTED CHOICES
+
+IG top 20 | RF_SMOTE025 | Reference default 0.5 | cutoff 0.50000000
+  Accuracy: 95.53% | Precision: 38.67% | Recall: 65.91% | F1: 48.74% | ROC-AUC: 94.25%
+  TP=29; FP=46; FN=15; TN=1274
+
+IG top 20 | RF_SMOTE025_LEAF3 | Selected candidate default 0.5 | cutoff 0.50000000
+  Accuracy: 95.67% | Precision: 39.44% | Recall: 63.64% | F1: 48.70% | ROC-AUC: 94.42%
+  TP=28; FP=43; FN=16; TN=1277
+
+IG top 20 | RF_SMOTE025_LEAF3 | Frozen OOF threshold | cutoff 0.27969295
+  Accuracy: 93.04% | Precision: 28.93% | Recall: 79.55% | F1: 42.42% | ROC-AUC: 94.42%
+  TP=35; FP=86; FN=9; TN=1234
+
+All financial predictors | RF_SMOTE025 | Reference default 0.5 | cutoff 0.50000000
+  Accuracy: 96.26% | Precision: 44.62% | Recall: 65.91% | F1: 53.21% | ROC-AUC: 94.97%
+  TP=29; FP=36; FN=15; TN=1284
+
+All financial predictors | RF_SMOTE050 | Selected candidate default 0.5 | cutoff 0.50000000
+  Accuracy: 95.53% | Precision: 38.67% | Recall: 65.91% | F1: 48.74% | ROC-AUC: 95.12%
+  TP=29; FP=46; FN=15; TN=1274
+
+All financial predictors | RF_SMOTE050 | Frozen OOF threshold | cutoff 0.34214243
+  Accuracy: 93.11% | Precision: 28.81% | Recall: 77.27% | F1: 41.98% | ROC-AUC: 95.12%
+  TP=34; FP=84; FN=10; TN=1236
+
+No production model, frontend fields or risk bands were changed.
+All comparison metrics and parameter settings are retained at full precision in the CSV files.
+Reload score/threshold CSVs using pandas.read_csv(..., float_precision='round_trip') to preserve equal-cutoff decisions.

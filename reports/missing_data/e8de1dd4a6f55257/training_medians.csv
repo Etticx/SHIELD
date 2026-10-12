@@ -1,0 +1,21 @@
+feature,original_training_median
+ ROA(C) before interest and depreciation before interest,0.502120606444694
+ ROA(A) before interest and % after tax,0.559365460095944
+ ROA(B) before interest and depreciation after tax,0.55168906258365
+ Continuous interest rate (after tax),0.781633693951788
+ Net Value Per Share (B),0.184063039905609
+ Net Value Per Share (A),0.184063039905609
+ Persistent EPS in the Last Four Seasons,0.224260187198639
+ Per Share Net profit before tax,0.179407998794909
+ Interest Expense Ratio,0.630700949302064
+ Debt ratio %,0.111406717658796
+ Net worth/Assets,0.888593282341204
+ Borrowing dependency,0.372627677634802
+ Net profit before tax/Paid-in capital,0.178252017193274
+ Retained Earnings to Total Assets,0.937552052393016
+ Net Income to Total Assets,0.810356988580264
+ Net Income to Stockholder's Equity,0.8411463980526
+ Liability to Equity,0.278779433410011
+ Degree of Financial Leverage (DFL),0.026808753586052
+ Interest Coverage Ratio (Interest expense to EBIT),0.565254146067448
+ Equity to Liability,0.0338021771323038
