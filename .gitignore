@@ -71,3 +71,6 @@ reports/*.zip
 
 # Superseded model (scikit-learn 1.9.0); backend uses the _sk161 refit
 model/SHIELD_RF_7Features_SMOTE050_8020_CV5.joblib
+
+# Outdated notebooks/scripts — kept locally only, not the ones in use
+notebooks/archive/
