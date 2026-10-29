@@ -15,14 +15,14 @@ class Settings(BaseSettings):
         protected_namespaces=("settings_",),  # avoids false warning on model_path field
     )
 
-    model_path: str = "../model/xgb_shield_model.joblib"
+    model_path: str = "../model/SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib"
     cors_origins: str = "http://localhost:3000"
     host: str = "0.0.0.0"
     port: int = 8000
     log_level: str = "info"
     groq_api_key: str | None = None  # Set GROQ_API_KEY in .env to enable AI advisory
     database_url: str | None = None  # Set DATABASE_URL in .env to enable audit persistence
-    api_key: str | None = None        # Set API_KEY in .env to protect /predict and /logs
+    api_key: str | None = None        # Set API_KEY in .env to protect /ratios-predict and /logs
 
     @property
     def cors_origins_list(self) -> list[str]:

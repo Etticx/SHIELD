@@ -2,7 +2,7 @@
 
 // =============================================================================
 // SHIELD — AdvisoryReport Component
-// Renders the structured advisory from the /predict response:
+// Renders the structured advisory from the /ratios-predict response:
 //   • Tone banner (colour-coded by risk level) with LLM explanation
 //   • Risk drivers table
 //   • Protective factors table

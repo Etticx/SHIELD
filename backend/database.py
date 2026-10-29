@@ -2,7 +2,7 @@
 # SHIELD — Database layer
 #
 # Uses SQLAlchemy 2.x async engine with asyncpg driver.
-# Table: evaluations — one row per /predict call.
+# Table: evaluations — one row per /ratios-predict call.
 #
 # Startup sequence (called from main.py lifespan):
 #   await init_db()   — creates tables if they don't exist (idempotent)
@@ -49,7 +49,7 @@ class Base(DeclarativeBase):
 
 
 class Evaluation(Base):
-    """One row per SME evaluation submitted via POST /predict."""
+    """One row per SME evaluation submitted via POST /ratios-predict."""
 
     __tablename__ = "evaluations"
 

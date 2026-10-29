@@ -74,3 +74,6 @@ model/SHIELD_RF_7Features_SMOTE050_8020_CV5.joblib
 
 # Outdated notebooks/scripts — kept locally only, not the ones in use
 notebooks/archive/
+
+# Legacy Streamlit app, old XGBoost models/data, slide build scratch — kept locally only
+_legacy/

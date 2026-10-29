@@ -8,9 +8,8 @@ PROJECT STRUCTURE
 -----------------
 SHIELD/
 ├── docker-compose.yml            <- Local PostgreSQL 15 database
-├── app.py                        <- Legacy Streamlit app (still works)
 ├── backend/
-│   ├── main.py                   <- All routes (/predict, /logs, /health)
+│   ├── main.py                   <- All routes (/ratios-predict, /logs, /health)
 │   ├── database.py               <- SQLAlchemy async ORM
 │   ├── config.py
 │   ├── run.py                    <- Convenience launcher
@@ -25,7 +24,7 @@ SHIELD/
 │   │   └── lib/
 │   └── package.json
 ├── model/
-│   └── xgb_shield_model.joblib
+│   └── SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib <- 7-ratio model
 └── data/
 
 
@@ -246,31 +245,6 @@ STOPPING
 
 
 ================================================================
-OPTION B — Legacy Streamlit App (v1 — still works)
-================================================================
-
-STEP 1: Navigate to the SHIELD root folder:
-
-    cd "d:\SCHOLARSHIPS\My Items\Degree Project\FYP\SHIELD"
-
-STEP 2: Create and activate the root virtual environment
-        (first time only):
-
-    python -m venv venv
-    venv\Scripts\activate
-
-STEP 3: Install dependencies (first time only):
-
-    pip install -r requirements.txt
-
-STEP 4: Run the app:
-
-    streamlit run app.py
-
-    Opens at: http://localhost:8501
-
-
-================================================================
 TROUBLESHOOTING
 ================================================================
 
@@ -333,9 +307,9 @@ Fix     : The backend is not running. Start Terminal 2 first.
           Check: http://localhost:8000/health
 
 Problem : Backend crashes — model file not found
-Fix     : Confirm xgb_shield_model.joblib is in SHIELD/model/
+Fix     : Confirm SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib is in SHIELD/model/
           Check MODEL_PATH in backend\.env:
-              MODEL_PATH=../model/xgb_shield_model.joblib
+              MODEL_PATH=../model/SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib
 
 Problem : Port 8000 already in use
 Fix     : Edit backend\.env:  PORT=8001
@@ -357,10 +331,7 @@ API QUICK REFERENCE (v1.0.2)
 GET  /health
      → Model, explainer, and Groq status
 
-GET  /features
-     → 20 feature labels, medians, preset profiles
-
-POST /predict
+POST /ratios-predict
      → Body:
          {
            "meta": {
@@ -370,9 +341,8 @@ POST /predict
              "evaluator":    "analyst"
            },
            "financials": {
-             "roa_a": 0.586,
-             "roa_b": 0.588,
-             ... (20 float fields, normalised 0-1)
+             "net_income_to_stockholders_equity": 0.84,
+             ... (7 ratio fields, each 0-1)
            }
          }
      → Returns: probability, classification, SHAP values,

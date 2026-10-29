@@ -2,7 +2,7 @@
 
 > **Final Year Project · For academic use only**
 
-SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using a Random Forest model trained on 20 key financial ratios. SHAP provides full explainability for every prediction.
+SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using a Random Forest model trained on 7 financial ratios (experimental; SMOTE 0.5, 80:20 split, 5-fold CV). SHAP provides full explainability for every prediction.
 
 ---
 
@@ -10,10 +10,8 @@ SHIELD is a credit-risk assessment platform that predicts the probability of SME
 
 ```
 SHIELD/
-├── app.py                      # Legacy Streamlit app (v1 — still runnable)
-│
 ├── backend/                    # FastAPI prediction API
-│   ├── main.py                 # Endpoints: GET /health  GET /features  POST /predict
+│   ├── main.py                 # Endpoints: GET /health  POST /ratios-predict  GET /logs
 │   ├── config.py               # pydantic-settings config (reads .env)
 │   ├── run.py                  # Uvicorn launcher
 │   ├── requirements.txt        # Pinned Python dependencies
@@ -26,14 +24,14 @@ SHIELD/
 │   │   │   ├── page.tsx        # 3-column dashboard page
 │   │   │   └── globals.css     # Tailwind base + component classes
 │   │   ├── components/
-│   │   │   ├── InputForm.tsx   # 20-field form, profile presets, CSV upload
+│   │   │   ├── AccountingInputForm.tsx  # 7-ratio input form
 │   │   │   ├── RiskGauge.tsx   # Recharts RadialBar + confidence breakdown
 │   │   │   ├── ShapChart.tsx   # Recharts horizontal BarChart (waterfall-style)
 │   │   │   └── AdvisoryReport.tsx  # Structured AI advisory text
 │   │   └── lib/
-│   │       ├── api.ts          # Typed fetch wrappers for /predict & /features
+│   │       ├── api.ts          # Typed fetch wrappers for /ratios-predict & /logs
 │   │       ├── types.ts        # TypeScript interfaces mirroring Pydantic models
-│   │       └── constants.ts    # Median defaults, profiles, feature labels
+│   │       └── accounting-inputs.ts  # 7-ratio fields + readiness checks
 │   ├── tailwind.config.ts      # JuneBank colour palette (#FFD100, #0e1117 …)
 │   ├── next.config.ts          # Rewrites /api/* → FastAPI (no CORS in dev)
 │   └── package.json
@@ -84,15 +82,6 @@ npm run dev
 # → Dashboard at http://localhost:3000
 ```
 
-### 3 · Legacy Streamlit app (optional)
-
-```bash
-# From repo root, with the root venv active:
-pip install -r requirements.txt
-streamlit run app.py
-# → http://localhost:8501
-```
-
 ---
 
 ## API Reference
@@ -100,37 +89,33 @@ streamlit run app.py
 | Method | Endpoint     | Description                                        |
 |--------|--------------|----------------------------------------------------|
 | GET    | `/health`    | Returns model/explainer load status                |
-| GET    | `/features`  | Returns feature registry + preset profiles         |
-| POST   | `/predict`   | Accepts 20 floats, returns risk score + SHAP + advisory |
+| POST   | `/ratios-predict` | Accepts 7 ratios (0–1), returns risk score + SHAP + advisory |
+| POST   | `/experimental/accounting-predict` | Accepts 5 raw accounting figures, returns the raw model score |
+| GET    | `/logs`      | Past evaluations, newest first                     |
 
-### POST `/predict` — example request body
+### POST `/ratios-predict` — example request body
 
 ```json
 {
-  "roa_c": 0.4725,
-  "roa_a": 0.5321,
-  "continuous_interest_rate": 0.7815,
-  "net_value_per_share_b": 0.1732,
-  "net_value_per_share_a": 0.1732,
-  "net_value_per_share_c": 0.1734,
-  "persistent_eps": 0.2116,
-  "per_share_net_profit": 0.1689,
-  "interest_expense_ratio": 0.6306,
-  "debt_ratio": 0.1561,
-  "net_worth_assets": 0.8439,
-  "borrowing_dependency": 0.3774,
-  "net_profit_paid_in_capital": 0.1680,
-  "retained_earnings": 0.9292,
-  "total_income_expense": 0.0022,
-  "net_income_total_assets": 0.7935,
-  "net_income_equity": 0.8399,
-  "liability_to_equity": 0.2820,
-  "interest_coverage_ratio": 0.5652,
-  "equity_to_liability": 0.0232
+  "meta": {
+    "company_name": "Syarikat ABC Sdn Bhd",
+    "ssm_number": "1234567-A",
+    "loan_amount": 500000,
+    "evaluator": "analyst"
+  },
+  "financials": {
+    "net_income_to_stockholders_equity": 0.84,
+    "net_income_to_total_assets": 0.79,
+    "retained_earnings_to_total_assets": 0.93,
+    "debt_ratio_percent": 0.16,
+    "net_worth_assets": 0.84,
+    "equity_to_liability": 0.02,
+    "liability_to_equity": 0.28
+  }
 }
 ```
 
-### POST `/predict` — example response
+### POST `/ratios-predict` — example response
 
 ```json
 {
@@ -164,7 +149,6 @@ streamlit run app.py
 | Frontend   | Next.js 14 · React 18 · TypeScript              |
 | Styling    | Tailwind CSS 3.4 · JuneBank dark theme          |
 | Charts     | Recharts 2.12 (RadialBar + BarChart)            |
-| Legacy UI  | Streamlit 1.35                                  |
 
 ---
 

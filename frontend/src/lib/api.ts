@@ -9,11 +9,11 @@
 // =============================================================================
 
 import type {
-  PredictRequest,
+  EvaluationMeta,
   PredictionResponse,
-  FeaturesResponse,
   LogEntry,
 } from "./types";
+import type { AccountingData } from "./accounting-inputs";
 
 const BASE = "/api";
 
@@ -36,26 +36,6 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function fetchFeatures(): Promise<FeaturesResponse> {
-  const res = await fetch(`${BASE}/features`, {
-    cache: "force-cache",
-    headers: authHeaders(),
-  });
-  return handleResponse<FeaturesResponse>(res);
-}
-
-/** POST /predict — requires metadata + financials in one payload. */
-export async function predict(
-  request: PredictRequest,
-): Promise<PredictionResponse> {
-  const res = await fetch(`${BASE}/predict`, {
-    method:  "POST",
-    headers: { "Content-Type": "application/json", ...authHeaders() },
-    body:    JSON.stringify(request),
-  });
-  return handleResponse<PredictionResponse>(res);
-}
-
 /** GET /logs — returns all past evaluations, newest first. */
 export async function fetchLogs(): Promise<LogEntry[]> {
   const res = await fetch(`${BASE}/logs`, {
@@ -74,7 +54,14 @@ export async function healthCheck(): Promise<{ status: string }> {
 }
 
 /** Seven dataset feature values; the backend passes them directly to the model. */
-export async function predictAccounting(request: {meta: import('./types').EvaluationMeta; financials: import('./accounting-inputs').AccountingData}): Promise<PredictionResponse> {
- const res = await fetch(`${BASE}/ratios-predict`, {method:'POST', headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(request)});
- return handleResponse<PredictionResponse>(res);
+export async function predictAccounting(request: {
+  meta:       EvaluationMeta;
+  financials: AccountingData;
+}): Promise<PredictionResponse> {
+  const res = await fetch(`${BASE}/ratios-predict`, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body:    JSON.stringify(request),
+  });
+  return handleResponse<PredictionResponse>(res);
 }
