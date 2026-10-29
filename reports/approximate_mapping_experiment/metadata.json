@@ -1,0 +1,127 @@
+{
+  "target": "Existing dataset labelled Italian (Taiwanese-origin release)",
+  "target_reference_rows": 5455,
+  "synthetic_evaluation_cases": 5000,
+  "synthetic_reference_seed": 123,
+  "evaluation_seed": 42,
+  "model_sha256": "d8f6301837f32a6c534e353e6de560767c941e0eabd3bcdace04621314991d86",
+  "features": [
+    "Net Income to Stockholder's Equity",
+    "Net Income to Total Assets",
+    "Retained Earnings to Total Assets",
+    "Debt ratio %",
+    "Net worth/Assets",
+    "Equity to Liability",
+    "Liability to Equity"
+  ],
+  "reference_bounds": {
+    "mixed_reference": {
+      "count": 4000,
+      "raw_min": [
+        -18.300420374015093,
+        -0.19994026301980541,
+        -0.8229334011831497,
+        0.050231609395758645,
+        -0.4996003353064291,
+        -0.3331556572400609,
+        -97.78997708343192
+      ],
+      "raw_max": [
+        18.651144166507535,
+        0.24979844885518557,
+        0.3999740020508683,
+        1.499600335306429,
+        0.9497683906042413,
+        18.907783406287514,
+        97.88315465819217
+      ]
+    },
+    "strong_reference": {
+      "count": 1600,
+      "raw_min": [
+        0.10874043814709651,
+        0.10007163966073064,
+        0.10051978235443287,
+        0.050231609395758645,
+        0.700078744151694,
+        2.3342084980658377,
+        0.052888272438506155
+      ],
+      "raw_max": [
+        0.3535455024879853,
+        0.24979844885518557,
+        0.3999740020508683,
+        0.2999212558483059,
+        0.9497683906042413,
+        18.907783406287514,
+        0.428410744296671
+      ]
+    },
+    "weak_reference": {
+      "count": 1600,
+      "raw_min": [
+        -18.300420374015093,
+        -0.19994026301980541,
+        -0.8229334011831497,
+        0.8506802059458412,
+        -0.4996003353064291,
+        -0.3331556572400609,
+        -97.78997708343192
+      ],
+      "raw_max": [
+        18.651144166507535,
+        -0.05002533144713325,
+        -0.05075721212185635,
+        1.499600335306429,
+        0.14931979405415885,
+        0.17552987951346002,
+        97.88315465819217
+      ]
+    }
+  },
+  "sensitivity": [
+    {
+      "method": "minmax",
+      "alternative": "strong_reference",
+      "binary_flips": 679,
+      "mean_absolute_change_pp": 14.03148122491543,
+      "max_absolute_change_pp": 58.27207137159917
+    },
+    {
+      "method": "minmax",
+      "alternative": "weak_reference",
+      "binary_flips": 2135,
+      "mean_absolute_change_pp": 22.637911710104063,
+      "max_absolute_change_pp": 60.747858076143444
+    },
+    {
+      "method": "quantile",
+      "alternative": "strong_reference",
+      "binary_flips": 2664,
+      "mean_absolute_change_pp": 21.537638671665654,
+      "max_absolute_change_pp": 69.79307721574916
+    },
+    {
+      "method": "quantile",
+      "alternative": "weak_reference",
+      "binary_flips": 161,
+      "mean_absolute_change_pp": 13.604602420224102,
+      "max_absolute_change_pp": 47.71653198785069
+    }
+  ],
+  "warnings": [
+    "Trying to unpickle estimator DecisionTreeClassifier from version 1.9.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+    "Trying to unpickle estimator NearestNeighbors from version 1.9.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+    "Trying to unpickle estimator RandomForestClassifier from version 1.9.0 when using version 1.6.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations"
+  ],
+  "limitations": [
+    "Raw references are SYNTHETIC, not real external financial statements. This is a simulation only.",
+    "No Polish data used. Existing dataset supplies target quantiles; original trained RF stays fixed.",
+    "Synthetic profiles have no bankruptcy outcomes: precision/recall/accuracy cannot be computed.",
+    "Minmax uses synthetic raw bounds with no clipping. Quantile mapping saturates outside source tails.",
+    "Marginal quantile matching does not recover joint feature relationships or original normalization.",
+    "Results are sensitive to arbitrary reference population and do not validate Malaysian SME use.",
+    "The source dataset partition used for target quantiles is deterministic; exact original artifact training membership is not verified.",
+    "Model version compatibility warnings are retained."
+  ]
+}

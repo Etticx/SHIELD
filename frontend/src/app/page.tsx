@@ -21,25 +21,24 @@ import {
   BarChart2, FileText, ChevronRight, RefreshCw,
 } from "lucide-react";
 
-import InputForm from "@/components/InputForm";
+import InputForm from "@/components/AccountingInputForm";
 import RiskGauge from "@/components/RiskGauge";
 import ShapChart from "@/components/ShapChart";
 import AdvisoryReport from "@/components/AdvisoryReport";
 
-import { predict } from "@/lib/api";
-import { createFinancialDraft, assessReadiness } from "@/lib/readiness";
-import type { FinancialDraft } from "@/lib/readiness";
+import { predictAccounting as predict } from "@/lib/api";
+import { createFinancialDraft, assessReadiness } from "@/lib/accounting-inputs";
+import type { AccountingData, FinancialDraft } from "@/lib/accounting-inputs";
 import { useAuth } from "@/lib/auth";
 import type {
   EvaluationMeta,
-  SMEFinancialData,
   PredictionResponse,
 } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // sessionStorage helpers
 // ---------------------------------------------------------------------------
-const WORKSPACE_KEY = "shield_workspace";
+const WORKSPACE_KEY = "shield_seven_ratios_workspace_v1";
 
 interface PersistedWorkspace {
   meta: EvaluationMeta;
@@ -83,8 +82,8 @@ function IdleMiddle({ draft }: { draft: FinancialDraft }) {
       </p>
       <p className="text-sm text-center leading-relaxed max-w-[240px]">
         {readiness.ready
-          ? "All 20 metrics are provided. Click Evaluate Risk to calculate the assessment."
-          : `${readiness.provided} of 20 metrics provided. Complete the required inputs or request supporting records before evaluation.`}
+          ? "All 7 ratios are provided. Click Evaluate Risk to calculate the assessment."
+          : `${readiness.provided} of 7 ratios provided. Complete the required inputs or request supporting records before evaluation.`}
       </p>
       <p className="text-xs text-center leading-relaxed max-w-[240px] text-brand-muted">
         {readiness.ready ? "Input completeness does not verify the underlying records." : "No risk score has been calculated for these inputs."}
@@ -390,7 +389,7 @@ export default function DashboardPage() {
   }, [sessionMeta]);
 
   // ── Evaluate ──────────────────────────────────────────────────────────────
-  const handleEvaluate = useCallback(async (financials: SMEFinancialData) => {
+  const handleEvaluate = useCallback(async (financials: AccountingData) => {
     if (!sessionMeta || !assessReadiness(draft).ready || loading) return;
     const version = ++evaluationVersion.current;
     setLoading(true);

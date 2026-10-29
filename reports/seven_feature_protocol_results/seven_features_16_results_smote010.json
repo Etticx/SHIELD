@@ -1,0 +1,322 @@
+{
+  "SMOTE_Ratio": 0.1,
+  "SMOTE_Confirmation": "Explicitly supplied by user",
+  "input_count": 7,
+  "threshold": 0.5,
+  "source_attachment": "C:\\Users\\User\\.codex\\attachments\\1caa5ecc-386c-4015-b8ee-536e935bc6a7\\Pasted text.txt",
+  "attachment_sha256": "7686123d59fcfccee9fb564485765f6239c9482f8d1bcff5a81c2b54d77e7df0",
+  "rows": [
+    {
+      "Model": "RandomForest",
+      "Experiment": "70-30 only",
+      "Accuracy": 95.894428,
+      "Precision": 33.928571,
+      "Recall": 28.787879,
+      "F1": 31.147541,
+      "ROC_AUC": 91.455464,
+      "CV_F1_Mean": null,
+      "TN": 1943,
+      "FP": 37,
+      "FN": 47,
+      "TP": 19,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "70-30 only",
+      "Accuracy": 95.601173,
+      "Precision": 32.352941,
+      "Recall": 33.333333,
+      "F1": 32.835821,
+      "ROC_AUC": 89.444827,
+      "CV_F1_Mean": null,
+      "TN": 1934,
+      "FP": 46,
+      "FN": 44,
+      "TP": 22,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "80-20 only",
+      "Accuracy": 96.11437,
+      "Precision": 39.534884,
+      "Recall": 38.636364,
+      "F1": 39.08046,
+      "ROC_AUC": 90.938361,
+      "CV_F1_Mean": null,
+      "TN": 1294,
+      "FP": 26,
+      "FN": 27,
+      "TP": 17,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "80-20 only",
+      "Accuracy": 95.454545,
+      "Precision": 30.434783,
+      "Recall": 31.818182,
+      "F1": 31.111111,
+      "ROC_AUC": 91.033058,
+      "CV_F1_Mean": null,
+      "TN": 1288,
+      "FP": 32,
+      "FN": 30,
+      "TP": 14,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "CV=5 only",
+      "Accuracy": 96.128465,
+      "Precision": 38.421053,
+      "Recall": 33.181818,
+      "F1": 35.609756,
+      "ROC_AUC": 89.149045,
+      "CV_F1_Mean": 35.630959,
+      "TN": 6482,
+      "FP": 117,
+      "FN": 147,
+      "TP": 73,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "CV=5 only",
+      "Accuracy": 95.864496,
+      "Precision": 35.648148,
+      "Recall": 35.0,
+      "F1": 35.321101,
+      "ROC_AUC": 89.722238,
+      "CV_F1_Mean": 35.31325,
+      "TN": 6460,
+      "FP": 139,
+      "FN": 143,
+      "TP": 77,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "CV=10 only",
+      "Accuracy": 95.923156,
+      "Precision": 36.574074,
+      "Recall": 35.909091,
+      "F1": 36.238532,
+      "ROC_AUC": 90.039056,
+      "CV_F1_Mean": 35.900379,
+      "TN": 6462,
+      "FP": 137,
+      "FN": 141,
+      "TP": 79,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 10,
+        "min_samples_split": 2
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "CV=10 only",
+      "Accuracy": 95.820502,
+      "Precision": 33.830846,
+      "Recall": 30.909091,
+      "F1": 32.304038,
+      "ROC_AUC": 89.942967,
+      "CV_F1_Mean": 31.739803,
+      "TN": 6466,
+      "FP": 133,
+      "FN": 152,
+      "TP": 68,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": {
+        "n_estimators": 200,
+        "max_depth": 6,
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "70-30 + CV=5",
+      "Accuracy": 95.698925,
+      "Precision": 32.8125,
+      "Recall": 31.818182,
+      "F1": 32.307692,
+      "ROC_AUC": 91.979645,
+      "CV_F1_Mean": 35.474063,
+      "TN": 1937,
+      "FP": 43,
+      "FN": 45,
+      "TP": 21,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "max_depth": 6
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "70-30 + CV=5",
+      "Accuracy": 96.138807,
+      "Precision": 40.0,
+      "Recall": 39.393939,
+      "F1": 39.694656,
+      "ROC_AUC": 92.093281,
+      "CV_F1_Mean": 39.879175,
+      "TN": 1941,
+      "FP": 39,
+      "FN": 40,
+      "TP": 26,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "learning_rate": 0.1
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "70-30 + CV=10",
+      "Accuracy": 95.698925,
+      "Precision": 33.333333,
+      "Recall": 33.333333,
+      "F1": 33.333333,
+      "ROC_AUC": 91.941001,
+      "CV_F1_Mean": 38.584377,
+      "TN": 1936,
+      "FP": 44,
+      "FN": 44,
+      "TP": 22,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "max_depth": 6
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "70-30 + CV=10",
+      "Accuracy": 96.57869,
+      "Precision": 45.238095,
+      "Recall": 28.787879,
+      "F1": 35.185185,
+      "ROC_AUC": 92.30678,
+      "CV_F1_Mean": 39.910723,
+      "TN": 1957,
+      "FP": 23,
+      "FN": 47,
+      "TP": 19,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "learning_rate": 0.01
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "80-20 + CV=5",
+      "Accuracy": 95.601173,
+      "Precision": 35.185185,
+      "Recall": 43.181818,
+      "F1": 38.77551,
+      "ROC_AUC": 91.008092,
+      "CV_F1_Mean": 38.936621,
+      "TN": 1285,
+      "FP": 35,
+      "FN": 25,
+      "TP": 19,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "max_depth": 6
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "80-20 + CV=5",
+      "Accuracy": 95.601173,
+      "Precision": 34.615385,
+      "Recall": 40.909091,
+      "F1": 37.5,
+      "ROC_AUC": 91.021866,
+      "CV_F1_Mean": 41.551931,
+      "TN": 1286,
+      "FP": 34,
+      "FN": 26,
+      "TP": 18,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "learning_rate": 0.2
+      }
+    },
+    {
+      "Model": "RandomForest",
+      "Experiment": "80-20 + CV=10",
+      "Accuracy": 95.601173,
+      "Precision": 35.185185,
+      "Recall": 43.181818,
+      "F1": 38.77551,
+      "ROC_AUC": 91.075241,
+      "CV_F1_Mean": 37.065167,
+      "TN": 1285,
+      "FP": 35,
+      "FN": 25,
+      "TP": 19,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "max_depth": 6
+      }
+    },
+    {
+      "Model": "XGBoost",
+      "Experiment": "80-20 + CV=10",
+      "Accuracy": 95.454545,
+      "Precision": 33.333333,
+      "Recall": 40.909091,
+      "F1": 36.734694,
+      "ROC_AUC": 91.561639,
+      "CV_F1_Mean": 39.182699,
+      "TN": 1284,
+      "FP": 36,
+      "FN": 26,
+      "TP": 18,
+      "Counts_Source": "Integer reconstruction verified against supplied rounded metrics and report supports",
+      "Best_Params": "Truncated in supplied table; full selected values unavailable",
+      "Visible_Selected_Params": {
+        "learning_rate": 0.1
+      }
+    }
+  ]
+}

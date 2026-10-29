@@ -1,0 +1,240 @@
+{
+  "source": "https://archive.ics.uci.edu/static/public/365/polish%2Bcompanies%2Bbankruptcy%2Bdata.zip",
+  "files": [
+    {
+      "file": "1year.arff",
+      "rows": 7027,
+      "predictors": 64,
+      "bankrupt": 271,
+      "not_bankrupt": 6756,
+      "missing_cells": 5835,
+      "features": {
+        "1": {
+          "min": -256.89,
+          "max": 94.28,
+          "missing": 3
+        },
+        "2": {
+          "min": -72.162,
+          "max": 441.5,
+          "missing": 3
+        },
+        "6": {
+          "min": -397.89,
+          "max": 303.67,
+          "missing": 3
+        },
+        "8": {
+          "min": -141.41,
+          "max": 1452.2,
+          "missing": 25
+        },
+        "10": {
+          "min": -440.55,
+          "max": 1099.5,
+          "missing": 3
+        }
+      },
+      "accounting_checks": {
+        "rows": 7001,
+        "debt_plus_equity_within_0_001": 4329,
+        "equity_to_debt_within_0_001": 6987
+      },
+      "first_row_selected": {
+        "1": "0.20055",
+        "2": "0.37951",
+        "6": "0.38825",
+        "8": "1.3305",
+        "10": "0.50494"
+      }
+    },
+    {
+      "file": "2year.arff",
+      "rows": 10173,
+      "predictors": 64,
+      "bankrupt": 400,
+      "not_bankrupt": 9773,
+      "missing_cells": 12157,
+      "features": {
+        "1": {
+          "min": -75.331,
+          "max": 7.3727,
+          "missing": 1
+        },
+        "2": {
+          "min": 0.0,
+          "max": 480.96,
+          "missing": 1
+        },
+        "6": {
+          "min": -508.41,
+          "max": 35.551,
+          "missing": 1
+        },
+        "8": {
+          "min": -1.5945,
+          "max": 18554.0,
+          "missing": 18
+        },
+        "10": {
+          "min": -479.91,
+          "max": 74.434,
+          "missing": 1
+        }
+      },
+      "accounting_checks": {
+        "rows": 10154,
+        "debt_plus_equity_within_0_001": 7281,
+        "equity_to_debt_within_0_001": 10095
+      },
+      "first_row_selected": {
+        "1": "0.20235",
+        "2": "0.465",
+        "6": "0.51069",
+        "8": "0.91816",
+        "10": "0.42695"
+      }
+    },
+    {
+      "file": "3year.arff",
+      "rows": 10503,
+      "predictors": 64,
+      "bankrupt": 495,
+      "not_bankrupt": 10008,
+      "missing_cells": 9888,
+      "features": {
+        "1": {
+          "min": -17.692,
+          "max": 52.652,
+          "missing": 0
+        },
+        "2": {
+          "min": 0.0,
+          "max": 480.73,
+          "missing": 0
+        },
+        "6": {
+          "min": -508.12,
+          "max": 45.533,
+          "missing": 0
+        },
+        "8": {
+          "min": -2.0818,
+          "max": 53432.0,
+          "missing": 14
+        },
+        "10": {
+          "min": -479.73,
+          "max": 11.837,
+          "missing": 0
+        }
+      },
+      "accounting_checks": {
+        "rows": 10489,
+        "debt_plus_equity_within_0_001": 7615,
+        "equity_to_debt_within_0_001": 10405
+      },
+      "first_row_selected": {
+        "1": "0.17419",
+        "2": "0.41299",
+        "6": "0.60383",
+        "8": "1.1225",
+        "10": "0.46359"
+      }
+    },
+    {
+      "file": "4year.arff",
+      "rows": 9792,
+      "predictors": 64,
+      "bankrupt": 515,
+      "not_bankrupt": 9277,
+      "missing_cells": 8776,
+      "features": {
+        "1": {
+          "min": -12.458,
+          "max": 20.482,
+          "missing": 1
+        },
+        "2": {
+          "min": 0.0,
+          "max": 446.91,
+          "missing": 1
+        },
+        "6": {
+          "min": -486.82,
+          "max": 322.2,
+          "missing": 1
+        },
+        "8": {
+          "min": -1.8482,
+          "max": 53209.0,
+          "missing": 19
+        },
+        "10": {
+          "min": -445.91,
+          "max": 12.602,
+          "missing": 1
+        }
+      },
+      "accounting_checks": {
+        "rows": 9773,
+        "debt_plus_equity_within_0_001": 7027,
+        "equity_to_debt_within_0_001": 9703
+      },
+      "first_row_selected": {
+        "1": "0.15929",
+        "2": "0.4624",
+        "6": "0.46702",
+        "8": "0.82895",
+        "10": "0.3833"
+      }
+    },
+    {
+      "file": "5year.arff",
+      "rows": 5910,
+      "predictors": 64,
+      "bankrupt": 410,
+      "not_bankrupt": 5500,
+      "missing_cells": 4666,
+      "features": {
+        "1": {
+          "min": -463.89,
+          "max": 87.459,
+          "missing": 3
+        },
+        "2": {
+          "min": -430.87,
+          "max": 72.416,
+          "missing": 3
+        },
+        "6": {
+          "min": -463.89,
+          "max": 543.25,
+          "missing": 3
+        },
+        "8": {
+          "min": -3.7351,
+          "max": 6868.5,
+          "missing": 18
+        },
+        "10": {
+          "min": -71.444,
+          "max": 339.85,
+          "missing": 3
+        }
+      },
+      "accounting_checks": {
+        "rows": 5891,
+        "debt_plus_equity_within_0_001": 3891,
+        "equity_to_debt_within_0_001": 5853
+      },
+      "first_row_selected": {
+        "1": "0.088238",
+        "2": "0.55472",
+        "6": "0.34204",
+        "8": "0.57752",
+        "10": "0.32036"
+      }
+    }
+  ]
+}

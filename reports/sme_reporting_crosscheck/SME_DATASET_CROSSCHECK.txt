@@ -1,0 +1,707 @@
+SHIELD - FINANCIAL STATEMENT TO DATASET CROSS-CHECK
+28 October 2026
+
+SCOPE AND EVIDENCE
+Reviewed the actual local original Excel file: 6,819 companies, 97 columns,95 financial predictors. Company and Bankrupt are not predictors. Counts:6599 non-bankrupt,220 bankrupt. Net Income Flag is constant and should be excluded. Filename is not reliable country provenance: columns and sample dimensions match UCI Taiwanese benchmark; no raw-UCI file hash comparison was made.
+
+Terra analyst identified SSM's filing components and Malaysian MPERS illustrative accounts. The user's local IFRS iXBRL example was parsed directly: 173 distinct tagged concepts, including assets, liabilities, equity, profit, cash flows, retained earnings, R&D and share counts. Concept presence in this example is evidence of possible reporting, not universal mandatory availability. The IFRS example is not proof of Malaysian MPERS requirements or of current historical dataset field equivalence.
+
+REPORTING STRUCTURE
+SSM FAQ v2.8(May2025),PDF page12:financial position,profit/loss,cashflows,equity,andnotes. NK illustrative account printed pp17-21(PDF pp21-25): ordinary amounts and comparisons. KPMG illustrative account printed p99(PDF p103)includes R&D. Exact data in notes vary; annual accounts do not necessarily supply quarterly recurring earnings, average share counts or employee headcount.
+
+CATEGORIES
+A: 30 - Annual-account calculator candidate
+B: 35 - Conditional: notes, history or additional records
+C: 28 - Specialised definition or exact mapping unresolved
+D: 1 - External information required
+E: 1 - Exclude: constant local feature
+
+No category means automatically model-ready. Exact definitions, entity scope, period, denominator zeros/signs, percent/fraction and historical donor transformation must be verified. Current/non-current calculator candidates require the corresponding balance-sheet breakdown; liquidity-only presentation may require extra notes. A core ratio being calculable in conventional accounting does not establish exact equivalence to a transformed UCI field.
+
+MAIN FINDINGS
+- Ordinary accounts support a meaningful feature pool beyond the historical top20. Filter for feasibility before IG rather than concluding IG is futile.
+- Do not equate share capital with equity; actual shares with capital divided by an assumed par value; finance costs with pure interest; cashflow with profit; or employee costs with employee count.
+- R&D is demonstrably reported in the user's IFRS example and KPMG illustration, but an omitted R&D line is not proof of zero.
+- The share-field group can be feasible for incorporated businesses with proper share records; it is not automatically available for every SME or applicable to sole proprietors.
+- Growth measures require matching history. Comparative annual accounts do not automatically supply every specialised growth formula or trailing-four-quarter recurrence adjustment.
+- Total assets to GNP price requires an external economic reference/factor, not simply company accounts; its direction and method remain unresolved.
+- B/C review status is not a finding that values are impossible to obtain; investigate definitions and actual supporting records before excluding them.
+- Four-quarter EPS is not categorically impossible from annual records: at a matching year-end, sufficient annual recurring-profit/share detail might reconstruct a confirmed convention. The existing donor convention has not been confirmed.
+
+RECOMMENDED CHECKPOINT (NO TRAINING)
+Use A as a first-pass accounting-calculator pool. Review B fields for available notes and extra records; review C for exact definitions. Exclude E constant and omit D if restricting to company-only information. Freeze a verified eligible list before new experiments. IG may then select within that pool using training folds only. Removing hard-to-obtain fields does not by itself validate predictions for Malaysian SMEs or solve model input scaling.
+
+ALL95 FEATURE DECISIONS
+
+01. ROA(C) before interest and depreciation before interest [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Adjusted recurring earnings; interest; tax; depreciation/amortisation; opening/closing assets
+Candidate route: Specialised ROA(C) definition
+Period: Current/previous assets
+Check: Current vendor formula is not proof of historical donor mapping.
+
+02. ROA(A) before interest and % after tax [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Continuing-operation profit; interest/finance costs; applicable tax; opening/closing assets
+Candidate route: Specialised ROA(A) definition
+Period: Current/previous assets
+Check: Tax adjustment and financial-statement scope need confirmation.
+
+03. ROA(B) before interest and depreciation after tax [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Recurring profit; finance costs; tax; depreciation/amortisation; opening/closing assets
+Candidate route: Specialised ROA(B) definition
+Period: Current/previous assets
+Check: Not interchangeable with ordinary net-income/assets.
+
+04. Operating Gross Margin 
+Category: A - Annual-account calculator candidate
+Need: Revenue; cost of sales or gross profit
+Candidate route: Gross profit / revenue
+Period: One annual period
+Check: Confirm gross-profit scope.
+
+05. Realized Sales Gross Margin 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Revenue; gross profit; any adjustments to realised sales/profit
+Candidate route: Adjusted realised gross margin
+Period: One annual period
+Check: Realised versus ordinary gross profit is unresolved.
+
+06. Operating Profit Rate 
+Category: A - Annual-account calculator candidate
+Need: Operating profit; revenue
+Candidate route: Operating profit / revenue
+Period: One annual period
+Check: Use operating profit, not profit after tax; consistent expense classification.
+
+07. Pre-tax net Interest Rate 
+Category: A - Annual-account calculator candidate
+Need: Profit before tax; revenue
+Candidate route: Profit before tax / revenue
+Period: One annual period
+Check: Label appears to mean pretax margin, not bank interest rate.
+
+08. After-tax net Interest Rate 
+Category: A - Annual-account calculator candidate
+Need: Profit after tax; revenue
+Candidate route: Profit after tax / revenue
+Period: One annual period
+Check: Label appears to mean after-tax margin, not bank interest rate.
+
+09. Non-industry income and expenditure/revenue 
+Category: B - Conditional: notes, history or additional records
+Need: Non-operating income and expense breakdown; revenue
+Candidate route: Net non-operating result / revenue, subject to definition
+Period: One annual period
+Check: Finance and disposal classification may need notes.
+
+10. Continuous interest rate (after tax) [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Recurring after-tax income adjustments; revenue
+Candidate route: Recurring after-tax margin candidate
+Period: One annual period
+Check: Not a loan interest rate; recurring-profit definition unresolved.
+
+11. Operating Expense Rate 
+Category: B - Conditional: notes, history or additional records
+Need: Operating expense breakdown; revenue
+Candidate route: Eligible operating expenses / revenue
+Period: One annual period
+Check: Nature/function presentation and cost-of-sales exclusions need mapping.
+
+12. Research and development expense rate 
+Category: B - Conditional: notes, history or additional records
+Need: Research and development expense; revenue
+Candidate route: R&D expense / revenue
+Period: One annual period
+Check: R&D is shown in IFRS example and KPMG note; not shown as separate line in every SME. No disclosure does not automatically mean zero.
+
+13. Cash flow rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching operating cash-flow measure; denominator
+Candidate route: Cash-flow rate requires donor definition
+Period: One annual period
+Check: Do not assume cash-flow rate equals CFO/revenue.
+
+14. Interest-bearing debt interest rate 
+Category: B - Conditional: notes, history or additional records
+Need: Interest expense; eligible interest-bearing debt balances
+Candidate route: Debt interest-cost rate candidate
+Period: Current and possibly opening debt
+Check: Interest expense is not necessarily all finance costs; average debt convention unresolved.
+
+15. Tax rate (A) 
+Category: B - Conditional: notes, history or additional records
+Need: Income-tax expense; appropriate pretax profit
+Candidate route: Tax expense / pretax profit candidate
+Period: One annual period
+Check: Statutory, effective, current and deferred tax differ; confirm Tax rate A.
+
+16. Net Value Per Share (B) [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Equity components; share counts/classes; treasury shares and adjustments
+Candidate route: Book value per share B
+Period: Reporting date and share movements
+Check: Exact B convention and historical mapping unresolved.
+
+17. Net Value Per Share (A) [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Equity components; share counts/classes; treasury shares and adjustments
+Candidate route: Book value per share A
+Period: Reporting date and share movements
+Check: Exact A convention differs from B; Malaysia has no-par shares.
+
+18. Net Value Per Share (C) 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Equity components; share counts/classes and adjustments
+Candidate route: Book value per share C
+Period: Reporting date and share movements
+Check: Exact C convention unresolved.
+
+19. Persistent EPS in the Last Four Seasons [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Four-quarter recurring earnings; share and ownership adjustments
+Candidate route: Specialised four-quarter recurring EPS
+Period: Matching trailing four-quarter history
+Check: Annual accounts alone do not establish exact value. At an appropriate year-end matching annual recurring figures might suffice only if donor convention is verified.
+
+20. Cash Flow Per Share 
+Category: B - Conditional: notes, history or additional records
+Need: Matching cash-flow measure; appropriate share count
+Candidate route: Cash flow / eligible shares
+Period: Annual flow and matching share convention
+Check: Ending shares may be disclosed; weighted-average shares are not automatically supplied.
+
+21. Revenue Per Share 
+Category: B - Conditional: notes, history or additional records
+Need: Revenue; appropriate share count
+Candidate route: Revenue / eligible shares
+Period: Annual flow and matching share convention
+Check: Confirm ending, weighted-average and adjustment convention.
+
+22. Operating Profit Per Share 
+Category: B - Conditional: notes, history or additional records
+Need: Operating profit; appropriate share count
+Candidate route: Operating profit / eligible shares
+Period: Annual flow and matching share convention
+Check: Share details required; not applicable to businesses without shares.
+
+23. Per Share Net profit before tax [CURRENT TOP20]
+Category: B - Conditional: notes, history or additional records
+Need: Profit before tax; appropriate share count
+Candidate route: Pretax profit / eligible shares
+Period: Annual flow and matching share convention
+Check: Share details required; not simply pretax profit divided by share capital.
+
+24. Realized Sales Gross Profit Growth Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Comparable realised gross profit current/prior
+Candidate route: Growth in realised gross profit
+Period: At least two comparable periods
+Check: Realised adjustment and growth formula unresolved.
+
+25. Operating Profit Growth Rate 
+Category: B - Conditional: notes, history or additional records
+Need: Operating profit current/prior
+Candidate route: Growth in operating profit
+Period: Two comparable annual periods
+Check: Exact denominator/sign and period-length convention must be confirmed.
+
+26. After-tax Net Profit Growth Rate 
+Category: B - Conditional: notes, history or additional records
+Need: Profit after tax current/prior
+Candidate route: Growth in after-tax profit
+Period: Two comparable annual periods
+Check: Zero/negative prior profits require explicit convention.
+
+27. Regular Net Profit Growth Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching regular earnings current/prior
+Candidate route: Growth in regular earnings
+Period: Two comparable periods
+Check: Regular earnings definition unresolved.
+
+28. Continuous Net Profit Growth Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching recurring earnings current/prior
+Candidate route: Growth in recurring earnings
+Period: Two comparable periods
+Check: Continuous/recurring adjustment unresolved.
+
+29. Total Asset Growth Rate 
+Category: B - Conditional: notes, history or additional records
+Need: Total assets current/prior
+Candidate route: Growth in total assets
+Period: Two comparable reporting dates
+Check: Comparative balances usually available after first year; verify restatements.
+
+30. Net Value Growth Rate 
+Category: B - Conditional: notes, history or additional records
+Need: Matching equity/net-worth balances current/prior
+Candidate route: Growth in net worth
+Period: Two comparable reporting dates
+Check: Confirm net-worth definition, sign treatment and equity scope.
+
+31. Total Asset Return Growth Rate Ratio 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching ROA current/prior
+Candidate route: Growth in total-asset return
+Period: Two matching earnings/asset periods
+Check: Requires original ROA and growth conventions.
+
+32. Cash Reinvestment % 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Cash generation; dividends; investment and working-capital components
+Candidate route: Cash reinvestment measure
+Period: Period and balance conventions required
+Check: PPE cash purchases alone do not reconstruct this vendor ratio.
+
+33. Current Ratio 
+Category: A - Annual-account calculator candidate
+Need: Current assets; current liabilities
+Candidate route: Current assets / current liabilities
+Period: Same reporting date
+Check: Requires current/non-current presentation or equivalent breakdown.
+
+34. Quick Ratio 
+Category: B - Conditional: notes, history or additional records
+Need: Quick-asset components; current liabilities
+Candidate route: Eligible quick assets / current liabilities
+Period: Same reporting date
+Check: Current assets minus inventory is not always sufficient; prepayments and other exclusions may apply.
+
+35. Interest Expense Ratio [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Interest/finance costs; exact denominator
+Candidate route: Interest expense ratio
+Period: Matching annual period
+Check: Vendor has several versions; do not assume interest/revenue for this specific column.
+
+36. Total debt/Total net worth 
+Category: B - Conditional: notes, history or additional records
+Need: Eligible debt or liabilities; appropriate net worth
+Candidate route: Debt / net worth candidate
+Period: Same reporting date
+Check: Total debt may mean borrowings or liabilities; sign and absolute-equity treatment need verification.
+
+37. Debt ratio % [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Total liabilities; total assets
+Candidate route: Total liabilities / total assets
+Period: Same reporting date
+Check: Confirm percent/fraction convention; not interest-bearing debt only.
+
+38. Net worth/Assets [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Total equity; total assets
+Candidate route: Equity / total assets
+Period: Same reporting date
+Check: Confirm total equity versus parent-only equity.
+
+39. Long-term fund suitability ratio (A) 
+Category: B - Conditional: notes, history or additional records
+Need: Long-term liability; equity; fixed-asset components
+Candidate route: Long-term funding / eligible fixed assets candidate
+Period: Same reporting date
+Check: Fixed-asset and long-term-funding definitions require verification.
+
+40. Borrowing dependency [CURRENT TOP20]
+Category: B - Conditional: notes, history or additional records
+Need: Short/long-term borrowing breakdown; equity
+Candidate route: Eligible borrowings / equity candidate
+Period: Same reporting date
+Check: Borrowings are a subset of liabilities; donor adjustments must be checked.
+
+41. Contingent liabilities/Net worth 
+Category: B - Conditional: notes, history or additional records
+Need: Quantified contingent liabilities; equity
+Candidate route: Eligible contingent liabilities / equity
+Period: Same reporting date
+Check: Contingencies may be narrative or unquantifiable; absence of a number is not zero.
+
+42. Operating profit/Paid-in capital 
+Category: B - Conditional: notes, history or additional records
+Need: Operating profit; paid-in-capital components
+Candidate route: Operating profit / eligible paid-in capital
+Period: Annual flow and specified capital date
+Check: Exact denominator components differ from total equity; check Malaysian share-capital compatibility.
+
+43. Net profit before tax/Paid-in capital [CURRENT TOP20]
+Category: B - Conditional: notes, history or additional records
+Need: Profit before tax; paid-in-capital components
+Candidate route: Pretax profit / eligible paid-in capital
+Period: Annual flow and specified capital date
+Check: Exact paid-in-capital convention, including applicable adjustments, needs donor confirmation.
+
+44. Inventory and accounts receivable/Net value 
+Category: B - Conditional: notes, history or additional records
+Need: Inventory; trade receivables; equity
+Candidate route: (Inventory + eligible receivables) / equity
+Period: Same reporting date
+Check: Trade notes/related-party receivables and net-worth scope need mapping.
+
+45. Total Asset Turnover 
+Category: B - Conditional: notes, history or additional records
+Need: Revenue; opening/closing total assets
+Candidate route: Revenue / eligible average assets
+Period: Annual flow; opening/closing balance
+Check: Confirm average versus ending balance and annualisation.
+
+46. Accounts Receivable Turnover 
+Category: B - Conditional: notes, history or additional records
+Need: Eligible credit sales; opening/closing trade receivables
+Candidate route: Eligible sales / average receivables
+Period: Annual flow; opening/closing balance
+Check: Credit sales may not be separately reported; do not silently substitute total revenue.
+
+47. Average Collection Days 
+Category: B - Conditional: notes, history or additional records
+Need: Receivables; matching sales; number of days
+Candidate route: Collection-days measure
+Period: Matching period and balance convention
+Check: Requires credit-sales or donor-specific sales basis; verify 360/365 and annualisation.
+
+48. Inventory Turnover Rate (times) 
+Category: B - Conditional: notes, history or additional records
+Need: Cost of sales or donor-defined sales; opening/closing inventory
+Candidate route: Inventory turnover
+Period: Annual flow; opening/closing balance
+Check: Numerator convention varies; service businesses may have no inventory.
+
+49. Fixed Assets Turnover Frequency 
+Category: B - Conditional: notes, history or additional records
+Need: Revenue; eligible opening/closing fixed assets
+Candidate route: Fixed-asset turnover
+Period: Annual flow; opening/closing balance
+Check: Net/gross PPE and average/end balance need definition.
+
+50. Net Worth Turnover Rate (times) 
+Category: B - Conditional: notes, history or additional records
+Need: Revenue; opening/closing equity
+Candidate route: Equity/net-worth turnover
+Period: Annual flow; opening/closing balance
+Check: Verify equity scope and sign treatment.
+
+51. Revenue per person 
+Category: B - Conditional: notes, history or additional records
+Need: Revenue; matching employee headcount
+Candidate route: Revenue / eligible headcount
+Period: Annual flow; average/end headcount
+Check: Payroll/HR headcount may be needed; employee benefit expense is not headcount.
+
+52. Operating profit per person 
+Category: B - Conditional: notes, history or additional records
+Need: Operating profit; matching employee headcount
+Candidate route: Operating profit / eligible headcount
+Period: Annual flow; average/end headcount
+Check: Employee count not assured in ordinary statements.
+
+53. Allocation rate per person 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Employee headcount; definition of allocation numerator
+Candidate route: Allocation per person
+Period: Balance/headcount convention unresolved
+Check: Possible fixed assets per employee; label alone is insufficient.
+
+54. Working Capital to Total Assets 
+Category: A - Annual-account calculator candidate
+Need: Current assets; current liabilities; total assets
+Candidate route: (Current assets - current liabilities) / assets
+Period: Same reporting date
+Check: Working capital can be negative; do not clamp.
+
+55. Quick Assets/Total Assets 
+Category: B - Conditional: notes, history or additional records
+Need: Quick-asset components; total assets
+Candidate route: Eligible quick assets / assets
+Period: Same reporting date
+Check: Requires precise quick-asset exclusions.
+
+56. Current Assets/Total Assets 
+Category: A - Annual-account calculator candidate
+Need: Current assets; total assets
+Candidate route: Current assets / assets
+Period: Same reporting date
+Check: Consistent entity scope.
+
+57. Cash/Total Assets 
+Category: A - Annual-account calculator candidate
+Need: Eligible cash/cash equivalents; total assets
+Candidate route: Cash / assets
+Period: Same reporting date
+Check: Confirm whether equivalents/restricted deposits belong in numerator.
+
+58. Quick Assets/Current Liability 
+Category: B - Conditional: notes, history or additional records
+Need: Quick-asset components; current liabilities
+Candidate route: Eligible quick assets / current liabilities
+Period: Same reporting date
+Check: Definition may overlap Quick Ratio; verify before deduplicating.
+
+59. Cash/Current Liability 
+Category: A - Annual-account calculator candidate
+Need: Eligible cash/cash equivalents; current liabilities
+Candidate route: Cash / current liabilities
+Period: Same reporting date
+Check: Confirm cash definition and nonzero denominator.
+
+60. Current Liability to Assets 
+Category: A - Annual-account calculator candidate
+Need: Current liabilities; total assets
+Candidate route: Current liabilities / assets
+Period: Same reporting date
+Check: Current/non-current classifications needed.
+
+61. Operating Funds to Liability 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Operating-funds measure; liabilities
+Candidate route: Operating funds / liabilities
+Period: Period and balance convention required
+Check: Funds from operations is not automatically cash from operations.
+
+62. Inventory/Working Capital 
+Category: A - Annual-account calculator candidate
+Need: Inventory; current assets; current liabilities
+Candidate route: Inventory / (current assets - current liabilities)
+Period: Same reporting date
+Check: Undefined at zero working capital; negative values may be meaningful.
+
+63. Inventory/Current Liability 
+Category: A - Annual-account calculator candidate
+Need: Inventory; current liabilities
+Candidate route: Inventory / current liabilities
+Period: Same reporting date
+Check: Do not assume zero inventory for service firms without checking.
+
+64. Current Liabilities/Liability 
+Category: A - Annual-account calculator candidate
+Need: Current liabilities; total liabilities
+Candidate route: Current liabilities / total liabilities
+Period: Same reporting date
+Check: Potential duplicate of Current Liability to Liability; definitions must match.
+
+65. Working Capital/Equity 
+Category: A - Annual-account calculator candidate
+Need: Current assets; current liabilities; equity
+Candidate route: (Current assets - current liabilities) / equity
+Period: Same reporting date
+Check: Zero or negative equity needs explicit treatment.
+
+66. Current Liabilities/Equity 
+Category: A - Annual-account calculator candidate
+Need: Current liabilities; equity
+Candidate route: Current liabilities / equity
+Period: Same reporting date
+Check: Potential duplicate of Current Liability to Equity.
+
+67. Long-term Liability to Current Assets 
+Category: A - Annual-account calculator candidate
+Need: Non-current liabilities; current assets
+Candidate route: Long-term liabilities / current assets
+Period: Same reporting date
+Check: Verify long-term liability scope.
+
+68. Retained Earnings to Total Assets [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Retained earnings/accumulated losses; assets
+Candidate route: Retained earnings / assets
+Period: Same reporting date
+Check: Retained earnings is not current-year profit or total reserves.
+
+69. Total income/Total expense 
+Category: B - Conditional: notes, history or additional records
+Need: All eligible income and expense components
+Candidate route: Total eligible income / total eligible expense
+Period: Matching annual period
+Check: Revenue alone is not total income; scope and gross/net presentation need checking.
+
+70. Total expense/Assets 
+Category: B - Conditional: notes, history or additional records
+Need: All eligible expenses; assets
+Candidate route: Total eligible expense / assets
+Period: Annual flow and asset-date convention
+Check: Cost of sales, finance and tax inclusion require exact definition.
+
+71. Current Asset Turnover Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Current assets; sales; exact ratio direction
+Candidate route: Current-asset turnover or assets-to-sales
+Period: Annual flow and balance convention
+Check: English turnover label may conflict with donor description; do not assume direction.
+
+72. Quick Asset Turnover Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Quick assets; sales; exact ratio direction
+Candidate route: Quick-asset turnover or assets-to-sales
+Period: Annual flow and balance convention
+Check: Resolve numerator/denominator and quick-asset definition.
+
+73. Working capitcal Turnover Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Working capital; sales; exact ratio direction
+Candidate route: Working-capital turnover or capital-to-sales
+Period: Annual flow and balance convention
+Check: Spelling retained from dataset; direction and negative-denominator handling unresolved.
+
+74. Cash Turnover Rate 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Cash; sales; exact ratio direction
+Candidate route: Cash turnover or cash-to-sales
+Period: Annual flow and balance convention
+Check: Resolve donor ratio direction before implementing.
+
+75. Cash Flow to Sales 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching cash-flow measure; sales
+Candidate route: Cash flow / sales
+Period: Matching annual period
+Check: Distinguish CFO, net cash change and adjusted cash flow.
+
+76. Fixed Assets to Assets 
+Category: B - Conditional: notes, history or additional records
+Need: Eligible fixed assets; total assets
+Candidate route: Fixed assets / total assets
+Period: Same reporting date
+Check: PPE net carrying value is a candidate, not confirmed definition.
+
+77. Current Liability to Liability 
+Category: A - Annual-account calculator candidate
+Need: Current liabilities; total liabilities
+Candidate route: Current liabilities / total liabilities
+Period: Same reporting date
+Check: Potential duplicate of Current Liabilities/Liability.
+
+78. Current Liability to Equity 
+Category: A - Annual-account calculator candidate
+Need: Current liabilities; equity
+Candidate route: Current liabilities / equity
+Period: Same reporting date
+Check: Potential duplicate of Current Liabilities/Equity.
+
+79. Equity to Long-term Liability 
+Category: A - Annual-account calculator candidate
+Need: Equity; non-current liabilities
+Candidate route: Equity / long-term liabilities
+Period: Same reporting date
+Check: Undefined if eligible long-term liability is zero.
+
+80. Cash Flow to Total Assets 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching cash-flow measure; assets
+Candidate route: Cash flow / assets
+Period: Annual flow and balance convention
+Check: Donor cash-flow and asset-date definitions unresolved.
+
+81. Cash Flow to Liability 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching cash-flow measure; liabilities
+Candidate route: Cash flow / liabilities
+Period: Annual flow and balance convention
+Check: Do not assume the same numerator as CFO.
+
+82. CFO to Assets 
+Category: A - Annual-account calculator candidate
+Need: Net cash from operating activities; assets
+Candidate route: CFO / assets
+Period: Annual cash flow and specified asset balance
+Check: Confirm average/end assets; cash flows are shown in MPERS examples.
+
+83. Cash Flow to Equity 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Matching cash-flow measure; equity
+Candidate route: Cash flow / equity
+Period: Annual flow and balance convention
+Check: Cash-flow definition and equity scope unresolved.
+
+84. Current Liability to Current Assets 
+Category: A - Annual-account calculator candidate
+Need: Current liabilities; current assets
+Candidate route: Current liabilities / current assets
+Period: Same reporting date
+Check: Not a growth or cash-flow measure.
+
+85. Liability-Assets Flag 
+Category: A - Annual-account calculator candidate
+Need: Total liabilities; total assets
+Candidate route: Indicator based on liabilities exceeding assets
+Period: Same reporting date
+Check: Confirm encoded direction (0/1); derived flag, not a printed statement field.
+
+86. Net Income to Total Assets [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Net income; assets
+Candidate route: Net income / assets
+Period: Annual flow and specified asset balance
+Check: Confirm average/end assets and continuing/total profit scope.
+
+87. Total assets to GNP price 
+Category: D - External information required
+Need: Total assets; external GNP/economic-price measure
+Candidate route: Requires an external macroeconomic reference/factor
+Period: Country/year/currency alignment
+Check: Not supplied by an SME financial statement; direction, reference and method unclear.
+
+88. No-credit Interval 
+Category: C - Specialised definition or exact mapping unresolved
+Need: Eligible liquid assets; operating expenditure/credit components
+Candidate route: No-credit interval
+Period: Matching balance and daily-flow convention
+Check: Specialised definition not recovered from field name.
+
+89. Gross Profit to Sales 
+Category: A - Annual-account calculator candidate
+Need: Gross profit; sales
+Candidate route: Gross profit / sales
+Period: Matching annual period
+Check: Potential overlap with Operating Gross Margin; definitions not assumed identical.
+
+90. Net Income to Stockholder's Equity [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Net income; shareholders equity
+Candidate route: Net income / eligible equity
+Period: Annual flow and specified equity balance
+Check: Confirm ending/average and parent/total equity.
+
+91. Liability to Equity [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Total liabilities; eligible equity
+Candidate route: Liabilities / equity
+Period: Same reporting date
+Check: Check absolute-equity/sign conventions and scope.
+
+92. Degree of Financial Leverage (DFL) [CURRENT TOP20]
+Category: B - Conditional: notes, history or additional records
+Need: Operating profit; actual interest expense
+Candidate route: Financial-leverage measure candidate
+Period: Matching annual period
+Check: Formula and loss/zero-denominator handling must match donor; finance costs may include noninterest items.
+
+93. Interest Coverage Ratio (Interest expense to EBIT) [CURRENT TOP20]
+Category: C - Specialised definition or exact mapping unresolved
+Need: Interest/finance costs; EBIT
+Candidate route: Coverage or inverse coverage
+Period: Matching annual period
+Check: Parenthetical interest expense to EBIT conflicts with conventional coverage direction.
+
+94. Net Income Flag 
+Category: E - Exclude: constant local feature
+Need: Historical profit/loss periods if defined
+Candidate route: Constant feature in this local dataset
+Period: Dataset-specific
+Check: Exclude from predictive pool: no observed variation in this dataset, not proof of constant future values. UCI describes a two-year negative-income flag, but this local column mapping is not confirmed.
+
+95. Equity to Liability [CURRENT TOP20]
+Category: A - Annual-account calculator candidate
+Need: Equity; total liabilities
+Candidate route: Equity / liabilities
+Period: Same reporting date
+Check: Undefined at zero liabilities; reciprocal only under matching raw conventions.
+
+SOURCE REGISTER
+SSM: https://www.ssm.com.my/bm/Pages/Register_Business_Company_LLP/Company/document/FAQ-MBRS_ISSB.pdf#page=12
+NK: https://nk.com.my/cdn/pdf/MPERS_Illustrative_Financial_Statements.pdf#page=21
+KPMG: https://assets.kpmg.com/content/dam/kpmgsites/my/pdf/2025/01/Wonderful-SME-Sdn-Bhd-Illustrative-Financial-Statements-2016.pdf
+UCI: https://archive.ics.uci.edu/dataset/572/taiwanese+bankruptcy+prediction
+TEJ: https://www.tej.com.tw/tejdoc/db-document/tw/wim4.html
+IFRS: https://www.ifrs.org/issued-standards/ifrs-taxonomy/ifrs-taxonomy-illustrative-examples/

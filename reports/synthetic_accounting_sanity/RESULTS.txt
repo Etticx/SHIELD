@@ -1,0 +1,19 @@
+SYNTHETIC ACCOUNTING SANITY TEST — 29 October 2026
+Scenarios: 5,000; base profiles: 1,000
+Assumed raw bounds: min=0 max=1. Formula leaves raw ratios unchanged.
+base/strong: {"count": 400, "verdicts": {"counterintuitive": 400}, "screen_bands": {"Moderate Risk": 164, "High Risk": 236}, "mean_score_pct": 59.5992631525, "min_score_pct": 42.854798, "max_score_pct": 75.166306, "mean_change_pp": 0.0}
+base/weak: {"count": 400, "verdicts": {"counterintuitive": 200, "consistent": 200}, "screen_bands": {"Moderate Risk": 200, "High Risk": 200}, "mean_score_pct": 60.786962155, "min_score_pct": 55.799592, "max_score_pct": 66.812457, "mean_change_pp": 0.0}
+base/mixed: {"count": 200, "verdicts": {"inconclusive": 200}, "screen_bands": {"High Risk": 200}, "mean_score_pct": 67.941595635, "min_score_pct": 65.984956, "max_score_pct": 68.328237, "mean_change_pp": 0.0}
+profit_up/all: {"count": 1000, "verdicts": {"unchanged": 857, "counterintuitive": 104, "consistent": 39}, "screen_bands": {"Moderate Risk": 401, "High Risk": 599}, "mean_score_pct": 61.85262522, "min_score_pct": 42.854798, "max_score_pct": 75.318584, "mean_change_pp": 0.109816012}
+debt_down/all: {"count": 1000, "verdicts": {"consistent": 444, "counterintuitive": 277, "unchanged": 279}, "screen_bands": {"Moderate Risk": 511, "High Risk": 489}, "mean_score_pct": 55.265461943000005, "min_score_pct": 35.511195, "max_score_pct": 68.690908, "mean_change_pp": -6.477347385999999}
+retained_up/all: {"count": 1000, "verdicts": {"unchanged": 928, "counterintuitive": 72}, "screen_bands": {"Moderate Risk": 364, "High Risk": 636}, "mean_score_pct": 61.84920826, "min_score_pct": 42.854798, "max_score_pct": 75.33001, "mean_change_pp": 0.106399016}
+combined_improvement/all: {"count": 1000, "verdicts": {"consistent": 445, "unchanged": 311, "counterintuitive": 244}, "screen_bands": {"Moderate Risk": 543, "High Risk": 457}, "mean_score_pct": 55.060529328, "min_score_pct": 35.511195, "max_score_pct": 68.690908, "mean_change_pp": -6.682279953999999}
+Synthetic scenarios have no bankruptcy ground-truth labels. These are heuristic consistency verdicts, not accuracy, precision or recall.
+No dataset/test rows used. No actual company identities or financial statements used.
+A=L+E in every scenario. Changes are matched static scenarios, not full financial-statement transaction simulations.
+The model was trained on encoded feature values. This test assumes identity conversion to inspect behavior; it cannot recover original scaling.
+Ratios outside [0,1] are preserved and represent extrapolation beyond the seven columns observed unit ranges.
+Losses divided by negative equity can yield positive ROE; nonlinear or unchanged predictions are not automatically modelling errors.
+Retained earnings changes at fixed equity imply a different equity composition.
+The supplied artifact was saved using a different sklearn version; warnings retained.
+Current website input form remains seven direct values; this offline audit explicitly uses the older five-amount calculator path.

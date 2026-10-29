@@ -1,0 +1,77 @@
+[
+  {
+    "scenario": "Healthy / very low score",
+    "source_row_index": 2928,
+    "dataset_label": 0,
+    "score": 0.0499844045078024,
+    "inputs": {
+      "net_income_to_stockholders_equity": 0.840337937,
+      "net_income_to_total_assets": 0.799803871,
+      "retained_earnings_to_total_assets": 0.932654007,
+      "debt_ratio_percent": 0.11811833,
+      "net_worth_assets": 0.88188167,
+      "equity_to_liability": 0.03170633,
+      "liability_to_equity": 0.279189084
+    }
+  },
+  {
+    "scenario": "Low risk",
+    "source_row_index": 6089,
+    "dataset_label": 0,
+    "score": 0.20001878858352323,
+    "inputs": {
+      "net_income_to_stockholders_equity": 0.839764226,
+      "net_income_to_total_assets": 0.793151787,
+      "retained_earnings_to_total_assets": 0.930497383,
+      "debt_ratio_percent": 0.157450797,
+      "net_worth_assets": 0.842549203,
+      "equity_to_liability": 0.022931651,
+      "liability_to_equity": 0.28230361
+    }
+  },
+  {
+    "scenario": "Medium risk",
+    "source_row_index": 6027,
+    "dataset_label": 0,
+    "score": 0.45102189962734995,
+    "inputs": {
+      "net_income_to_stockholders_equity": 0.838867484,
+      "net_income_to_total_assets": 0.784404035,
+      "retained_earnings_to_total_assets": 0.924947994,
+      "debt_ratio_percent": 0.161350788,
+      "net_worth_assets": 0.838649212,
+      "equity_to_liability": 0.022289076,
+      "liability_to_equity": 0.282709825
+    }
+  },
+  {
+    "scenario": "High risk",
+    "source_row_index": 1805,
+    "dataset_label": 0,
+    "score": 0.7004089930809475,
+    "inputs": {
+      "net_income_to_stockholders_equity": 0.833049958,
+      "net_income_to_total_assets": 0.707531145,
+      "retained_earnings_to_total_assets": 0.88328261,
+      "debt_ratio_percent": 0.122411343,
+      "net_worth_assets": 0.877588657,
+      "equity_to_liability": 0.03048709,
+      "liability_to_equity": 0.279460423
+    }
+  },
+  {
+    "scenario": "Critical risk",
+    "source_row_index": 1026,
+    "dataset_label": 1,
+    "score": 0.898580067325183,
+    "inputs": {
+      "net_income_to_stockholders_equity": 0.822486352,
+      "net_income_to_total_assets": 0.728678402,
+      "retained_earnings_to_total_assets": 0.909091383,
+      "debt_ratio_percent": 0.244731989,
+      "net_worth_assets": 0.755268011,
+      "equity_to_liability": 0.013355245,
+      "liability_to_equity": 0.305672238
+    }
+  }
+]

@@ -31,6 +31,9 @@ from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, Field
 
 from config import settings
+from experimental_accounting import calculate_features, run_prediction
+from pathlib import Path
+from functools import lru_cache
 from database import init_db, close_db, get_session, Evaluation
 
 # ---------------------------------------------------------------------------
@@ -38,6 +41,24 @@ from database import init_db, close_db, get_session, Evaluation
 # ---------------------------------------------------------------------------
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(name)s  %(message)s")
 logger = logging.getLogger("shield.api")
+
+
+@lru_cache(maxsize=1)
+def accounting_experiment_explainer():
+    return shap.TreeExplainer(accounting_experiment_model()[-1], feature_perturbation="interventional")
+
+
+class AccountingExperimentRequest(BaseModel):
+    net_income: float = Field(allow_inf_nan=False)
+    total_assets: float = Field(gt=0, allow_inf_nan=False)
+    total_liabilities: float = Field(gt=0, allow_inf_nan=False)
+    equity: float = Field(allow_inf_nan=False)
+    retained_earnings: float = Field(allow_inf_nan=False)
+
+
+@lru_cache(maxsize=1)
+def accounting_experiment_model():
+    return joblib.load(Path(__file__).resolve().parent.parent / "model" / "SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib")
 
 # ---------------------------------------------------------------------------
 # Groq async client — initialised once at startup if API key is present.
@@ -535,6 +556,26 @@ class PredictRequest(BaseModel):
 # Log entry response model
 # ---------------------------------------------------------------------------
 
+class SevenRatioInputs(BaseModel):
+    model_config = {"extra": "forbid"}
+    net_income_to_stockholders_equity: float = Field(ge=0, le=1, allow_inf_nan=False)
+    net_income_to_total_assets: float = Field(ge=0, le=1, allow_inf_nan=False)
+    retained_earnings_to_total_assets: float = Field(ge=0, le=1, allow_inf_nan=False)
+    debt_ratio_percent: float = Field(ge=0, le=1, allow_inf_nan=False)
+    net_worth_assets: float = Field(ge=0, le=1, allow_inf_nan=False)
+    equity_to_liability: float = Field(ge=0, le=1, allow_inf_nan=False)
+    liability_to_equity: float = Field(ge=0, le=1, allow_inf_nan=False)
+
+    def as_model_features(self):
+        from experimental_accounting import FEATURES
+        return dict(zip(FEATURES, self.model_dump().values()))
+
+
+class AccountingPredictRequest(BaseModel):
+    meta: EvaluationMeta
+    financials: SevenRatioInputs
+
+
 class LogEntry(BaseModel):
     id:                  int
     company_name:        str
@@ -662,7 +703,7 @@ async def generate_advisory(
 # Business logic helpers
 # ---------------------------------------------------------------------------
 
-def _compute_shap(input_df: pd.DataFrame) -> tuple[np.ndarray, float]:
+def _compute_shap(input_df: pd.DataFrame, explainer=None) -> tuple[np.ndarray, float]:
     """
     Compute SHAP values for a single-row DataFrame.
 
@@ -672,7 +713,7 @@ def _compute_shap(input_df: pd.DataFrame) -> tuple[np.ndarray, float]:
     check_additivity is disabled to avoid benign floating-point warnings
     from large ensembles; the values themselves remain correct.
     """
-    sv_obj = app_state.explainer(input_df.values, check_additivity=False)
+    sv_obj = (explainer if explainer is not None else app_state.explainer)(input_df.values, check_additivity=False)
     if sv_obj.values.ndim == 3:
         sv       = sv_obj.values[0, :, 1]
         base_val = float(sv_obj.base_values[0, 1])
@@ -685,9 +726,10 @@ def _compute_shap(input_df: pd.DataFrame) -> tuple[np.ndarray, float]:
 def _build_rule_based_advisory(
     shap_values: np.ndarray,
     prob: float,
+    labels: list[str] | None = None,
 ) -> tuple[str, str, str, list[dict], list[dict]]:
     """Returns (tone, tone_level, recommendation, risk_drivers, protective_factors)."""
-    pairs = list(zip(FEATURE_LABELS, shap_values))
+    pairs = list(zip(labels if labels is not None else FEATURE_LABELS, shap_values))
 
     if prob >= 0.80:
         tone       = "Critical Risk Detected. The model indicates a very high likelihood of financial distress."
@@ -768,24 +810,36 @@ async def get_features() -> dict:
     }
 
 
+@app.post("/ratios-predict", response_model=PredictionResponse, tags=["Prediction"])
 @app.post("/predict", response_model=PredictionResponse, tags=["Prediction"])
-async def predict(request: PredictRequest, _: None = Security(verify_api_key)) -> PredictionResponse:
+async def predict(request: PredictRequest | AccountingPredictRequest, _: None = Security(verify_api_key)) -> PredictionResponse:
     """Main prediction endpoint — runs Random Forest + SHAP + Groq advisory, then persists to DB."""
-    if app_state.model is None or app_state.explainer is None:
-        raise HTTPException(status_code=503, detail="Model not loaded. Try again shortly.")
-
-    data          = request.financials
-    meta          = request.meta
-    feature_array = data.to_feature_array()
-    input_df      = pd.DataFrame([feature_array], columns=FEATURE_NAMES)
-
-    prob_bankrupt = float(app_state.model.predict_proba(input_df)[0][1])
-    is_high_risk  = prob_bankrupt >= 0.60
-
-    shap_vals, base_val = _compute_shap(input_df)
+    data = request.financials
+    meta = request.meta
+    if isinstance(request, AccountingPredictRequest):
+        try:
+            features = data.as_model_features()
+            model = accounting_experiment_model()
+            outcome = run_prediction(model, features)
+            input_df = pd.DataFrame([list(outcome['features_sent'].values())], columns=list(outcome['features_sent']))
+            feature_array = input_df.iloc[0].tolist()
+            labels = [str(name).strip() for name in input_df.columns]
+            prob_bankrupt = outcome['bankruptcy_score']
+            shap_vals, base_val = _compute_shap(input_df, accounting_experiment_explainer())
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+    else:
+        if app_state.model is None or app_state.explainer is None:
+            raise HTTPException(status_code=503, detail="Model not loaded. Try again shortly.")
+        feature_array = data.to_feature_array()
+        input_df = pd.DataFrame([feature_array], columns=FEATURE_NAMES)
+        labels = FEATURE_LABELS
+        prob_bankrupt = float(app_state.model.predict_proba(input_df)[0][1])
+        shap_vals, base_val = _compute_shap(input_df)
+    is_high_risk = prob_bankrupt >= 0.60
 
     shap_features: list[ShapFeature] = []
-    for i, (label, sv) in enumerate(zip(FEATURE_LABELS, shap_vals)):
+    for i, (label, sv) in enumerate(zip(labels, shap_vals)):
         shap_features.append(ShapFeature(
             label=label,
             value=round(feature_array[i], 6),
@@ -795,7 +849,7 @@ async def predict(request: PredictRequest, _: None = Security(verify_api_key)) -
     shap_features.sort(key=lambda x: abs(x.shap_value), reverse=True)
 
     tone, tone_level, rule_recommendation, risk_drivers, protective_factors = (
-        _build_rule_based_advisory(shap_vals, prob_bankrupt)
+        _build_rule_based_advisory(shap_vals, prob_bankrupt, labels)
     )
 
     classification = (
@@ -881,3 +935,17 @@ async def get_logs(limit: int = 200, _: None = Security(verify_api_key)) -> list
         rows = result.scalars().all()
 
     return [LogEntry(**row.to_dict()) for row in rows]
+
+@app.post('/experimental/accounting-predict', tags=['Experimental'])
+async def accounting_predict(request: AccountingExperimentRequest, _: None = Security(verify_api_key)):
+    try:
+        features = calculate_features(**request.model_dump())
+        result = run_prediction(accounting_experiment_model(), features)
+        result['model'] = 'Random Forest | 7 features | SMOTE 0.5 | 80:20 + CV=5'
+        result['balance_difference'] = request.total_assets - request.total_liabilities - request.equity
+        return result
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except Exception:
+        logger.exception('Experimental accounting prediction failed')
+        raise HTTPException(status_code=503, detail='Seven-feature model unavailable. Check the backend model file and compatible dependencies.')

@@ -1,0 +1,16 @@
+Rows checked: 6819
+Candidate: [0,1] raw bounds for every feature
+Tolerance: absolute 0.001; relative 0.001
+Liabilities/assets + Equity/assets = 1: 6819 match; 0 mismatch; 0 skipped
+(Equity/liabilities) * (Liabilities/equity) = 1: 0 match; 6819 mismatch; 0 skipped
+(Equity/liabilities) * (Liabilities/assets) = Equity/assets: 1 match; 6818 mismatch; 0 skipped
+(Liabilities/equity) * (Equity/assets) = Liabilities/assets: 11 match; 6808 mismatch; 0 skipped
+(Net income/equity) * (Equity/assets) = Net income/assets: 38 match; 6781 mismatch; 0 skipped
+Rows matching all checks: 0
+Verdict: INCONSISTENT_WITH_IDENTITIES_UNDER_MATCHING_DEFINITIONS
+Checks assume identical entity, reporting period, numerator and denominator definitions.
+Mismatch does not prove normalisation or identify which particular bound is incorrect.
+Matching all checks does not establish unique or original bounds.
+Retained earnings/assets has no independent identity among these seven features.
+Several checks are algebraically dependent.
+No original raw values or original min/max are recovered by this script.

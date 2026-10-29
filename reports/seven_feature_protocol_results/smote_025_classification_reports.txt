@@ -1,0 +1,174 @@
+=== Classification Report: RandomForest | 70-30 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      1980
+    Bankrupt       0.33      0.55      0.41        66
+
+    accuracy                           0.95      2046
+   macro avg       0.66      0.75      0.69      2046
+weighted avg       0.96      0.95      0.96      2046
+
+
+=== Classification Report: XGBoost | 70-30 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      1980
+    Bankrupt       0.28      0.42      0.34        66
+
+    accuracy                           0.95      2046
+   macro avg       0.63      0.69      0.66      2046
+weighted avg       0.96      0.95      0.95      2046
+
+
+=== Classification Report: RandomForest | 80-20 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.96      0.97      1320
+    Bankrupt       0.31      0.59      0.41        44
+
+    accuracy                           0.94      1364
+   macro avg       0.65      0.77      0.69      1364
+weighted avg       0.96      0.94      0.95      1364
+
+
+=== Classification Report: XGBoost | 80-20 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      1320
+    Bankrupt       0.26      0.45      0.33        44
+
+    accuracy                           0.94      1364
+   macro avg       0.62      0.71      0.65      1364
+weighted avg       0.96      0.94      0.95      1364
+
+
+=== Classification Report: RandomForest | CV=5 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      6599
+    Bankrupt       0.29      0.55      0.38       220
+
+    accuracy                           0.94      6819
+   macro avg       0.64      0.75      0.68      6819
+weighted avg       0.96      0.94      0.95      6819
+
+
+=== Classification Report: XGBoost | CV=5 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      6599
+    Bankrupt       0.27      0.47      0.34       220
+
+    accuracy                           0.94      6819
+   macro avg       0.63      0.72      0.66      6819
+weighted avg       0.96      0.94      0.95      6819
+
+
+=== Classification Report: RandomForest | CV=10 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.95      0.97      6599
+    Bankrupt       0.29      0.56      0.38       220
+
+    accuracy                           0.94      6819
+   macro avg       0.64      0.76      0.68      6819
+weighted avg       0.96      0.94      0.95      6819
+
+
+=== Classification Report: XGBoost | CV=10 only ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      6599
+    Bankrupt       0.27      0.48      0.34       220
+
+    accuracy                           0.94      6819
+   macro avg       0.63      0.72      0.66      6819
+weighted avg       0.96      0.94      0.95      6819
+
+
+=== Classification Report: RandomForest | 70-30 + CV=5 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.95      0.97      1980
+    Bankrupt       0.32      0.65      0.43        66
+
+    accuracy                           0.94      2046
+   macro avg       0.65      0.80      0.70      2046
+weighted avg       0.97      0.94      0.95      2046
+
+
+=== Classification Report: XGBoost | 70-30 + CV=5 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.95      0.97      1980
+    Bankrupt       0.30      0.64      0.41        66
+
+    accuracy                           0.94      2046
+   macro avg       0.65      0.79      0.69      2046
+weighted avg       0.97      0.94      0.95      2046
+
+
+=== Classification Report: RandomForest | 70-30 + CV=10 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.95      0.97      1980
+    Bankrupt       0.32      0.65      0.43        66
+
+    accuracy                           0.94      2046
+   macro avg       0.65      0.80      0.70      2046
+weighted avg       0.97      0.94      0.95      2046
+
+
+=== Classification Report: XGBoost | 70-30 + CV=10 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.97      0.98      1980
+    Bankrupt       0.33      0.41      0.36        66
+
+    accuracy                           0.95      2046
+   macro avg       0.65      0.69      0.67      2046
+weighted avg       0.96      0.95      0.96      2046
+
+
+=== Classification Report: RandomForest | 80-20 + CV=5 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.95      0.97      1320
+    Bankrupt       0.31      0.66      0.42        44
+
+    accuracy                           0.94      1364
+   macro avg       0.65      0.80      0.69      1364
+weighted avg       0.97      0.94      0.95      1364
+
+
+=== Classification Report: XGBoost | 80-20 + CV=5 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.96      0.97      1320
+    Bankrupt       0.33      0.66      0.44        44
+
+    accuracy                           0.95      1364
+   macro avg       0.66      0.81      0.71      1364
+weighted avg       0.97      0.95      0.95      1364
+
+
+=== Classification Report: RandomForest | 80-20 + CV=10 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.99      0.95      0.97      1320
+    Bankrupt       0.31      0.66      0.42        44
+
+    accuracy                           0.94      1364
+   macro avg       0.65      0.81      0.70      1364
+weighted avg       0.97      0.94      0.95      1364
+
+
+=== Classification Report: XGBoost | 80-20 + CV=10 ===
+              precision    recall  f1-score   support
+
+Not Bankrupt       0.98      0.96      0.97      1320
+    Bankrupt       0.30      0.55      0.39        44
+
+    accuracy                           0.95      1364
+   macro avg       0.64      0.75      0.68      1364
+weighted avg       0.96      0.95      0.95      1364

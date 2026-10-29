@@ -1,0 +1,340 @@
+{
+  "review_date": "2026-10-28",
+  "url": "https://www.kaggle.com/code/arnab36gm/eda-resampling-dimensionality-red-and-prediction",
+  "version_observed": "6 of6,version222365278",
+  "source_method": "Read actual rendered notebook through browser,including code cells16,17,18,20,21and23. Outputs also checked against userattachment.",
+  "source_attachment_sha256": "7f0730d54c210df4383d59f6c3544d9731cf72663c2f0988a0df5b48cd7e9522",
+  "verified_method": {
+    "input_rows": 6819,
+    "random_under_sampler_ratio": 0.1,
+    "after_undersampling": {
+      "0": 2200,
+      "1": 220
+    },
+    "random_over_sampler_ratio": 0.3,
+    "after_oversampling": {
+      "0": 2200,
+      "1": 660
+    },
+    "split": "train_test_split(X_resampled,y_resampled,test_size=0.2); no explicit seed/stratify",
+    "dimension_reduction": "TruncatedSVD19,fitX_train,transformX_train/X_test",
+    "report_calls": [
+      "confusion_matrix(prediction,y_test)",
+      "classification_report(prediction,y_test)"
+    ]
+  },
+  "test_support_actual": {
+    "0": 424,
+    "1": 148,
+    "total": 572
+  },
+  "actual_positive_prevalence_percent": 25.874125874125873,
+  "duplicate_leakage": "RandomOverSampler duplicates observations before split; copies can appear in both train/test. Actual identity-overlap count not measured; no sourceexecution performed.",
+  "class_report_argument_error": "predictions supplied as y_true; class supports therefore vary with model predictions; precision and recall swapped. Accuracy and per-class F1 unchanged by transposition.",
+  "comparison_limitations": [
+    "Testdataare resampled before split",
+    "Positiveprevalence25.87% versusoriginal3.23%",
+    "Uses91originalpredictorscompressedinto19components,notseveninputs",
+    "No independent natural-distribution evaluation supplied"
+  ],
+  "corrected_metrics_from_printed_counts": [
+    {
+      "model": "Logistic Regression",
+      "printed_prediction_row_matrix": [
+        [
+          403,
+          132
+        ],
+        [
+          21,
+          16
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          403,
+          21
+        ],
+        [
+          132,
+          16
+        ]
+      ],
+      "accuracy_percent": 73.25174825174825,
+      "precision_percent": 43.24324324324324,
+      "recall_percent": 10.81081081081081,
+      "f1_percent": 17.2972972972973
+    },
+    {
+      "model": "Support Vector Classifier",
+      "printed_prediction_row_matrix": [
+        [
+          413,
+          130
+        ],
+        [
+          11,
+          18
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          413,
+          11
+        ],
+        [
+          130,
+          18
+        ]
+      ],
+      "accuracy_percent": 75.34965034965035,
+      "precision_percent": 62.06896551724138,
+      "recall_percent": 12.162162162162161,
+      "f1_percent": 20.338983050847457
+    },
+    {
+      "model": "Decision Tree",
+      "printed_prediction_row_matrix": [
+        [
+          378,
+          11
+        ],
+        [
+          46,
+          137
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          378,
+          46
+        ],
+        [
+          11,
+          137
+        ]
+      ],
+      "accuracy_percent": 90.03496503496504,
+      "precision_percent": 74.86338797814207,
+      "recall_percent": 92.56756756756756,
+      "f1_percent": 82.77945619335347
+    },
+    {
+      "model": "Random Forest",
+      "printed_prediction_row_matrix": [
+        [
+          416,
+          16
+        ],
+        [
+          8,
+          132
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          416,
+          8
+        ],
+        [
+          16,
+          132
+        ]
+      ],
+      "accuracy_percent": 95.8041958041958,
+      "precision_percent": 94.28571428571429,
+      "recall_percent": 89.1891891891892,
+      "f1_percent": 91.66666666666667
+    },
+    {
+      "model": "Neural Network",
+      "printed_prediction_row_matrix": [
+        [
+          393,
+          83
+        ],
+        [
+          31,
+          65
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          393,
+          31
+        ],
+        [
+          83,
+          65
+        ]
+      ],
+      "accuracy_percent": 80.06993006993007,
+      "precision_percent": 67.70833333333333,
+      "recall_percent": 43.91891891891892,
+      "f1_percent": 53.278688524590166
+    },
+    {
+      "model": "Stochastic Gradient Descent",
+      "printed_prediction_row_matrix": [
+        [
+          73,
+          22
+        ],
+        [
+          351,
+          126
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          73,
+          351
+        ],
+        [
+          22,
+          126
+        ]
+      ],
+      "accuracy_percent": 34.79020979020979,
+      "precision_percent": 26.41509433962264,
+      "recall_percent": 85.13513513513513,
+      "f1_percent": 40.32
+    },
+    {
+      "model": "XGBClassifier",
+      "printed_prediction_row_matrix": [
+        [
+          409,
+          12
+        ],
+        [
+          15,
+          136
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          409,
+          15
+        ],
+        [
+          12,
+          136
+        ]
+      ],
+      "accuracy_percent": 95.27972027972028,
+      "precision_percent": 90.06622516556291,
+      "recall_percent": 91.89189189189189,
+      "f1_percent": 90.96989966555184
+    },
+    {
+      "model": "ExtraTreesClassifier",
+      "printed_prediction_row_matrix": [
+        [
+          421,
+          16
+        ],
+        [
+          3,
+          132
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          421,
+          3
+        ],
+        [
+          16,
+          132
+        ]
+      ],
+      "accuracy_percent": 96.67832167832168,
+      "precision_percent": 97.77777777777777,
+      "recall_percent": 89.1891891891892,
+      "f1_percent": 93.28621908127208
+    },
+    {
+      "model": "AdaBoostClassifier",
+      "printed_prediction_row_matrix": [
+        [
+          396,
+          95
+        ],
+        [
+          28,
+          53
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          396,
+          28
+        ],
+        [
+          95,
+          53
+        ]
+      ],
+      "accuracy_percent": 78.4965034965035,
+      "precision_percent": 65.4320987654321,
+      "recall_percent": 35.810810810810814,
+      "f1_percent": 46.2882096069869
+    },
+    {
+      "model": "GradientBoostingClassifier",
+      "printed_prediction_row_matrix": [
+        [
+          411,
+          85
+        ],
+        [
+          13,
+          63
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          411,
+          13
+        ],
+        [
+          85,
+          63
+        ]
+      ],
+      "accuracy_percent": 82.86713286713287,
+      "precision_percent": 82.89473684210526,
+      "recall_percent": 42.567567567567565,
+      "f1_percent": 56.25
+    },
+    {
+      "model": "KNN",
+      "printed_prediction_row_matrix": [
+        [
+          370,
+          65
+        ],
+        [
+          54,
+          83
+        ]
+      ],
+      "correct_true_row_matrix": [
+        [
+          370,
+          54
+        ],
+        [
+          65,
+          83
+        ]
+      ],
+      "accuracy_percent": 79.1958041958042,
+      "precision_percent": 60.583941605839414,
+      "recall_percent": 56.08108108108108,
+      "f1_percent": 58.24561403508772
+    }
+  ],
+  "source_code_executed": false
+}

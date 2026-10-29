@@ -1,0 +1,79 @@
+APPROXIMATE MAPPING SIMULATION — SHIELD
+Target: existing seven-feature dataset and existing RF. Website unchanged.
+Reference: independent synthetic accounting profiles, NOT real external data.
+No accuracy / precision / recall: no true bankruptcy labels for synthetic cases.
+
+                   method                group  count  mean_score_pct  low_band  flagged  high_or_critical  counterintuitive  consistent  unchanged
+                 identity             base/all   1000       61.742809       0.0    918.0             636.0               600         NaN        NaN
+                 identity          base/strong    400       59.599263       0.0    318.0             236.0               400         NaN        NaN
+                 identity            base/weak    400       60.786962       0.0    400.0             200.0               200         NaN        NaN
+                 identity           base/mixed    200       67.941595       0.0    200.0             200.0                 0         NaN        NaN
+                 identity            profit_up   1000             NaN       NaN      NaN               NaN               104        39.0      857.0
+                 identity            debt_down   1000             NaN       NaN      NaN               NaN               277       444.0      279.0
+                 identity          retained_up   1000             NaN       NaN      NaN               NaN                72         0.0      928.0
+                 identity combined_improvement   1000             NaN       NaN      NaN               NaN               244       445.0      311.0
+   mixed_reference/minmax             base/all   1000       64.488947       9.0    760.0             662.0               391         NaN        NaN
+   mixed_reference/minmax          base/strong    400       49.515008       9.0    160.0              62.0               391         NaN        NaN
+   mixed_reference/minmax            base/weak    400       70.577074       0.0    400.0             400.0                 0         NaN        NaN
+   mixed_reference/minmax           base/mixed    200       82.260569       0.0    200.0             200.0                 0         NaN        NaN
+   mixed_reference/minmax            profit_up   1000             NaN       NaN      NaN               NaN               201       264.0      535.0
+   mixed_reference/minmax            debt_down   1000             NaN       NaN      NaN               NaN               228       629.0      143.0
+   mixed_reference/minmax          retained_up   1000             NaN       NaN      NaN               NaN               366       240.0      394.0
+   mixed_reference/minmax combined_improvement   1000             NaN       NaN      NaN               NaN               427       523.0       50.0
+ mixed_reference/quantile             base/all   1000       21.605226     747.0     65.0              45.0               355         NaN        NaN
+ mixed_reference/quantile          base/strong    400        6.768975     400.0      0.0               0.0                 0         NaN        NaN
+ mixed_reference/quantile            base/weak    400       34.941528     152.0     65.0              45.0               355         NaN        NaN
+ mixed_reference/quantile           base/mixed    200       24.605124     195.0      0.0               0.0                 0         NaN        NaN
+ mixed_reference/quantile            profit_up   1000             NaN       NaN      NaN               NaN               143       569.0      288.0
+ mixed_reference/quantile            debt_down   1000             NaN       NaN      NaN               NaN               286       690.0       24.0
+ mixed_reference/quantile          retained_up   1000             NaN       NaN      NaN               NaN                76       475.0      449.0
+ mixed_reference/quantile combined_improvement   1000             NaN       NaN      NaN               NaN               219       779.0        2.0
+  strong_reference/minmax             base/all   1000       62.191910      22.0    873.0             753.0               456         NaN        NaN
+  strong_reference/minmax          base/strong    400       61.472030      22.0    273.0             247.0               378         NaN        NaN
+  strong_reference/minmax            base/weak    400       62.218186       0.0    400.0             322.0                78         NaN        NaN
+  strong_reference/minmax           base/mixed    200       63.579119       0.0    200.0             184.0                 0         NaN        NaN
+  strong_reference/minmax            profit_up   1000             NaN       NaN      NaN               NaN               159       347.0      494.0
+  strong_reference/minmax            debt_down   1000             NaN       NaN      NaN               NaN               269       362.0      369.0
+  strong_reference/minmax          retained_up   1000             NaN       NaN      NaN               NaN               196       134.0      670.0
+  strong_reference/minmax combined_improvement   1000             NaN       NaN      NaN               NaN               226       364.0      410.0
+strong_reference/quantile             base/all   1000       41.109933     364.0    608.0             456.0               132         NaN        NaN
+strong_reference/quantile          base/strong    400       10.085152     364.0     13.0               4.0                36         NaN        NaN
+strong_reference/quantile            base/weak    400       62.027113       0.0    400.0             304.0                96         NaN        NaN
+strong_reference/quantile           base/mixed    200       61.325134       0.0    195.0             148.0                 0         NaN        NaN
+strong_reference/quantile            profit_up   1000             NaN       NaN      NaN               NaN                51       472.0      477.0
+strong_reference/quantile            debt_down   1000             NaN       NaN      NaN               NaN               483       223.0      294.0
+strong_reference/quantile          retained_up   1000             NaN       NaN      NaN               NaN                82       194.0      724.0
+strong_reference/quantile combined_improvement   1000             NaN       NaN      NaN               NaN               315       398.0      287.0
+    weak_reference/minmax             base/all   1000       44.627129     596.0    319.0             295.0               105         NaN        NaN
+    weak_reference/minmax          base/strong    400       29.424710     400.0      0.0               0.0                 0         NaN        NaN
+    weak_reference/minmax            base/weak    400       67.414294       0.0    319.0             295.0               105         NaN        NaN
+    weak_reference/minmax           base/mixed    200       29.457637     196.0      0.0               0.0                 0         NaN        NaN
+    weak_reference/minmax            profit_up   1000             NaN       NaN      NaN               NaN               112       195.0      693.0
+    weak_reference/minmax            debt_down   1000             NaN       NaN      NaN               NaN               104       204.0      692.0
+    weak_reference/minmax          retained_up   1000             NaN       NaN      NaN               NaN               180        82.0      738.0
+    weak_reference/minmax combined_improvement   1000             NaN       NaN      NaN               NaN               118       272.0      610.0
+  weak_reference/quantile             base/all   1000       19.511055     940.0      9.0               6.0               394         NaN        NaN
+  weak_reference/quantile          base/strong    400       21.016022     400.0      0.0               0.0                 0         NaN        NaN
+  weak_reference/quantile            base/weak    400       16.845631     340.0      9.0               6.0               394         NaN        NaN
+  weak_reference/quantile           base/mixed    200       21.831969     200.0      0.0               0.0                 0         NaN        NaN
+  weak_reference/quantile            profit_up   1000             NaN       NaN      NaN               NaN               371       355.0      274.0
+  weak_reference/quantile            debt_down   1000             NaN       NaN      NaN               NaN               236       396.0      368.0
+  weak_reference/quantile          retained_up   1000             NaN       NaN      NaN               NaN                66       106.0      828.0
+  weak_reference/quantile combined_improvement   1000             NaN       NaN      NaN               NaN               285       349.0      366.0
+
+REFERENCE SENSITIVITY
+  method      alternative  binary_flips  mean_absolute_change_pp  max_absolute_change_pp
+  minmax strong_reference           679                14.031481               58.272071
+  minmax   weak_reference          2135                22.637912               60.747858
+quantile strong_reference          2664                21.537639               69.793077
+quantile   weak_reference           161                13.604602               47.716532
+
+LIMITATIONS
+Raw references are SYNTHETIC, not real external financial statements. This is a simulation only.
+No Polish data used. Existing dataset supplies target quantiles; original trained RF stays fixed.
+Synthetic profiles have no bankruptcy outcomes: precision/recall/accuracy cannot be computed.
+Minmax uses synthetic raw bounds with no clipping. Quantile mapping saturates outside source tails.
+Marginal quantile matching does not recover joint feature relationships or original normalization.
+Results are sensitive to arbitrary reference population and do not validate Malaysian SME use.
+The source dataset partition used for target quantiles is deterministic; exact original artifact training membership is not verified.
+Model version compatibility warnings are retained.

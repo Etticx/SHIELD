@@ -1,0 +1,1117 @@
+PDF PAGE 1
+European Journal of Operational Research 252 (2016) 561–572 
+Contents lists available at ScienceDirect 
+European Journal of Operational Research 
+journal homepage: www.elsevier.com/locate/ejor 
+Decision Support 
+Financial ratios and corporate governance indicators in bankruptcy 
+prediction: A comprehensive study 
+Deron Liang a , Chia-Chi Lu b , Chih-Fong Tsai c , ∗, Guan-An Shih a 
+a Department of Computer Science and Information Engineering, National Central University, Taiwan 
+b Graduate Institute of Accounting and Department of Finance, National Central University, Taiwan 
+c Department of Information Management, National Central University, Taiwan 
+a r t i c l e i n f o 
+Article history: 
+Received 26 September 2014 
+Accepted 7 January 2016 
+Available online 13 January 2016 
+Keywords: 
+Bankruptcy prediction 
+Financial ratios 
+Corporate governance indicators 
+Feature selection 
+Data mining 
+a b s t r a c t 
+Effective bankruptcy prediction is critical for ﬁnancial institutions to make appropriate lending decisions. 
+In general, the input variables (or features), such as ﬁnancial ratios, and prediction techniques, such as 
+statistical and machine learning techniques, are the two most important factors affecting the prediction 
+performance. While many related works have proposed novel prediction techniques, very few have an- 
+alyzed the discriminatory power of the features related to bankruptcy prediction. In the literature, in 
+addition to ﬁnancial ratios (FRs), corporate governance indicators (CGIs) have been found to be another 
+important type of input variable. However, the prediction performance obtained by combining CGIs and 
+FRs has not been fully examined. Only some selected CGIs and FRs have been used in related studies 
+and the chosen features may differ from study to study. Therefore, the aim of this paper is to assess the 
+prediction performance obtained by combining seven different categories of FRs and ﬁve different cat- 
+egories of CGIs. The experimental results, based on a real-world dataset from Taiwan, show that the FR 
+categories of solvency and proﬁtability and the CGI categories of board structure and ownership structure 
+are the most important features in bankruptcy prediction. Speciﬁcally, the best prediction model perfor- 
+mance is obtained with a combination in terms of prediction accuracy, Type I/II errors, ROC curve, and 
+misclassiﬁcation cost. However, these ﬁndings may not be applicable in some markets where the deﬁni- 
+tion of distressed companies is unclear and the characteristics of corporate governance indicators are not 
+obvious, such as in the Chinese market. 
+©2 0 1 6 Elsevier B.V. All rights reserved. 
+1. Introduction 
+Bankruptcy or business failure can have a negative impact both 
+on the enterprise itself and the global economy. Business prac- 
+titioners, investors, governments, and academic researchers have 
+long studied ways to identify the potential risk of business fail- 
+ure in order to reduce the economic loss caused by bankruptcy 
+( Balleisen, 2001; Zywicki, 2008 ). 
+In short, bankruptcy prediction is a very important task for 
+many related ﬁnancial institutions. In general, the aim is to pre- 
+dict the likelihood that a ﬁrm may go bankrupt. Financial institu- 
+tions are in need of effective prediction models in order to make 
+appropriate lending decisions. 
+In the literature, many techniques have been employed to 
+develop bankruptcy prediction models, including statistical and 
+∗ Corresponding author at: Department of Information Management, National 
+Central University, Taiwan. Tel.: + 886 3 422 7151; fax: + 886 3 4254604. 
+E-mail address: cftsai@mgt.ncu.edu.tw (C.-F. Tsai). 
+machine learning techniques ( Balcaen & Ooghe, 2006; Kumar & 
+Ravi, 2007; Lin, Hu, & Tsai, 2012; Verikas, Kalsyte, Bacauskiene, & 
+Gelzinis, 2010 ) with machine learning techniques shown to outper- 
+form statistical techniques. 
+Although many studies have aimed at proposing novel machine 
+learning techniques which will enhance the models’ prediction 
+performances, there have been very few which have focused on 
+the effect of the input variables (or features) on prediction perfor- 
+mance. In general, ﬁnancial ratios (FRs), recognized as one of the 
+most important factors affecting bankruptcy prediction, are used 
+to develop prediction models ( Altman, 1968; Beaver, 1966; Ohlson, 
+1980 ). FRs can be classiﬁed into seven categories: solvency, prof- 
+itability, cash ﬂow ratios, capital structure ratios, turnover ratios, 
+growth, and others. 
+On the other hand, though, several recent studies have found 
+that corporate governance indicators (CGIs) also play a key role 
+in predicting bankruptcy ( Bredart, 2014; Chen, 2014; Lee & Yeh, 
+2004; Lin, Liang, & Chu, 2010; Wu, 2007 ). Generally, CGIs can 
+be classiﬁed into ﬁve categories: board structure ( Collier & Es- 
+teban, 1999; Liang, Xu, & Jiraporn, 2013; Yeh & Woidtke, 2005 ), 
+http://dx.doi.org/10.1016/j.ejor.2016.01.012 
+0377-2217/© 2016 Elsevier B.V. All rights reserved. 
+
+PDF PAGE 2
+562 D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 
+ownership structure ( Berkman, Cole, & Fu, 2009; Cheung, Chung, 
+Tan, & Wang, 2013; Jian & Wong, 2010; La Porta, Lopez-de-Silanes, 
+& Shleifer, 1999 ), cash ﬂow rights ( Claessens, Djankov, & Xu, 20 0 0; 
+La Porta et al., 1999 ), key person retained ( Albring, Robinson, & 
+Robinson, 2014; Dan, 2010 ), and others. However, only some of the 
+CGIs have been considered in these works to prove that model per- 
+formance improvement can be obtained with them. 
+To ﬁll this gap, the aim of this current work is to fully ex- 
+amine the discriminatory power of CGIs combined with FRs for 
+bankruptcy prediction. Speciﬁcally, the model performances ob- 
+tained using different categories of CGIs combined with FRs are 
+assessed to see whether combining CGIs with FRs can enhance the 
+model performance. In addition, since the combined features con- 
+tain very high dimensionality, feature selection ( Guyon & Elisseeff, 
+2003 ) is also performed over the combined features for dimen- 
+sionality reduction. Consequently, this study allows us to identify 
+the best combination of FRs and CGIs for bankruptcy prediction 
+and assists the relevant ﬁnancial institutions to make better lend- 
+ing decisions. Moreover, the optimal performance of the prediction 
+model developed based on the identiﬁed features can be used as 
+the baseline prediction model for future studies. 
+The rest of this paper is organized as follows. Section 2 
+overviews literature related to CGIs. Sections 3 and 4 present the 
+research methodology and experimental results respectively. Fi- 
+nally, in Section 5 some conclusions are offered. 
+2. Literature review 
+2.1. Corporate governance indicators 
+The general deﬁnition of corporate governance includes the 
+mechanisms, processes and relations by which corporations are 
+controlled and directed ( Shailer, 2004 ). An integrated set of in- 
+ternal and external control mechanisms will allow shareholders 
+to exercise appropriate oversight of a company to maximize ﬁrm 
+value and ensure that it generates a return on their holdings 
+( Chen, 2014 ). 
+Many corporate governance indicators (CGIs) have been identi- 
+ﬁed in the literature which have been used for solving bankruptcy 
+or ﬁnancial crisis problems. These can be broadly classiﬁed into 
+ﬁve categories including board structure, ownership structure, cash 
+ﬂow rights, key person retained, and others (cf. Appendix ). How- 
+ever, not all the CGIs used for predicting bankruptcy in related 
+works are the same. In other words, different categories of CGIs 
+have been considered in different studies. For instance, Lee and 
+Yeh (2004) used 6 FRs belonging to the solvency, proﬁtability, and 
+others categories and 10 CGIs in the board structure and owner- 
+ship categories. They found that model performance could be en- 
+hanced by using a combination of CGIs and FRs by using logistic 
+regression. 
+2.2. Related works using ﬁnancial ratios and corporate governance 
+indicators 
+In Wu (2007) , factor analysis was used to select 6 FRs out of the 
+13 suggested by Altman (1968) and Ohlson (1980) . These FRs be- 
+longed to the solvency, proﬁtability, and turnover categories, while 
+10 CGIs were chosen from the ownership and board structure 
+categories. 
+Lin et al. (2010) used an exhaustive search method to select 4 
+and 6 FRs and CGIs out of 23 and 42, respectively. They showed 
+that with the chosen CGIs, the prediction model (based on the 
+support vector machine) provided higher prediction accuracy. In 
+particular, the chosen FRs belonged to the solvency and turnover 
+categories, and the chosen CGIs were in the board structure, own- 
+ership, and cash ﬂow rights categories. 
+There have been several studies that have used CGIs alone with- 
+out considering FRs for ﬁnancial crisis analysis. In Chen (2014) , 23 
+CGIs were chosen, belonging to 5 categories, and Bredart (2014) 
+chose 4 CGIs in the board structure category. Principal component 
+analysis was used in the former study while logistic regression was 
+used as the analysis method in the latter. 
+In summary, although related studies have shown that combin- 
+ing FRs and CGIs can make the prediction model perform better 
+than using FRs alone, not all studies used the same set of CGIs 
+for the analysis. This means that not all ﬁve categories of CGIs 
+have completely been considered in literature. Consequently, this 
+raises the question: Will a prediction model developed based on 
+all related FRs and CGIs perform better than a model based on FRs 
+alone? More speciﬁcally, we assume that some combination of spe- 
+ciﬁc categories of FRs and CGIs would be more representative (i.e. 
+have more discriminatory power) that would allow the prediction 
+model to provide higher prediction accuracy, which can better dis- 
+tinguish between bankrupt and non-bankrupt cases over a given 
+set of testing cases. 
+Furthermore, feature selection is performed to ﬁlter out some 
+unrepresentative features (i.e. variables) from the combined FRs 
+and CGIs, such as in Wu (2007) and Lin et al. (2010) . However, us- 
+ing different methods mean that different sets of features will be 
+selected, so they only used one speciﬁc feature selection method 
+for limited FRs and CGIs. Therefore, here, in order to ﬁnd the 
+best combination of different categories of FRs and CGIs, differ- 
+ent feature selection methods will be used in the comparison 
+(cf. Section 3.2 ). 
+3. Research methodology 
+3.1. The data source 
+In this study, data were collected from the Taiwan Economic 
+Journal 1 for the years 1999–2009. Company bankruptcy was de- 
+ﬁned based on the business regulations of the Taiwan Stock Ex- 
+change. 2 In addition, there were two criteria used in collecting the 
+data samples. First, the sample companies had to have at least 
+three years of complete public information before the occurrence 
+of the ﬁnancial crisis. Second, there should be a suﬃcient number 
+of comparable companies of similar size in the same industry for 
+comparison of the bankrupt and non-bankrupt cases. The resultant 
+sample includes companies from the manufacturing industry com- 
+posed of industrial and electronics companies (346 companies), the 
+service industry composed of shipping, tourism, and retail compa- 
+nies (39 companies), and others (93 companies), but not ﬁnancial 
+companies. 
+It should be noted that if there is a signiﬁcant difference be- 
+tween the number of bankrupt and non-bankrupt cases, this re- 
+sults in a class imbalance problem, which is likely to lead to a 
+degradation in the ﬁnal prediction performance. Therefore, we use 
+the method of stratiﬁed sampling ( Altman, 1968 ) to collect the 
+same number of bankrupt and non-bankrupt cases. Consequently, 
+the collected dataset is composed of 239 bankrupt and 239 non- 
+bankrupt cases, with each company (i.e. case) represented by 95 
+FRs and 95 CGIs as the input variables (cf. Appendix ). Moreover, 
+each of the variables is normalized into the range from 0 to 1 by 
+∀ x ∈ F , normalize (x ) = 
+x − min (F ) 
+max (F ) − min (F ) 
+, (1) 
+1 http://www.tej.com.tw/twsite/ . 
+2 http://twse-regulation.twse.com.tw/ENG/EN/law/DOC01.aspx?FLCODE= 
+FL007304&FLNO=49++++ . 
+
+PDF PAGE 3
+D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 563 
+Table 1 
+The parameters used for the feature selection methods. 
+Methods Parameters 
+GA - Objective function (ﬁtness function): average accuracy 
+- Selection: roulette wheel selection 
+- Crossover method: uniform crossover 
+- Generations: 20 
+- Population size: 60 
+- Crossover rate: 0.7 
+- Mutation rate: 0.01 
+- Elite chromosome: 2 
+REF The smallest ranking criterion: 100 
+SDA - SLENTRY: 0.05 
+- SLSTAY: 0.1 
+t -test The feature is selected if its p-value is smaller than 0.05. 
+where F is a set of one speciﬁc feature (i.e. variable), x is the fea- 
+ture value, and max( F ) and min( F ) are the maximum and minimum 
+values of the speciﬁc feature set, respectively. 
+To avoid variability of the samples, which may affect the model 
+performance and minimize any bias effect, the 10-fold cross vali- 
+dation method ( Kohavi, 1995 ) is used to divide the dataset into 10 
+distinct training and testing subsets with which to train and test 
+the prediction model. The ﬁnal prediction performance is based on 
+the average of the 10 testing results over the 10 testing subsets 
+individually. 
+3.2. Feature selection 
+The aim of feature selection or dimensionality reduction is to 
+reduce irrelevant or redundant features by selecting more repre- 
+sentative features having more discriminatory power over a given 
+dataset ( Dash & Liu, 1997; Guyon & Elisseeff, 2003 ). According to 
+Lin et al. (2012) , although there are many methods for feature se- 
+lection, most related works only apply one speciﬁc method. Five 
+well-known feature selection methods are compared in this study 
+in order to identify the best one for bankruptcy prediction. 
+In particular, three ﬁlter and two wrapper based methods are 
+considered, speciﬁcally, the ﬁlter based methods of stepwise dis- 
+criminant analysis (SDA) ( Fisher, 1936 ), stepwise logistic regres- 
+sion (SLR) ( Fisher & Yates, 1963 ), and t -testing ( Zimmerman, 1997 ) 3 
+and the wrapper based methods of the genetic algorithm (GA) 
+( Holland, 1975 ) and recursive feature elimination (RFE) ( Guyon, 
+Weston, Barnhill, & Vapnik, 2002 ). Table 1 lists the parameters 
+used in these methods. Note that SLR does not require any param- 
+eters to perform feature selection. 
+3.3. Prediction models 
+Similar to feature selection, there are many common and well- 
+known techniques which can be employed to develop prediction 
+models. In this work, ﬁve related techniques are compared, namely 
+support vector machines (SVM), k -nearest neighbor (KNN), naïve 
+Bayes (NB) classiﬁer, classiﬁcation and regression tree (CART), and 
+multilayer perceptron (MLP) methods. These are not only the most 
+widely used techniques for bankruptcy prediction ( Lin et al., 2012 ), 
+but also the top 5 supervised machine learning techniques used in 
+data mining ( Wu et al., 2008 ). 
+Table 2 lists related parameters for the techniques used to de- 
+velop the prediction models. 
+3 The SAS software was used to perform ﬁlter based feature selection methods. 
+Table 2 
+The parameters used in the ﬁve techniques. 
+Techniques Parameters 
+SVM Kernel: linear 
+KNN K = 7 
+CART Tree pruning: cross-validation 
+MLP - No. of hidden layers: 1 
+- No. of hidden layer nodes: 64 
+- Learning epochs: 50 
+NB Kernel: kernel density estimate 
+Table 3 
+Prediction performance of models A and B. 
+A (percent) B (percent) 
+Average accuracy 82 .05 83 .64 
+Type I error 17 .73 12 .73 
+Type II error 18 .18 20 .00 
+Fig. 1. The decision boundary of a prediction model. 
+3.4. Evaluation metrics 
+To examine the prediction performance of the developed mod- 
+els, two evaluation metrics are usually considered, which are the 
+average prediction accuracy and the Type I error. The average pre- 
+diction accuracy rate is calculated based on how many data sam- 
+ples are correctly classiﬁed by the prediction model over a given 
+testing set. The Type I error rate is a measure of the number of 
+data samples where the prediction model incorrectly classiﬁes a 
+bankrupt ﬁrm into the non-bankrupt class. The Type I error can 
+sometimes be more critical than the average prediction accuracy 
+since a larger Type I error rate requires ﬁnancial institutions to ex- 
+pend larger costs. 
+In addition to these two generally used metrics, we also ex- 
+amine the receiver operating characteristic (ROC) curve ( Fawcelt, 
+2006 ) of each prediction model. This is a graphical plot used to il- 
+lustrate the prediction model as its discrimination threshold is var- 
+ied. In our case, the Types I and II errors of the prediction model 
+are plotted on the x - and y -axis of the ROC curve. 
+For example, the prediction performance for two prediction 
+models, namely A and B, over a given testing set, is summarized in 
+Table 3 . Generally speaking, model B performs better than model 
+A as evidenced by the higher accuracy rate and lower Type I error 
+rate. 
+However, to create the ROC curve for a prediction model, we 
+need to adjust its penalty threshold, which makes the model pro- 
+duce different accuracy and Type I/II errors. Fig. 1 shows the 
+
+PDF PAGE 4
+564 D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 
+Fig. 2. ROC curves for models A and B. 
+data sample and the decision boundary of a model with a ﬁxed 
+penalty where the black and white points represent cases of 
+bankruptcy and non-bankruptcy, respectively. Based on the ﬁxed 
+penalty, the decision boundary of the model needs to ‘sacriﬁce’ 
+several bankrupt cases (i.e. increasing the Type I error) to obtain 
+the highest average accuracy. 
+Suppose that the cost of misclassiﬁcation is higher for 
+bankruptcy cases than for non-bankruptcy cases. Increasing the 
+penalty moves the decision boundary toward the ‘ideal’ line. In this 
+case, the model is able to detect all of the bankruptcy cases, but at 
+the ‘sacriﬁce’ of a number of non-bankrupt cases (i.e. increasing 
+the Type II error). Using different penalty threshold values to cre- 
+ate the ROC curve of a prediction model allows us to examine the 
+differences between the Type I and Type II errors. 
+Fig. 2 shows the ROC curves of models A and B. In compari- 
+son to the results shown in Table 3 , model A performs better than 
+model B, as can be seen in the ROC curves. This is because the area 
+under the curve (AUC) 4 is smaller for model A than for model B. 
+However, it may be the case that two or more models’ ROC 
+curves are very close to each other which would make it very 
+hard to determine the best model. To overcome this limitation, we 
+introduce a misclassiﬁcation cost and cost ratios. Speciﬁcally, the 
+misclassiﬁcation cost aims to measure to what extent people can 
+tolerate the misclassiﬁcation result. For some, the cost of misclas- 
+sifying a bankrupt company into the non-bankrupt class would be 
+the same as the cost of misclassifying a non-bankrupt company 
+into the bankrupt class. However, for others, the cost of misclassi- 
+fying a bankrupt company would be much higher than the cost of 
+misclassifying two or more non-bankrupt companies. 
+The misclassiﬁcation costs for the different models are calcu- 
+lated based on 
+( Type I error no . bankrupt cases cost ratio ) 
++ ( Type II error no . non − bankrupt cases ) . (2) 
+In order to further compare different models’ performances, dif- 
+ferent penalty thresholds and cost ratios are examined as shown in 
+Table 4. 
+4 AUC represents the probability that a model will rank a randomly chosen posi- 
+tive instance higher than a randomly chosen negative one (assuming that ‘positive’ 
+ranks higher than ‘negative’). 
+Table 4 
+Different penalty thresholds and cost ratios. 
+Evaluation parameters Values 
+Penalty thresholds 1, 1.5, 2, 3, 5, 7.5, 10, 15, 20, 25, 30, 40, and 50 
+Cost ratios 1, 1.5, 2, 3, 5, 7, 10, 15, 20, 25, and 30 
+4. Experiments 
+4.1. The preliminary results 
+4.1.1. The performance of different prediction models using FRs 
+and CGIs 
+The ﬁrst experiment is designed to compare the prediction per- 
+formances of different models based on FRs and CGIs alone. The 
+results are shown in Table 5 . As we can see, the prediction mod- 
+els using CGIs alone perform worse than the ones using FRs alone 
+in terms of average accuracy and Type I/II errors. Therefore, the 
+following experiments focus on comparing the prediction models 
+using FRs and the combined FRs and CGIs, respectively. 
+4.1.2. The performance of different prediction models 
+Following up on the previous results, the next experiment is de- 
+signed to compare the ﬁve prediction models based on FRs (here- 
+after FR) and FRs with CGIs (hereafter FC) in order to ﬁnd the best 
+model for later analysis. Table 6 shows the comparative results. It 
+can be seen that the SVM prediction model performs the best in 
+terms of average accuracy and Type I/II errors no matter what fea- 
+tures are used. 
+The stability of the SVM model is further examined using the 
+three ﬁlter based feature selection methods (c.f. Section 3.2 ) to re- 
+duce the dimensions of FR and FC. Tables 7 – 9 show the t -test, SLR, 
+and SDA results, respectively. 
+The results are consistent with the ones shown in Table 6 , 
+indicating that, regardless of which ﬁlter based feature selection 
+method is performed over the FR and FC datasets, the SVM model 
+always performs the best. Therefore, only the SVM model will be 
+used for the later experimental studies. 
+4.1.3. The performance of SVM using different cost ratios 
+Table 10 lists the Types I and II errors of SVM obtained using 
+different cost ratios. The results indicate that when the cost ratios 
+are larger than 5, the differences between Types I and II errors are 
+very large, which makes this method not suitable for use with real 
+world problems. Therefore, cost ratios from 1 to 5 are used in the 
+later experiments. 
+4.1.4. The ROC curves of SVM by FR and FC with and without 
+feature selection 
+The performance of the SVM based on FR and FC is examined 
+with and without feature selection. Figs. 3 and 4 show the ROC 
+curves obtained with SVM over the FR and FC datasets, respec- 
+tively. The results show that t -test + SVM and SDA + SVM perform 
+the best over the FR and FC datasets, respectively. 
+Fig. 5 further shows the ROC curves obtained for these two 
+models. As we can see, the curve of SDA + SVM is almost com- 
+pletely beneath the one obtained with t -test + SVM. In addition, 
+Table 11 shows the misclassiﬁcation costs for these two curves. The 
+results demonstrate that when the cost is larger than 1, SDA + SVM 
+(over FC) performs signiﬁcantly better than t -test + SVM (over FR). 
+Note that the level of performance signiﬁcance is measured by the 
+Wilcoxon test ( Demsar, 2006 ). If the misclassiﬁcation cost is set 
+to 1, even though there is no signiﬁcant difference between them, 
+the SDA + SVM performs slightly better than the t -test + SVM. In 
+short, this preliminary study demonstrates that combining CGIs 
+with FRs can make the prediction model perform better than using 
+FRs alone. 
+
+PDF PAGE 5
+D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 565 
+Table 5 
+The performance of different prediction models (FRs/CGIs). 
+SVM (percent/percent) KNN (percent/percent) CART (percent/percent) MLP (percent/percent) NB (percent/percent) 
+Avg. accuracy 79 .1/67.9 76 .5/60.6 78 .4/60.2 76 .1/61.4 68 .6/58.3 
+Type I error 20 .2/27.7 22 .5/30.7 23 .3/37 24 .1/40 26 .4/60.6 
+Type II error 21 .6/36.5 24 .5/48.1 19 .9/42.5 23 .8/37.2 36 .5/22.8 
+Table 6 
+The performance of different prediction models (FR/FC). 
+SVM (percent/percent) KNN (percent/percent) CART (percent/percent) MLP (percent/percent) NB (percent/percent) 
+Avg. accuracy 79 .1/81.3 76 .5/74.5 78 .4/78.6 76 .1/70.4 68 .6/68.7 
+Type I error 20 .2/17.8 22 .5/18.5 23 .3/22.3 24 .1/26.6 26 .4/23.1 
+Type II error 21 .6/19.7 24 .5/32.5 19 .9/20.4 23 .8/32.5 36 .5/39.6 
+Table 7 
+The performance of different prediction models followed by t -test /22c5FR and t -test /22c5FC. 
+SVM (percent/percent) KNN (percent/percent) CART (percent/percent) MLP (percent/percent) NB (percent/percent) 
+Avg. accuracy 79 .8/80.1 77 .2/74.4 77 .9/78.1 74.2/72.2 75 .1/75.1 
+Type I error 19 .5/19.2 21 .6/21.6 21 .9/22.2 22/24.3 21 .3/21.3 
+Type II error 20 .8/20.7 23 .9/29.5 22 .3/21.6 29.5/31.3 28 .5/28.5 
+Table 8 
+The performance of different prediction models followed by SLR /22c5FR and SLR /22c5FC. 
+SVM (percent/percent) KNN (percent/percent) CART (percent/percent) MLP (percent/percent) NB (percent/percent) 
+Avg. accuracy 80 .2/81.3 76.6/77.9 77 .8/78.2 79 .8/80.5 77.9/77.1 
+Type I error 20 .9/16.7 21/20.1 20 .8/22.2 21 .3/18.8 20/12 
+Type II error 18 .7/20.8 21.8/24.1 23 .6/21.4 19 .2/20.3 24.2/33.8 
+Table 9 
+The performance of different prediction models followed by SDA /22c5FR and SDA /22c5FC. 
+SVM (percent/percent) KNN (percent/percent) CART (percent/percent) MLP (percent/percent) NB (percent/percent) 
+Avg. accuracy 78/81.5 76.2/74.7 76.5/74.9 77.7/78.1 75/74.8 
+Type I error 18.1/16.3 20/22.7 22/24.2 22.4/18.7 25.5/21.7 
+Type II error 25.9/20.8 27.6/28 25/26.1 22.2/25.2 24.5/28.8 
+Table 10 
+The Types I and II errors of SVM based on different cost ratios. 
+FR FC 
+Type I error (percent) Type II error (percent) Type I error (percent) Type II error (percent) 
+1 20 18 .1 16 19 .3 
+1.5 12 .5 27 10 26 .1 
+2 10 .2 30 .9 7 .1 30 .9 
+3 6 .9 38 .4 5 .4 34 .8 
+5 3 .5 50 .5 4 .8 36 .9 
+7.5 1 .9 60 .1 4 .4 39 .4 
+10 1 .3 65 .8 4 .4 39 .4 
+15 0 .9 69 .9 4 .4 39 .4 
+20 0 .9 69 .9 4 .4 39 .4 
+30 0 .9 69 .9 4 .4 39 .4 
+Table 11 
+The misclassiﬁcation costs for t -test + SVM and 
+SDA + SVM ( ∗∗∗p < 0.01; ∗∗p < 0.05; ∗p < 0.1). 
+t -test + SVM (over FR) SDA + SVM (over FC) 
+1 1.01E −01 1 
+1.5 2.21E −02 ∗∗∗ 1 
+2 9.30E −04 ∗∗∗ 1 
+3 9.53E −05 ∗∗∗ 1 
+5 1.88E −05 ∗∗∗ 1 
+4.2. Results of SVM using different categories of FRs and CGIs 
+The remaining experiments are conducted using different cate- 
+gories of ﬁnancial ratios and corporate governance indicators, re- 
+spectively. There are seven different categories of FRs and ﬁve dif- 
+ferent categories of CGIs, so that we collect a total of 12 different 
+datasets, each composed of 11 unduplicated categories of FRs and 
+CGIs. In other words, for each dataset, one speciﬁc category is re- 
+moved from the ‘complete’ dataset, which contains all of the 12 
+different categories of features. Examination of the model’s per- 
+formance over these 12 different datasets further demonstrates 
+
+PDF PAGE 6
+566 D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 
+Fig. 3. The ROC curves of SVM over the FR dataset with and without feature selec- 
+tion. 
+Fig. 4. The ROC curves of SVM over the FC dataset with and without feature selec- 
+tion. 
+Fig. 5. The ROC curves for FR t -test (i.e. test + SVM over FR) and FC SDA (i.e. 
+SDA + SVM over FC). 
+whether combining FRs with CGIs can improve bankruptcy predic- 
+tion performance. 
+4.2.1. Results for datasets without solvency, proﬁtability, turnover 
+ratios, and capital structure ratios 
+Fig. 6 shows the datasets obtained without using one speciﬁc 
+category of FRs in combination with CGIs. The ﬁndings are sum- 
+marized below. 
+• For the dataset without the solvency category (i.e. Fig. 6 (a) 
+and (b)), GA + SVM and t -test + SVM perform the best over the 
+FR and FC datasets, respectively, although the ROC curves are 
+very similar. Therefore, we further examine the misclassiﬁca- 
+tion costs, as in Section 4.1.4 . We ﬁnd that when the costs are 
+between 1 and 2, GA + SVM (FR) performs better, but when 
+the costs become larger, namely 3–5, t -test + SVM (FC) provides 
+better performance. This indicates that no certain performance 
+improvement is obtained when CGIs are combined with FRs 
+without the solvency category. 
+• For the dataset without the category of proﬁtability (i.e. 
+Fig. 6 (c) and (d)), t -test + SVM and SDA + SVM perform the best 
+over the FR and FC datasets, respectively. Similar to the previ- 
+ous results, the two ROC curves are close to each other. In ad- 
+dition, when the costs are between 1 and 2, t -test + SVM per- 
+forms better, but SDA + SVM is better when the costs are be- 
+tween 3 and 5. This also indicates that combining CGIs with 
+FRs without the proﬁtability category leads to no obvious im- 
+provement in performance. 
+• For the dataset without the category of turnover ratios (i.e. 
+Fig. 6 (e) and (f)), the results, including the best prediction mod- 
+els and their misclassiﬁcation costs, are the same as for the 
+dataset without the proﬁtability category. It can be seen from 
+this that turnover ratios are an important feature in bankruptcy 
+prediction. The SVM based on the FC dataset without the 
+turnover ratios does not perform signiﬁcantly better than the 
+one based on the FR dataset. 
+• The results obtained for the other categories, such as capital 
+structure ratios, cash ﬂow ratios, growth, and so on, are sim- 
+ilar. Therefore, we only show the results for the dataset with- 
+out the category of capital structure ratios (i.e. Fig. 6( g) and (h)) 
+are shown. It is found that t -test + SVM and SDA + SVM are the 
+best models over the FR and FC datasets, respectively. Speciﬁ- 
+cally, the ROC curve for SDA + SVM is always beneath the one 
+for t -test + SVM. In addition, according to the misclassiﬁcation 
+cost, SDA + SVM performs signiﬁcantly better than t -test + SVM 
+no matter which cost ratio is used (i.e. from 1 to 5). Therefore, 
+combining CGIs with the FRs without these categories still al- 
+lows for improvement in model performance. 
+4.2.2. Results for datasets without board, ownership, and cash 
+ﬂow rights 
+Fig. 7 shows the datasets without one speciﬁc category of CGIs 
+and their combinations with FRs. The ﬁndings are summarized 
+below. 
+• For the dataset without the category of board structure (i.e. 
+Fig. 7 (a) and (b)), the best models are t -test + SVM and 
+SDA + SVM, over the FR and FC datasets, respectively, although 
+their ROC curves are close to each other. The misclassiﬁcation 
+costs for these two models show that board structure is impor- 
+tant for bankruptcy prediction. It can be seen that the model 
+based on all of the CGIs except for the category of board struc- 
+ture (combined with FRs) does not outperform the one based 
+on FRs alone. In other words, to enhance the model perfor- 
+mance, board structure should be considered when combining 
+CGIs and FRs. 
+
+PDF PAGE 7
+D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 567 
+Fig. 6. ROC curves of SVM over the datasets without one speciﬁc category of FR. 
+
+PDF PAGE 8
+568 D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 
+Fig. 7. ROC curves of SVM over the datasets without one speciﬁc category of CGIs. 
+• For the dataset without the category of ownership structures 
+(i.e. Fig. 7 (c) and (d)), the best models are found to be the same 
+as in the previous result. Similarly, their ROC curves are very 
+close to each other and the results obtained using different mis- 
+classiﬁcation costs show that ownership structure is also impor- 
+tant in CGIs when combined with FRs. Thus, the model based 
+on FC without the category of ownership structures does not 
+perform signiﬁcantly better than the one based on FR. 
+• The results are similar for other categories of CGIs, such as 
+key person retained, cash ﬂow rights, and others. Therefore, for 
+brevity, we only provide the results for the dataset without the 
+category of cash ﬂow rights (i.e. Fig. 7 (e) and (f)). We can see 
+that the best models are t -test + SVM and SDA + SVM over the 
+FR and FC datasets, respectively. In addition, the ROC curve for 
+SDA + SVM is always underneath the one for t -test + SVM. Fur- 
+thermore, the different misclassiﬁcation cost results show that 
+SDA + SVM signiﬁcantly outperforms t -test + SVM. This means 
+that when CGIs are combined with FRs, the model still provides 
+better performance without considering these features than the 
+model based on FRs alone. 
+
+PDF PAGE 9
+D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 569 
+Fig. 8. ROC curves of FR and FC. 
+4.3. Further validation 
+In order to further validate whether the combination of FRs 
+and CGIs is effective in other markets, related case companies from 
+the Chinese market are selected. Since there is no standard deﬁni- 
+tion of distressed companies for this market, we choose a sample 
+composed of special treatment (ST) companies. The special treat- 
+ment designation is the ﬁrst step to delisting a stock in the Chi- 
+nese stock exchange. In other words, ST companies face the risk of 
+being delisted if they do not resolve the conditions leading to the 
+designation. We choose two scenarios, which are to predict the oc- 
+currence of ST before one year (case one) and in the ﬁrst year (case 
+two). 
+The resulting cases one and two datasets are composed of 287 
+distressed and 287 non-distressed companies and 348 distressed 
+and 348 non-distressed companies, respectively. In addition, each 
+data sample contains 45 ﬁnancial ratios and 77 corporate gover- 
+nance indicators. Similar to previous studies, different f eature se- 
+lection methods are used individually to perform the feature se- 
+lection task to ﬁlter out unrepresentative features of FRs and CGIs. 
+Fig. 8 shows the prediction performance when using ﬁnancial 
+ratios alone (i.e. FR) and the combination of FRs and CGIs (i.e. FC) 
+with and without feature selection over the two datasets. These re- 
+sults show no signiﬁcant differences in performance between using 
+FR and FC. In other words, combining CGIs with FRs does not nec- 
+essarily improve the prediction model’s performance for the China 
+market. In other words, CGIs are not the critical factors that af- 
+fect the prediction of distressed companies. However, combining 
+FRs with CGIs does not have a negative impact on the prediction 
+performance. Please refer to Section 4.4 for a discussion of the re- 
+sults over the Taiwan and China markets. 
+4.4. Discussion 
+The preliminary results obtained using the Taiwan market data 
+show better prediction results for those models using CGIs and 
+FRs than the model using FRs alone. The improvement in perfor- 
+mance is signiﬁcant when the misclassiﬁcation cost is larger than 
+1. This demonstrates the effectiveness of combining CGIs with FRs 
+for bankruptcy prediction. 
+Furthermore, we found that the solvency and proﬁtability cat- 
+egories are the critical features of FRs. This is because the SVM 
+model based on the FC datasets that does not have these critical 
+features does not always signiﬁcantly outperform the SVM model 
+based on FRs. 
+On the other hand, for CGIs, the categories of board struc- 
+ture and ownership structure play an important role in predict- 
+ing bankruptcy. That is, there is not a signiﬁcant difference in the 
+performance of an SVM based on FC without board structure and 
+ownership structure over that of the SVM based on FC. 
+Although the performance obtained with a combination of FRs 
+and CGIs is better than using FRs alone in the Taiwan market, the 
+differences between them are not signiﬁcant in the China market. 
+There are two main reasons for this ﬁnding. First, there is no stan- 
+dard deﬁnition of distressed companies in China. The special treat- 
+ment (ST) companies are based on the ﬁnancial status of company 
+
+PDF PAGE 10
+570 D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 
+operations, where various ﬁnancial anomalies can be regarded as 
+ﬁnancial distress, such as taking a ﬁnancial loss for two or three 
+consecutive years, fraudulent ﬁnancial statements, the shareholder 
+equity is negative, etc. However, large experience of all of these ﬁ- 
+nancial anomalies is needed to determine which are ST companies 
+but is not needed for them to be treated as distressed companies. 
+Clearly, if the deﬁnition of distressed companies is not clear, then 
+it is very diﬃcult to assess the performance of prediction models. 
+Second, CGIs are not as critical as FRs to determine which com- 
+panies are distressed for most Chinese companies. For example, 
+many companies in China are public- or government-owned enter- 
+prises, which differ from privately owned enterprises so that board 
+structure related indicators are not representative for most Chinese 
+companies. 
+In short, determination of whether CGIs are useful or not for 
+ﬁnancial crisis prediction should be market dependent. In practice, 
+one should be certain about the deﬁnition of distressed companies 
+in the chosen market and their characteristics in relation to CGIs. 
+5. Conclusion 
+This study focuses on examining the discriminatory power ob- 
+tained by combining different categories of ﬁnancial ratios (FRs) 
+and corporate governance indicators (CGIs) for bankruptcy predic- 
+tion. In particular, seven and ﬁve categories of FRs and CGIs are 
+considered, namely the FRs of solvency, proﬁtability, cash ﬂow ra- 
+tios, capital structure ratios, turnover ratios, growth, and others 
+and the CGIs of board structure, ownership structure, cash ﬂow 
+rights, retention of key personnel, and others. 
+To determine the best combination of FRs and CGIs, a real- 
+world Taiwan dataset is used. In addition, ﬁve prediction tech- 
+niques are used to develop the prediction models and ﬁve 
+different f eature selection methods are employed to reduce the 
+dimensions of the combined FR and CGI features for compar- 
+ison. The results show that the combination of FRs and CGIs 
+can improve the model’s performance when compared with 
+the model based on FRs alone. Speciﬁcally, stepwise discrimi- 
+nant analysis (SDA) + support vector machine (SVM) performs 
+the best. 
+Moreover, the most important features for effective bankruptcy 
+prediction are the FR categories of solvency and proﬁtability and 
+the CGI categories of board structure and ownership structure. 
+Without using these features, the prediction model cannot perform 
+signiﬁcantly better than the one based on FRs alone. 
+However, the usefulness of using CGIs is market dependent. 
+That is, further analysis shows that the prediction performance in 
+the China market of the combination of FRs and CGIs is no better 
+than that obtained using FRs alone. There are two factors affecting 
+the prediction result of using CGIs. The ﬁrst one is the deﬁnition of 
+distressed companies, and the second one is the extent to which 
+the CGIs relate to the companies’ characteristics in the chosen 
+market. 
+Appendix 
+Financial ratios Corporate governance indicators 
+Solvency 
+X1 Cost of interest-bearing 
+debt 
+X96 Number of seats on board 
+X2 Cash reinvestment ratio X97 Number of directors 
+X3 Current ratio X98 Number of supervisors 
+( continued ) 
+( continued ) 
+Financial ratios Corporate governance indicators 
+X4 Acid test X99 Seats of ultimate controllers 
+serving as individual 
+directors 
+X5 Interest expenses/total 
+revenue 
+X100 Seats of ultimate controllers 
+serving as individual 
+supervisors 
+X6 Total liability/equity 
+ratio 
+X101 Seats of directors ultimately 
+controlled through an 
+unlisted company 
+X7 Liability/total assets X102 Seats of supervisors ultimately 
+controlled through an 
+unlisted company 
+X8 Interest-bearing 
+debt/equity 
+X103 Seats of directors ultimately 
+controlled through a 
+foundation 
+X9 Contingent 
+liability/equity 
+X104 Seats of supervisors ultimately 
+controlled through a 
+foundation 
+X10 Operating 
+income/capital 
+X105 Seats of directors ultimately 
+controlled through a listed 
+company 
+X11 Pretax income/capital X106 Seats of supervisors ultimately 
+controlled through a listed 
+company 
+X12 Working capital to total 
+assets 
+X107 Seats of directors served by a 
+company manager or group 
+manager 
+X13 Quick assets/total 
+assets 
+X108 Seats of supervisors served by 
+a company manager or group 
+manager 
+X14 Current assets/total 
+assets 
+X109 Seats of directors served by 
+outside individuals 
+X15 Cash/total assets X110 Seats of supervisors served by 
+outside individuals 
+X16 Quick assets/current 
+liability 
+X111 Seats of directors served by an 
+unlisted company not 
+controlled by an ultimate 
+controller 
+X17 Cash/current liability X112 Seats of supervisors served by 
+an unlisted company not 
+controlled by an ultimate 
+controller 
+X18 Current liability to 
+assets 
+X113 Seats of directors served by a 
+foundation not controlled by 
+an ultimate controller 
+X19 Operating funds to 
+liability 
+X114 Seats of supervisors served by 
+a foundation not controlled 
+by an ultimate controller 
+X20 Inventory/working 
+capital 
+X115 Seats of directors served by a 
+listed company not 
+controlled by an ultimate 
+controller 
+X21 Inventory/current 
+liability 
+X116 Seats of supervisors served by 
+a listed company not 
+controlled by an ultimate 
+controller 
+X22 Current 
+liabilities/liability 
+X117 Seats of directors and 
+supervisors served by the 
+largest outside shareholder 
+X23 Working capital/equity X118 Seats of directors served by the 
+largest outside shareholder 
+X24 Current 
+Liabilities/Equity 
+X119 Seats of supervisors served by 
+the largest outside 
+shareholder 
+X25 Long-term liability to 
+current assets 
+X120 Seats of directors and 
+supervisors served by an 
+allied group 
+X26 Current liability to 
+current assets 
+X121 Seats of directors served by an 
+allied group 
+X27 One if total liability 
+exceeds total assets; 
+zero otherwise 
+X122 Seats of supervisors served by 
+an allied group 
+X28 Equity to liability X123 Seats of independent directors 
+and supervisors 
+( continued on next page ) 
+
+PDF PAGE 11
+D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 571 
+( continued ) 
+Financial ratios Corporate governance indicators 
+Capital structure ratios X124 Seats of independent directors 
+X29 Equity/total assets X125 Seats of independent 
+supervisors 
+X30 (Long-term 
+liability + eq- 
+uity)/ﬁxed 
+assets 
+X126 Seats of directors and 
+supervisor foreigner serve 
+X31 Fixed assets to assets X127 Seats of directors ﬁlled by 
+foreigners 
+X32 Current liability to 
+liability 
+X128 Seats of supervisors ﬁlled 
+foreigner 
+X33 Current liability to 
+equity 
+X129 Seats of directors the ultimate 
+controller control 
+X34 Equity to long-term 
+liability 
+X130 Seats of supervisors the 
+ultimate controller control 
+X35 Liability to equity X131 X 149 /X 103 
+X36 Degree of ﬁnancial 
+leverage 
+X132 X 150 /X 103 
+X37 Interest coverage ratio X133 Seats of directors serving as 
+managers 
+Others X134 X 167 /X 97 
+X38 Operating expenses/net 
+sales 
+X135 Seats of directors serving as 
+managers 
+X39 (Research and 
+development 
+expenses)/net sales 
+X136 X 169 /X 98 
+X40 Effective tax rate Cash ﬂow rights 
+X41 Book value per share 
+(B) 
+X137 Cash ﬂow rights of ultimate 
+controller, excluding shares 
+owned by a foundation of 
+allied groups 
+X42 Book value per share 
+(A) 
+X138 X 154 —X  157 
+X43 Book value per share 
+(C) 
+X139 X 157 /X 154 
+X44 Cash ﬂow per share X140 X 154 /X 157 
+X45 Sales per share X141 X 151 —X  157 
+X46 Operating income per 
+share 
+X142 X 157 /X 151 
+X47 Sales per employee X143 X 151 /X 157 
+X48 Operation income per 
+employee 
+X144 X 151 —X  154 
+X49 Fixed assets per 
+employee 
+X145 X 154 /X 151 
+X50 Total assets to GNP 
+price 
+X146 X 151 /X 154 
+Proﬁtability X147 Amount of investments in 
+other enterprises divided by 
+stockholder’s equity 
+X51 Return on total assets 
+(C) 
+Ownership structures 
+X52 Return on total assets 
+(A) 
+X148 Shareholding ratio of board 
+X53 Return on total assets 
+(B) 
+X149 Shareholding ratio of directors 
+X54 Gross proﬁt/net sales X150 Shareholding ratio of 
+supervisors 
+X55 Realized gross 
+proﬁt/net sales 
+X151 Shareholding ratio of main 
+shareholders 
+X56 Operating income/net 
+sales 
+X152 Shareholding ratio of ultimate 
+controller through individual 
+X57 Pre-tax income/net 
+sales 
+X153 Shareholding ratio of ultimate 
+controller through unlisted 
+company 
+X58 Net income/net sales X154 Shareholding ratio of ultimate 
+controller 
+X59 Net non-operating 
+income ratio 
+X155 Shareholding ratio of ultimate 
+controller through a listed 
+company 
+X60 Net income-exclude 
+disposal gain or 
+loss/net sales 
+X156 Shareholding ratio of company 
+manager and group manager 
+X61 EPS-net income X157 Shareholding ratio of ultimate 
+controller through a juridical 
+person 
+( continued ) 
+( continued ) 
+Financial ratios Corporate governance indicators 
+X62 Pretax income per 
+share 
+X158 Shareholding ratio of ultimate 
+controller through a juridical 
+person serving as director 
+and supervisor 
+X63 Retained earnings to 
+total assets 
+X159 X 126 —X  127 
+X64 Total income to total 
+expenses 
+X160 Shareholding ratio of outside 
+person 
+X65 Total expenses to assets X161 Shareholding ratio of outside 
+unlisted company 
+X66 Net income to total 
+assets 
+X162 Shareholding ratio of outside 
+foundation 
+X67 Gross proﬁt to sales X163 Shareholding ratio of outside 
+listed company 
+X68 Net income to 
+stockholder’s equity 
+X164 Shareholding belonging to the 
+largest outside group 
+X69 One if net income is 
+negative for the last 
+two years; zero 
+otherwise 
+X165 Shareholding ratio of allied 
+group 
+Turnover ratios X166 X 121 + X 122 + X 123 
+X70 (inventory + accounts 
+receivables)/equity 
+X167 Shareholding ratio controlled 
+by the ultimate controller 
+X71 Total asset turnover X168 Shareholding ratio of foreign 
+directors and supervisors 
+X72 Accounts receivable 
+turnover 
+X169 X 124 + X 125 
+X73 Days receivable 
+outstanding 
+X170 Shareholding ratio of alliance 
+juridical person 
+X74 Inventory turnover X171 Shareholding ratio of alliance 
+juridical person serving as 
+director or supervisor 
+X75 Fixed asset turnover X172 X 171 —X  172 
+X76 Equity turnover X173 Shareholding ratio of outside 
+juridical person 
+X77 Current assets to sales X174 Shareholding ratio of outside 
+juridical person serving as 
+director or supervisor 
+X78 Quick assets to sales X175 X 174 —X  175 
+X79 Working capital to 
+sales 
+Retention of key personnel 
+X80 Cash to sales X176 Turnover of spokesman within 
+a month 
+X81 Cash ﬂow to sales X177 Turnover of chairman within 3 
+years 
+X82 No-credit interval X178 Turnover of CEO within 3 years 
+Cash flow ratios X179 Turnover of CFO within 3 years 
+X83 Cash ﬂow from 
+operating/current 
+liabilities 
+X180 Turnover of spokesman within 
+3 years 
+X84 Cash ﬂow to total 
+assets 
+X181 Turnover of internal audit 
+within 3 years 
+X85 Cash ﬂow to liability X182 Turnover of chairman within a 
+month 
+X86 CFO to assets X183 Turnover of CEO within a 
+month 
+X87 Cash ﬂow to equity X184 Turnover of CFO within a 
+month 
+Growth X185 Number of times CPA was 
+switched in the last 3 years 
+X88 Realized gross proﬁt 
+growth rate 
+X186 Turnover of internal audit 
+within a month 
+X89 Operating income 
+growth 
+Others 
+X90 Net income growth X187 Controlled seats: seats of 
+directors and supervisors the 
+ultimate controller control 
+X91 Continuing operating 
+income after tax 
+growth 
+X188 X 148 /X 103 
+X92 Net income-excluding 
+disposal gain or loss 
+growth 
+X189 Number of times ﬁnancial 
+forecast published in a year 
+( continued on next page ) 
+
+PDF PAGE 12
+572 D. Liang et al. / European Journal of Operational Research 252 (2016) 561–572 
+( continued ) 
+Financial ratios Corporate governance indicators 
+X93 Total asset growth X190 Number of times ﬁnancial 
+report restated in a year 
+X94 Total equity growth 
+X95 Return on total asset 
+growth 
+References 
+Albring, S. , Robinson, D. , & Robinson, M. (2014). Audit committee ﬁnancial expertise, 
+corporate governance, and the voluntary switch from auditor-provided to non- 
+auditor-provided tax services. Advances in Accounting, 30 (1), 81–94 . 
+Altman, E. I. (1968). Financial ratios, discriminant analysis and the prediction cor- 
+porate bankruptcy. Journal of Finance, 23 (4), 589–609 . 
+Balcaen, S. , & Ooghe, H. (2006). 35 years of studies on business failure: An overview 
+of the classic statistical methodologies and their related problems. The British 
+Accounting Review, 38 , 63–93 . 
+Balleisen, E. (2001). Navigating failure: Bankruptcy and commercial society in Antebel- 
+lum America . Chapel Hill: University of North Carolina Press . 
+Beaver, W. H. (1966). Financial ratios predictors of failure. Journal of Accounting Re- 
+search, 4 , 71–111 . 
+Berkman, H. , Cole, R. A. , & Fu, L. J. (2009). Expropriation through loan guarantees to 
+related parties: Evidence from China. Journal of Banking & Finance, 33 , 141–156 . 
+Bredart, X. (2014). Financial distress and corporate governance: The impact of board 
+conﬁguration. International Business Research, 7 (3), 72–80 . 
+Chen, I.-J. (2014). Financial crisis and the dynamics of corporate governance: Evi- 
+dence from Taiwan’s listed ﬁrms. International Review of Economics and Finance, 
+32 , 3–28 . 
+Cheung, Y.-L. , Chung, C.-W. , Tan, W. , & Wang, W. (2013). Connected board of direc- 
+tors: A blessing or a curse? Journal of Banking & Finance, 37 , 3227–3242 . 
+Claessens, S. , Djankov, S. , & Xu, L. C. (20 0 0), Corporate performance in the East Asian 
+ﬁnancial crisis: 15 (pp. 23–46). The World Bank Research Observer . 
+Collier, J. , & Esteban, R. (1999). Governance in the participative organization: Free- 
+dom, creativity and ethics. Journal of Business Ethics, 21 , 173–188 . 
+Dan, L. (2010). Does auditor tenure affect accounting conservatism? Further evi- 
+dence. Journal of Accounting and Public Policy, 29 , 226–241 . 
+Dash, M. , & Liu, H. (1997). Feature selection for classiﬁcation. Intelligent data analy- 
+sis, 1 , 131–156 . 
+Demsar, J. (2006). Statistical comparisons of classiﬁers over multiple data sets. Jour- 
+nal of Machine Learning Research, 7 , 1–30 . 
+Fawcelt, T. (2006). An introduction to ROC analysis. Pattern Recognition Letters, 27 (8), 
+861–874 . 
+Fisher, R. A. (1936). The use of multiple measurements in taxonomic problems. An- 
+nals of Eugenics, 7 , 179–188 . 
+Fisher, R. A. , & Yates, F. (1963). Statistical tables for biological, agricultural and medical 
+research . Edinburgh: Oliver and Boyd . 
+Guyon, I. , & Elisseeff, A. (2003). An introduction to variable and feature selection. 
+Journal of Machine Learning Research, 3 , 1157–1182 . 
+Guyon, I. , Weston, J. , Barnhill, S. , & Vapnik, V. (2002). Gene selection for cancer 
+classiﬁcation using support vector machine. Machine Learning, 46 , 389–422 . 
+Holland, J. H. (1975). Adaptation in natural and artiﬁcial systems: An introductory 
+analysis with applications to biology, control, and artiﬁcial intelligence . University 
+of Michigan Press . 
+Jian, M. , & Wong, T. J. (2010). Propping through related party transactions. Review of 
+Accounting Studies, 15 , 70–105 . 
+Kohavi, R. (1995). A study of cross-validation and bootstrap for accuracy estima- 
+tion and model selection. In International joint conference on artiﬁcial intelligence 
+(pp. 1137–1143) . 
+Kumar, P. R. , & Ravi, V. (2007). Bankruptcy prediction in banks and ﬁrms via sta- 
+tistical and intelligent techniques –A  review. European Journal of Operational 
+Research, 180 , 1–28 . 
+La Porta, R. , Lopez-de-Silanes, F. , & Shleifer, A. (1999). Corporate ownership around 
+the world. The Journal of Finance, 54 , 471–517 . 
+Lee, T.-S. , & Yeh, Y. H. (2004). Corporate governance and ﬁnancial distress: Evidence 
+from Taiwan. Corporate Governance: An International Review, 12 (3), 378–388 . 
+Liang, Q. , Xu, P. , & Jiraporn, P. (2013). Board characteristics and Chinese bank per- 
+formance. Journal of Banking & Finance, 37 , 2953–2968 . 
+Lin, F.-Y. , Liang, D. , & Chu, W.-S. (2010). The role of non-ﬁnancial features related to 
+corporate governance in business crisis prediction. Journal of Marine Science and 
+Technology, 18 (4), 504–513 . 
+Lin, W.-Y. , Hu, Y.-H. , & Tsai, C.-F. (2012). Machine learning in ﬁnancial crisis pre- 
+diction: A survey. IEEE Transactions on Systems, Man and Cybernetics –P a r t C: 
+Applications and Reviews, 42 (4), 421–436 . 
+Shailer, G. (2004). An introduction to corporate governance in Australia . Australia: 
+Pearson Education . 
+Ohlson, J. A. (1980). Financial ratios and the probabilistic prediction of bankruptcy. 
+Journal of Accounting Research, 18 , 109–131 . 
+Verikas, A. , Kalsyte, Z. , Bacauskiene, M. , & Gelzinis, A. (2010). Hybrid and ensemble- 
+based soft computing techniques in bankruptcy prediction: A survey. Soft Com- 
+puting, 14 , 995–1010 . 
+Wu, J.-L. (2007). Do corporate governance factors matter for ﬁnancial distress predic- 
+tion of ﬁrms? Evidence from Taiwan Master’s thesis. University of Nottingham . 
+Wu, X. , Kumar, V. , Quinlan, J. R. , Ghosh, J. , Yang, Q. , Motoda, H. , et al. (2008). Top 
+10 algorithms in data mining. Knowledge and Information Systems, 14 , 1–37 . 
+Yeh, Y.-H. , & Woidtke, T. (2005). Commitment or entrenchment?: Controlling share- 
+holders and board composition. Journal of Banking & Finance, 29 , 1857–1885 . 
+Zimmerman, D. W. (1997). A note on interpretation of the paired-samples t test. 
+Journal of Educational and Behavioral Statistics, 22 (3), 349–360 . 
+Zywicki, T. J. (2008). Bankruptcy. In D. R. Henderson (Ed.), Concise encyclopedia of 
+economics (2nd ed.). Indianapolis: Library of Economics and Liberty . 

@@ -1,0 +1,40 @@
+{
+  "tested_combinations": 25502500,
+  "smallest_first_row_error": 0.016863482797418672,
+  "surviving_combinations": 0,
+  "input": "D:\\SCHOLARSHIPS\\My Items\\Degree Project\\FYP\\SHIELD\\data\\preprocessed_dataset.csv",
+  "rows": 6819,
+  "raw_bound_search_interval": [
+    0,
+    1
+  ],
+  "grid_step": 0.01,
+  "bounds_pairs_per_feature": 5050,
+  "tolerance": 0.001,
+  "candidate_examples": [],
+  "closest_on_first_row_only": {
+    "Equity to Liability": [
+      0.99,
+      1.0
+    ],
+    "Liability to Equity": [
+      0.99,
+      1.0
+    ]
+  },
+  "closest_example_all_row_error": {
+    "min": 0.0072522091700000235,
+    "max": 0.0198021958111001,
+    "mean": 0.01665203686319593,
+    "mismatch_rows": 6819
+  },
+  "elapsed_seconds": 0.4400281999987783,
+  "conclusion": "No complete seven-feature solution on this grid can satisfy all checks under identical accounting definitions.",
+  "limits": [
+    "This finite grid is not every real number between 0 and 1.",
+    "Raw bounds outside [0,1] are excluded.",
+    "Original bounds are not recovered.",
+    "No inference about the original data transformation follows if ratio definitions differ.",
+    "Retained earnings/assets cannot be identified from these relationships."
+  ]
+}

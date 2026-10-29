@@ -1,0 +1,157 @@
+SHIELD SME REPORTING CROSS-CHECK - EASY REFERENCE
+28 October 2026
+
+All95 local financial predictors reviewed. No models trained.
+Target: incorporated Malaysian SMEs supplying complete annual accounts and notes.
+Important: no ratio is guaranteed to be printed as a separate statement field.
+A calculator candidate is not yet a verified model-ready input. Original donor definitions and transformations remain to be established.
+
+REPORTING STRUCTURE
+Balance sheet: assets, liabilities, equity and relevant current/non-current breakdowns.
+Profit/loss: revenue, costs and profit; scope and subtotals vary.
+Equity statement/notes: share capital, retained earnings/accumulated losses and movements.
+Cash-flow statement: operating, investing and financing flows; net CFO is not simply cash generated from operations.
+Notes: borrowing, interest/finance costs, depreciation, shares and other material details.
+IFRS XHTML supplied by user:173 distinct tagged concepts. Example includes R&D and shares, but not every SME must have every example line.
+
+A. ANNUAL-ACCOUNT CALCULATOR CANDIDATE (30)
+- Operating Gross Margin
+- Operating Profit Rate
+- Pre-tax net Interest Rate
+- After-tax net Interest Rate
+- Current Ratio
+- Debt ratio % [current top20]
+- Net worth/Assets [current top20]
+- Working Capital to Total Assets
+- Current Assets/Total Assets
+- Cash/Total Assets
+- Cash/Current Liability
+- Current Liability to Assets
+- Inventory/Working Capital
+- Inventory/Current Liability
+- Current Liabilities/Liability
+- Working Capital/Equity
+- Current Liabilities/Equity
+- Long-term Liability to Current Assets
+- Retained Earnings to Total Assets [current top20]
+- Current Liability to Liability
+- Current Liability to Equity
+- Equity to Long-term Liability
+- CFO to Assets
+- Current Liability to Current Assets
+- Liability-Assets Flag
+- Net Income to Total Assets [current top20]
+- Gross Profit to Sales
+- Net Income to Stockholder's Equity [current top20]
+- Liability to Equity [current top20]
+- Equity to Liability [current top20]
+
+B. CONDITIONAL: NOTES, HISTORY OR ADDITIONAL RECORDS (35)
+- Non-industry income and expenditure/revenue
+- Operating Expense Rate
+- Research and development expense rate
+- Interest-bearing debt interest rate
+- Tax rate (A)
+- Cash Flow Per Share
+- Revenue Per Share
+- Operating Profit Per Share
+- Per Share Net profit before tax [current top20]
+- Operating Profit Growth Rate
+- After-tax Net Profit Growth Rate
+- Total Asset Growth Rate
+- Net Value Growth Rate
+- Quick Ratio
+- Total debt/Total net worth
+- Long-term fund suitability ratio (A)
+- Borrowing dependency [current top20]
+- Contingent liabilities/Net worth
+- Operating profit/Paid-in capital
+- Net profit before tax/Paid-in capital [current top20]
+- Inventory and accounts receivable/Net value
+- Total Asset Turnover
+- Accounts Receivable Turnover
+- Average Collection Days
+- Inventory Turnover Rate (times)
+- Fixed Assets Turnover Frequency
+- Net Worth Turnover Rate (times)
+- Revenue per person
+- Operating profit per person
+- Quick Assets/Total Assets
+- Quick Assets/Current Liability
+- Total income/Total expense
+- Total expense/Assets
+- Fixed Assets to Assets
+- Degree of Financial Leverage (DFL) [current top20]
+
+C. SPECIALISED DEFINITION OR EXACT MAPPING UNRESOLVED (28)
+- ROA(C) before interest and depreciation before interest [current top20]
+- ROA(A) before interest and % after tax [current top20]
+- ROA(B) before interest and depreciation after tax [current top20]
+- Realized Sales Gross Margin
+- Continuous interest rate (after tax) [current top20]
+- Cash flow rate
+- Net Value Per Share (B) [current top20]
+- Net Value Per Share (A) [current top20]
+- Net Value Per Share (C)
+- Persistent EPS in the Last Four Seasons [current top20]
+- Realized Sales Gross Profit Growth Rate
+- Regular Net Profit Growth Rate
+- Continuous Net Profit Growth Rate
+- Total Asset Return Growth Rate Ratio
+- Cash Reinvestment %
+- Interest Expense Ratio [current top20]
+- Allocation rate per person
+- Operating Funds to Liability
+- Current Asset Turnover Rate
+- Quick Asset Turnover Rate
+- Working capitcal Turnover Rate
+- Cash Turnover Rate
+- Cash Flow to Sales
+- Cash Flow to Total Assets
+- Cash Flow to Liability
+- Cash Flow to Equity
+- No-credit Interval
+- Interest Coverage Ratio (Interest expense to EBIT) [current top20]
+
+D. EXTERNAL INFORMATION REQUIRED (1)
+- Total assets to GNP price
+
+E. EXCLUDE: CONSTANT LOCAL FEATURE (1)
+- Net Income Flag
+
+CURRENT TOP20 - FIRST-PASS STATUS
+- ROA(C) before interest and depreciation before interest: C | Need: Adjusted recurring earnings; interest; tax; depreciation/amortisation; opening/closing assets
+- ROA(A) before interest and % after tax: C | Need: Continuing-operation profit; interest/finance costs; applicable tax; opening/closing assets
+- ROA(B) before interest and depreciation after tax: C | Need: Recurring profit; finance costs; tax; depreciation/amortisation; opening/closing assets
+- Continuous interest rate (after tax): C | Need: Recurring after-tax income adjustments; revenue
+- Net Value Per Share (B): C | Need: Equity components; share counts/classes; treasury shares and adjustments
+- Net Value Per Share (A): C | Need: Equity components; share counts/classes; treasury shares and adjustments
+- Persistent EPS in the Last Four Seasons: C | Need: Four-quarter recurring earnings; share and ownership adjustments
+- Per Share Net profit before tax: B | Need: Profit before tax; appropriate share count
+- Interest Expense Ratio: C | Need: Interest/finance costs; exact denominator
+- Debt ratio %: A | Need: Total liabilities; total assets
+- Net worth/Assets: A | Need: Total equity; total assets
+- Borrowing dependency: B | Need: Short/long-term borrowing breakdown; equity
+- Net profit before tax/Paid-in capital: B | Need: Profit before tax; paid-in-capital components
+- Retained Earnings to Total Assets: A | Need: Retained earnings/accumulated losses; assets
+- Net Income to Total Assets: A | Need: Net income; assets
+- Net Income to Stockholder's Equity: A | Need: Net income; shareholders equity
+- Liability to Equity: A | Need: Total liabilities; eligible equity
+- Degree of Financial Leverage (DFL): B | Need: Operating profit; actual interest expense
+- Interest Coverage Ratio (Interest expense to EBIT): C | Need: Interest/finance costs; EBIT
+- Equity to Liability: A | Need: Equity; total liabilities
+
+HOW TO USE THIS CHECKPOINT
+1. Validate A candidates against exact historical feature definitions and available company documents.
+2. Expand with B only where the necessary notes/history exist; resolve C before inclusion.
+3. Establish correct conversion from raw company data to dataset/model representation.
+4. Freeze the supported feature pool, then train matched experiments; IG may select within that pool.
+5. Do not treat B/C as permanently impossible or automatically remove every field.
+
+DOCUMENTS
+SSM: https://www.ssm.com.my/bm/Pages/Register_Business_Company_LLP/Company/document/FAQ-MBRS_ISSB.pdf#page=12
+NK: https://nk.com.my/cdn/pdf/MPERS_Illustrative_Financial_Statements.pdf#page=21
+KPMG: https://assets.kpmg.com/content/dam/kpmgsites/my/pdf/2025/01/Wonderful-SME-Sdn-Bhd-Illustrative-Financial-Statements-2016.pdf
+UCI: https://archive.ics.uci.edu/dataset/572/taiwanese+bankruptcy+prediction
+TEJ: https://www.tej.com.tw/tejdoc/db-document/tw/wim4.html
+IFRS: https://www.ifrs.org/issued-standards/ifrs-taxonomy/ifrs-taxonomy-illustrative-examples/

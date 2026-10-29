@@ -1,0 +1,65 @@
+POLISH BANKRUPTCY DATASET RESEARCH — 28 October 2026
+
+Kaggle copies found:
+https://www.kaggle.com/competitions/companies-bankruptcy-forecast/data
+https://www.kaggle.com/competitions/companies-bankruptcy-forecast/overview
+The 2018 competition explicitly says missing values were removed and columns
+standardized. Do not use that copy to resolve missing raw-input transformations.
+
+https://www.kaggle.com/competitions/company-bankruptcy-prediction/data
+2022 competition; labelled train, unlabelled test and metadata. Transformation
+compatibility has not been established by inspecting its actual files.
+
+Preferred source for feasibility work:
+https://archive.ics.uci.edu/dataset/365/polish+companies+bankruptcy+data
+Official archive downloaded and inspected, saved alongside this note.
+Each original ARFF file has 64 numeric financial predictors plus binary class.
+The five files contain 43,405 records in total; do not call them 43,405 unique
+companies or pool horizons without checking overlap and target definitions.
+
+File / prediction horizon / records / bankrupt:
+1year.arff / 5 years ahead / 7,027 / 271
+2year.arff / 4 years ahead / 10,173 / 400
+3year.arff / 3 years ahead / 10,503 / 495
+4year.arff / 2 years ahead / 9,792 / 515
+5year.arff / 1 year ahead / 5,910 / 410 (6.94%)
+
+Documented five-feature candidate calculable from five accounting quantities:
+X1 net profit / total assets
+X2 total liabilities / total assets
+X6 retained earnings / total assets
+X8 book value of equity / total liabilities
+X10 equity / total assets
+Do not assume identity with Taiwanese encoded features or reuse its trained model.
+Net profit/equity and liabilities/equity could be engineered only after denominator,
+missingness and definitions checks; these are not separately documented source
+columns in this five-feature subset. No requirement to force seven features.
+
+Direct checks, 5year.arff, first data row:
+X1=0.088238; X2=0.55472; X6=0.34204; X8=0.57752; X10=0.32036.
+X10/X2 ~= 0.57752, consistent with X8. Values across the file include negative
+numbers and numbers above 1, so this is not blanket 0-1 min-max output.
+This observation alone does not prove exact correspondence to every raw
+financial-statement convention.
+
+Caution: among 5,891 rows with finite X2/X8/X10 and nonzero X2,
+5,853 satisfy abs(X8-X10/X2)<0.001, but only 3,891 satisfy
+abs(X2+X10-1)<0.001. This discrepancy needs investigation; do not claim full
+accounting consistency. Selected columns have missing data: X1/X2/X6/X10 each
+have 3 missing entries; X8 has 18 in this file. Missing marked with '?'.
+Extreme and negative liabilities ratios also warrant a definition/quality review.
+
+Original research:
+Zieba, Tomczak and Tomczak (2016), Ensemble boosted trees with synthetic features
+generation in application to bankruptcy prediction, Expert Systems with
+Applications 58, 93-101. DOI 10.1016/j.eswa.2016.04.001.
+The publisher abstract describes XGBoost and arithmetic synthetic features.
+It does not establish future SHIELD performance or Malaysian applicability.
+
+Recommendation: audit raw definitions, anomalous ratios and missingness; then
+try a separate five-feature RF baseline on 5year.arff (one-year horizon), retaining
+the current Taiwanese work as a benchmark. Fit imputation/scaling/SMOTE within
+training folds if used. Start with no SMOTE versus one controlled SMOTE setting;
+do not repeat the entire experimental matrix before feasibility is confirmed.
+No model training, website migration, or project replacement performed here.
+Detailed measured values: uci_file_audit.json.

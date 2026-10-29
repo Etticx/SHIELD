@@ -1,0 +1,45 @@
+{
+  "source": "User supplied Colab aggregate results; no rerun",
+  "threshold": 0.5,
+  "smote": 1.0,
+  "models": [
+    {
+      "name": "20-feature baseline",
+      "confusion_matrix": [
+        [
+          1246,
+          74
+        ],
+        [
+          12,
+          32
+        ]
+      ],
+      "precision_recall_f1_auc_percent": [
+        30.18867924528302,
+        72.72727272727273,
+        42.666666666666664,
+        93.83
+      ]
+    },
+    {
+      "name": "30 financial-statement candidates",
+      "confusion_matrix": [
+        [
+          1234,
+          86
+        ],
+        [
+          13,
+          31
+        ]
+      ],
+      "precision_recall_f1_auc_percent": [
+        26.495726495726494,
+        70.45454545454545,
+        38.50931677018634,
+        92.7
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "input": "D:\\SCHOLARSHIPS\\My Items\\Degree Project\\FYP\\SHIELD\\data\\preprocessed_dataset.csv",
+  "rows": 6819,
+  "candidate_raw_bounds": {
+    "Net Income to Stockholder's Equity": [
+      0.0,
+      1.0
+    ],
+    "Net Income to Total Assets": [
+      0.0,
+      1.0
+    ],
+    "Retained Earnings to Total Assets": [
+      0.0,
+      1.0
+    ],
+    "Debt ratio %": [
+      0.0,
+      1.0
+    ],
+    "Net worth/Assets": [
+      0.0,
+      1.0
+    ],
+    "Equity to Liability": [
+      0.0,
+      1.0
+    ],
+    "Liability to Equity": [
+      0.0,
+      1.0
+    ]
+  },
+  "atol": 1e-06,
+  "rtol": 1e-05,
+  "checks": {
+    "balance": {
+      "match": 6819,
+      "mismatch": 0,
+      "skipped": 0,
+      "max_absolute_error": 0.0
+    },
+    "reciprocal": {
+      "match": 0,
+      "mismatch": 6819,
+      "skipped": 0,
+      "max_absolute_error": 1.0
+    },
+    "equity": {
+      "match": 1,
+      "mismatch": 6818,
+      "skipped": 0,
+      "max_absolute_error": 1.0
+    },
+    "liabilities": {
+      "match": 0,
+      "mismatch": 6819,
+      "skipped": 0,
+      "max_absolute_error": 1.0
+    },
+    "income": {
+      "match": 0,
+      "mismatch": 6819,
+      "skipped": 0,
+      "max_absolute_error": 0.705558504
+    }
+  },
+  "rows_matching_all_checks": 0,
+  "verdict": "INCONSISTENT_WITH_IDENTITIES_UNDER_MATCHING_DEFINITIONS",
+  "unconstrained_feature": "Retained Earnings to Total Assets",
+  "limits": [
+    "Checks assume identical entity, reporting period, numerator and denominator definitions.",
+    "Mismatch does not prove normalisation or identify which particular bound is incorrect.",
+    "Matching all checks does not establish unique or original bounds.",
+    "Retained earnings/assets has no independent identity among these seven features.",
+    "Several checks are algebraically dependent.",
+    "No original raw values or original min/max are recovered by this script."
+  ],
+  "stored_ranges": {
+    "Net Income to Stockholder's Equity": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Net Income to Total Assets": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Retained Earnings to Total Assets": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Debt ratio %": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Net worth/Assets": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Equity to Liability": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Liability to Equity": {
+      "min": 0.0,
+      "max": 1.0
+    }
+  }
+}

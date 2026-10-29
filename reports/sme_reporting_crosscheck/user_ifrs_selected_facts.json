@@ -1,0 +1,474 @@
+[
+  {
+    "concept": "ifrs-smes:Revenue",
+    "context": "y2012",
+    "text": "6,863,545",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Revenue",
+    "context": "y2011",
+    "text": "5,808,653",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:GrossProfit",
+    "context": "y2012",
+    "text": "1,685,015",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:GrossProfit",
+    "context": "y2011",
+    "text": "1,386,078",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLossBeforeTax",
+    "context": "y2012",
+    "text": "654,956",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLossBeforeTax",
+    "context": "y2011",
+    "text": "457,147",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLoss",
+    "context": "y2012",
+    "text": "384,706",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLoss",
+    "context": "y2011",
+    "text": "267,588",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2011",
+    "text": "2,171,353",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2010",
+    "text": "2,003,765",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2012",
+    "text": "2,406,059",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2011",
+    "text": "2,171,353",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Revenue",
+    "context": "y2012",
+    "text": "6,863,545",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Revenue",
+    "context": "y2011",
+    "text": "5,808,653",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLossBeforeTax",
+    "context": "y2012",
+    "text": "654,956",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLossBeforeTax",
+    "context": "y2011",
+    "text": "457,147",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLoss",
+    "context": "y2012",
+    "text": "384,706",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLoss",
+    "context": "y2011",
+    "text": "267,588",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2011",
+    "text": "2,171,353",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2010",
+    "text": "2,003,765",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2012",
+    "text": "2,406,059",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2011",
+    "text": "2,171,353",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Cash",
+    "context": "e2012",
+    "text": "28,700",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Cash",
+    "context": "e2011",
+    "text": "22,075",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Cash",
+    "context": "e2010",
+    "text": "18,478",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Inventories",
+    "context": "e2012",
+    "text": "57,381",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Inventories",
+    "context": "e2011",
+    "text": "47,920",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Inventories",
+    "context": "e2010",
+    "text": "45,050",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CurrentAssets",
+    "context": "e2012",
+    "text": "671,629",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CurrentAssets",
+    "context": "e2011",
+    "text": "643,857",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CurrentAssets",
+    "context": "e2010",
+    "text": "584,762",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Assets",
+    "context": "e2012",
+    "text": "3,334,233",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Assets",
+    "context": "e2011",
+    "text": "3,158,274",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Assets",
+    "context": "e2010",
+    "text": "2,884,669",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CurrentLiabilities",
+    "context": "e2012",
+    "text": "819,332",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CurrentLiabilities",
+    "context": "e2011",
+    "text": "757,221",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CurrentLiabilities",
+    "context": "e2010",
+    "text": "631,330",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Liabilities",
+    "context": "e2012",
+    "text": "898,174",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Liabilities",
+    "context": "e2011",
+    "text": "956,921",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Liabilities",
+    "context": "e2010",
+    "text": "850,904",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2012",
+    "text": "2,406,059",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2011",
+    "text": "2,171,353",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:RetainedEarnings",
+    "context": "e2010",
+    "text": "2,003,765",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Equity",
+    "context": "e2012",
+    "text": "2,436,059",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Equity",
+    "context": "e2011",
+    "text": "2,201,353",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Equity",
+    "context": "e2010",
+    "text": "2,033,765",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLoss",
+    "context": "y2012",
+    "text": "384,706",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ProfitLoss",
+    "context": "y2011",
+    "text": "267,588",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CashFlowsFromUsedInOperatingActivities",
+    "context": "y2012",
+    "text": "693,416",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:CashFlowsFromUsedInOperatingActivities",
+    "context": "y2011",
+    "text": "461,948",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Revenue",
+    "context": "y2012",
+    "text": "6,863,545",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Revenue",
+    "context": "y2011",
+    "text": "5,808,653",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ResearchAndDevelopmentExpense",
+    "context": "y2012",
+    "text": "31,620",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:ResearchAndDevelopmentExpense",
+    "context": "y2011",
+    "text": "22,778",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Inventories",
+    "context": "e2012",
+    "text": "57,381",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Inventories",
+    "context": "e2011",
+    "text": "47,920",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:NumberOfSharesOutstanding",
+    "context": "e2012_OrdinarySharesMember",
+    "text": "30,000",
+    "unit": "Shares",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Cash",
+    "context": "e2012",
+    "text": "28,700",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  },
+  {
+    "concept": "ifrs-smes:Cash",
+    "context": "e2011",
+    "text": "22,075",
+    "unit": "EUR",
+    "scale": "0",
+    "sign": null
+  }
+]

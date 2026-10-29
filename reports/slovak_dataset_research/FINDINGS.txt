@@ -1,0 +1,96 @@
+SLOVAK SME DATASET AUDIT — 29 October 2026
+
+Original release: https://data.mendeley.com/datasets/j89csb932y/2
+DOI: 10.17632/j89csb932y.2, CC BY 4.0.
+Dataset paper: https://pmc.ncbi.nlm.nih.gov/articles/PMC6706765/
+DOI 10.1016/j.dib.2019.104360.
+Modelling study: https://doi.org/10.1016/j.econmod.2019.04.003
+Later author repository: https://github.com/kanasz/Bankruptcy_Prediction
+
+DIRECT FILE INSPECTION
+Downloaded all 32 original CSV files (~17.3 MB). Every file SHA256 matches the
+Mendeley content metadata. CSVs use semicolon separators, decimal commas and NA.
+Each has a local sequential row index plus 63 V-numbered numeric columns.
+Paper describes 21 ratios for 3 prior years. No explicit row-level company ID
+is provided; indexes restart at 1 in every file. Do not use those indexes as
+cross-year company identifiers. No model trained; current SHIELD unchanged.
+
+Observed total: 51,407 company-evaluation records (not verified unique firms).
+Filename-derived positive labels: 251 bankrupt; 51,156 nonbankrupt (0.4883%).
+Evaluation-year distributions:
+2013: 73 positive, 10,272 negative
+2014: 77 positive, 11,599 negative
+2015: 61 positive, 13,546 negative
+2016: 40 positive, 15,739 negative
+The paper's Table 1 places large counts under B and small under NB, whereas
+actual filenames put the large counts in nonbankrupt files. This appears to be
+a table heading/order problem. Filename labels are corroborated by a later
+prepared-file label check; do not blindly copy the table heading.
+
+Missing cells: 244,098 / 3,238,641 (7.5371%). 46,369 records have at least one
+missing value across 63 columns; concentrated missingness affects particular
+features (V18/V39/V60 especially). There are 80 repeated complete feature vectors
+beyond their first appearance across the release. These do not identify firms.
+All 63 columns have some observed values outside [0,1]. This rules out all
+columns being a blanket 0-1 representation, but does not by itself prove exact
+raw accounting units or absence of all preprocessing.
+
+COLUMN MAPPING EVIDENCE
+Paper Table 2 is a category list, not an explicit V-number dictionary.
+Downloaded author-prepared construction_13_1.csv contains 1,230 records with
+named columns ROA_0, ROE_0, ROS_0, L1_0,...FP_0,... across 3 blocks of 20.
+All 1,230 records' 60 feature values match original 2013 construction records
+at atol 1e-9 after removing original V18, V39, V60. Label agrees with source
+filename in all 1,037 prepared records with nonempty labels; 193 prepared
+validation records have blank labels. Use original files for training labels.
+This explicitly maps original V1 -> ROA, V2 -> ROE and V13 -> FP in that block.
+FP appears to correspond to paper financial leverage; nomenclature differs.
+
+Formula evidence from original paper:
+Eq 8: ROA = net profit / assets
+Eq 9: ROE = net profit / equity
+Eq 17: FL = assets / equity
+Eq 15: DA = (liabilities + accruals) / assets -- NOT simply liabilities/assets
+Eq 16: DE = total debt / equity -- debt scope needs mapping
+Eq 18: DIR = assets / liabilities -- unusual name; do not substitute income
+The release does not provide original statement amounts to recompute these.
+Exact percentage/fraction and rounding conventions need independent confirmation.
+Example original first bankrupt-agriculture-2013 row: V1=1.4, V2=3.36,
+V13=2.4. ROE ~= ROA*leverage holds here. Across the first block, 50,051 of
+50,997 finite comparisons satisfy this at atol .02 + rtol .01. This supports
+mapping but cannot establish whether both profitability columns are percentage
+points versus fractions, because multiplying both by 100 preserves identity.
+Do not invent a 100 multiplier solely from typical-looking values.
+For V1/V2/V13 combined, 410 records are missing at least one of the three.
+
+LABEL AND TIME SEMANTICS
+Paper includes bankruptcy proceedings AND restructuring as positive. This is
+broader than liquidation-only bankruptcy; it supports a carefully described
+financial-distress target, not arbitrary four-level severity ground truth.
+Ratios cover 3 preceding years per evaluation year. Confirm column-to-year order
+from source/code before selecting the latest block. Limited company IDs impede
+independent group split verification across evaluation years. Do not pool rows
+randomly across all evaluation years and claim independent company evaluation.
+A single evaluation-year/industry initial study is easier to audit; it has very
+few positives. Temporal evaluation still needs overlap and timing caveats.
+
+DECISION
+More promising than Taiwanese data for documentation and SME relevance; not yet
+validated as direct Malaysian SME financial-statement input. Do NOT replace
+production model immediately. Next gate is percent/fraction + exact definition
+verification for a small selected feature set (ROA, ROE, leverage are candidates),
+not more unconstrained model tuning or assuming all 21 use the same five amounts.
+After that, train one RF baseline using a clearly defined year, then test unseen
+rows; fit any imputation/resampling/scaling on training partitions only and save
+all fitted preprocessing alongside model. Current metric results do not transfer.
+
+Files:
+audit_summary.json: measured counts, column statistics, identity checks,
+  and author-prepared mapping evidence.
+audit_dataset.py: original CSV audit; subsequent mapping checks are documented
+  in the JSON and this note.
+files_metadata.json: source file listing, SHA256 and download URLs.
+original_csv/: untouched downloaded original release.
+paper.xml / paper_text.txt: original open article full text from Europe PMC.
+author_functions.py: later author code showing imputation/scaling fit on TRAIN,
+  then applied to TEST/VALID. This is distinct from original released CSV values.

@@ -72,3 +72,9 @@ export async function healthCheck(): Promise<{ status: string }> {
   });
   return handleResponse<{ status: string }>(res);
 }
+
+/** Seven dataset feature values; the backend passes them directly to the model. */
+export async function predictAccounting(request: {meta: import('./types').EvaluationMeta; financials: import('./accounting-inputs').AccountingData}): Promise<PredictionResponse> {
+ const res = await fetch(`${BASE}/ratios-predict`, {method:'POST', headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(request)});
+ return handleResponse<PredictionResponse>(res);
+}

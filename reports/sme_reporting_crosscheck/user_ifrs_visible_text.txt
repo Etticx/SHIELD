@@ -1,0 +1,222 @@
+Illustrative examples - Illustrative financial statements for Small and Medium-sized Entities (SMEs) .form-container {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                border: 1px solid #000000;
+                background: #ffffff;
+                background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#ffffff));
+                background: -webkit-linear-gradient(top, #ffffff, #ffffff);
+                background: -moz-linear-gradient(top, #ffffff, #ffffff);
+                background: -ms-linear-gradient(top, #ffffff, #ffffff);
+                background: -o-linear-gradient(top, #ffffff, #ffffff);
+                background-image: -ms-linear-gradient(top, #ffffff 0%, #ffffff 100%);
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                -webkit-box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 1px 0;
+                -moz-box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 1px 0;
+                box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 1px 0;
+                font-family: 'Helvetica Neue',Helvetica,sans-serif;
+                text-decoration: none;
+                vertical-align: middle;
+                min-width:650px;
+                padding:20px;
+                width:650px;
+            }
+            .form-field {
+                border: 0px solid #000000;
+                background: #f6f6f6;
+                -webkit-border-radius: 0px;
+                -moz-border-radius: 0px;
+                border-radius: 0px;
+                color: #575757;
+                -webkit-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
+                -moz-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
+                box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
+                padding:8px;
+                margin-bottom:20px;
+                max-width:95%;
+				width:95%;
+			}
+            .form-field:focus {
+                background: #fff;
+                color: #125db8;
+            }
+            .form-container h2 {
+                text-shadow: #ffffff 0 1px 0;
+                font-size:18px;
+                margin: 0 0 10px 0;
+                font-weight:bold;
+                text-align:center;
+            }
+            .form-title {
+                margin-bottom:10px;
+                color: #000000;
+                text-shadow: #ffffff 0 1px 0;
+            }
+            .submit-container {
+                margin:8px 0;
+                text-align:right;
+            }
+            .submit-button {
+                border: 0px solid #202b13;
+                background: #cd3333;
+                background: -webkit-gradient(linear, left top, left bottom, from(#cd3333), to(#cd3333));
+                background: -webkit-linear-gradient(top, #cd3333, #cd3333);
+                background: -moz-linear-gradient(top, #cd3333, #cd3333);
+                background: -ms-linear-gradient(top, #cd3333, #cd3333);
+                background: -o-linear-gradient(top, #cd3333, #cd3333);
+                background-image: -ms-linear-gradient(top, #cd3333 0%, #cd3333 100%);
+                -webkit-border-radius: 0px;
+                -moz-border-radius: 0px;
+                border-radius: 0px;
+                -webkit-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
+                -moz-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
+                box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
+                text-shadow: #000000 0 1px 0;
+                color: #ffffff;
+                font-family: helvetica, serif;
+                padding: 8.5px 18px;
+                font-size: 14px;
+                text-decoration: none;
+                vertical-align: middle;
+            }
+            .submit-button:hover {
+                border: 0px solid #ffffff;
+                text-shadow: #333333 0 1px 0;
+                background: #333333;
+                background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#333333));
+                background: -webkit-linear-gradient(top, #333333, #333333);
+                background: -moz-linear-gradient(top, #333333, #333333);
+                background: -ms-linear-gradient(top, #333333, #333333);
+                background: -o-linear-gradient(top, #333333, #333333);
+                background-image: -ms-linear-gradient(top, #333333 0%, #333333 100%);
+                color: #ffffff;
+            }
+            .submit-button:active {
+                text-shadow: #000000 0 1px 0;
+                border: 0px solid #ffffff;
+                background: #000000;
+                background: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#333333));
+                background: -webkit-linear-gradient(top, #000000, #000000);
+                background: -moz-linear-gradient(top, #000000, #000000);
+                background: -ms-linear-gradient(top, #000000, #000000);
+                background: -o-linear-gradient(top, #000000, #000000);
+                background-image: -ms-linear-gradient(top, #000000 0%, #000000 100%);
+                color: #fff;
+            }
+            .xbrlTagMarker {
+                color: blue;
+                cursor:pointer;
+            }
+            .xbrlTagMarkerHighlight {
+                background: yellow;
+            }
+            .xbrlNonNumericEven {
+                background: rgb(239, 247, 252);
+                cursor:pointer;
+            }
+            .xbrlNonNumericOdd {
+                background: lightGrey;
+                cursor:pointer;
+            }
+			
+         /* Style Definitions */
+		 h1 {
+             font-size: 14pt;
+             font-weight: bold;
+         }
+         h2 {
+             font-size: 12pt;
+             font-weight: bold;
+         }
+         body {
+             font-family: Arial,Helvetica,sans-serif;
+             font-size: 10pt;
+         }
+         table {
+             width: 100%;
+             padding: 5px;
+             border: 2px solid rgb(204, 204, 204);
+             height: 154px;
+             border-spacing: 0px;
+         }
+         td {
+             vertical-align: top;
+         }
+         td.underline {
+             vertical-align: top;
+             border-bottom: black 1pt solid;
+         }
+         td.doubleUnderline {
+             vertical-align: top;
+             border-bottom: black
+             1.5pt double;
+         }
+         div.disclaimer {
+             font-family: Arial,Helvetica,sans-serif;
+             font-size: 8pt;
+         } XBRL attributes Close Example 1 2010-12-31 Example 1 2011-12-31 Example 1 2012-12-31 Example 1 2012-01-01 2012-12-31 Example 1 2011-01-01 2011-12-31 Example 1 2011-12-31 ifrs-smes:GrossCarryingAmountMember Example 1 2011-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember Example 1 2011-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:LandAndBuildingsMember Example 1 2011-12-31 ifrs-smes:GrossCarryingAmountMember ifrs-smes:FixturesAndFittingsMember Example 1 2011-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:FixturesAndFittingsMember Example 1 2012-12-31 ifrs-smes:GrossCarryingAmountMember Example 1 2012-01-01 2012-12-31 ifrs-smes:BuildingsMember Example 1 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember Example 1 2012-12-31 ifrs-smes:LandAndBuildingsMember Example 1 2012-12-31 ifrs-smes:GrossCarryingAmountMember ifrs-smes:LandAndBuildingsMember Example 1 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:LandAndBuildingsMember Example 1 2012-12-31 ifrs-smes:FixturesAndFittingsMember Example 1 2012-01-01 2012-12-31 ifrs-smes:FixturesAndFittingsMember Example 1 2012-12-31 ifrs-smes:GrossCarryingAmountMember ifrs-smes:FixturesAndFittingsMember Example 1 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:FixturesAndFittingsMember Example 1 2012-01-01 2012-12-31 ifrs-smes:GrossCarryingAmountMember Example 1 2012-01-01 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember Example 1 2012-01-01 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:LandAndBuildingsMember Example 1 2012-01-01 2012-12-31 ifrs-smes:GrossCarryingAmountMember ifrs-smes:FixturesAndFittingsMember Example 1 2012-01-01 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:FixturesAndFittingsMember Example 1 2011-12-31 ifrs-smes:GrossCarryingAmountMember ifrs-smes:ComputerSoftwareMember Example 1 2011-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:ComputerSoftwareMember Example 1 2012-01-01 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:ComputerSoftwareMember Example 1 2012-12-31 ifrs-smes:GrossCarryingAmountMember ifrs-smes:ComputerSoftwareMember Example 1 2012-12-31 ifrs-smes:AccumulatedDepreciationAmortisationAndImpairmentMember ifrs-smes:ComputerSoftwareMember Example 1 2012-01-01 2012-12-31 example1:GovernnmentMandatedPlanMember Example 1 2012-12-31 example1:GovernnmentMandatedPlanMember Example 1 2011-12-31 example1:GovernnmentMandatedPlanMember Example 1 2012-01-01 2012-12-31 ifrs-smes:ComputerSoftwareMember Example 1 2012-12-31 ifrs-full:UnrealisedForeignExchangeGainsLossesMember Example 1 2012-01-01 2012-12-31 ifrs-full:UnrealisedForeignExchangeGainsLossesMember Example 1 2012-01-01 2012-12-31 example1:LongServiceBenefitMember Example 1 2012-12-31 ifrs-smes:ComputerSoftwareMember Example 1 2012-12-31 example1:LongServiceBenefitMember Example 1 2011-12-31 ifrs-smes:ComputerSoftwareMember Example 1 2011-12-31 example1:LongServiceBenefitMember Example 1 2011-01-01 2011-12-31 example1:LongServiceBenefitMember Example 1 2010-12-31 example1:LongServiceBenefitMember Example 1 2011-01-01 2011-12-31 ifrs-smes:ComputerSoftwareMember Example 1 2010-12-31 ifrs-smes:ComputerSoftwareMember Example 1 2012-01-01 2012-12-31 ifrs-smes:WarrantyProvisionMember Example 1 2012-12-31 ifrs-smes:WarrantyProvisionMember Example 1 2011-12-31 ifrs-smes:WarrantyProvisionMember Example 1 2012-12-31 ifrs-smes:NotLaterThanOneYearMember Example 1 2012-12-31 ifrs-smes:LaterThanOneYearAndNotLaterThanFiveYearsMember Example 1 2011-12-31 ifrs-smes:NotLaterThanOneYearMember Example 1 2011-12-31 ifrs-smes:LaterThanOneYearAndNotLaterThanFiveYearsMember Example 1 2012-12-31 ifrs-full:OrdinarySharesMember Example 1 2012-01-01 2012-12-31 ifrs-full:AssociatesMember Example 1 2011-01-01 2011-12-31 ifrs-full:AssociatesMember Example 1 2012-12-31 ifrs-full:AssociatesMember Example 1 2011-12-31 ifrs-full:AssociatesMember Example 1 2012-01-01 2012-12-31 example1:FloodInOneOfTheCandleStorageRoomsMember iso4217:EUR xbrli:shares xbrli:pure iso4217:EUR xbrli:shares IFRS Taxonomy 2020 – Illustrative examples Illustrative financial statements for Small and Medium-sized Entities (SMEs) Examples from Illustrative financial statements for Small and Medium-sized Entities (SMEs) which have been tagged with XBRL. Example reflects full set of illustrative financial
+               statements with the notes block as well as detail tagged. XYZ Group: Consolidated statement of comprehensive income and retained earnings for the year ended 31 December 20X2 (Alternative 1 – illustrating the classification of expenses by function) Notes 20X2 20X1 CU CU Revenue 5 6,863,545 5,808,653 Cost of sales ( 5,178,530 ) ( 4,422,575 ) Gross profit 1,685,015 1,386,078 Other income 6 88,850 25,000 Distribution costs ( 175,550 ) ( 156,800 ) Administrative expenses ( 810,230 ) ( 660,389 ) Other expenses ( 106,763 ) ( 100,030 ) Finance costs 7 ( 26,366 ) ( 36,712 ) Profit before tax 8 654,956 457,147 Income tax expense 9 ( 270,250 ) ( 189,559 ) Profit for the year 384,706 267,588 Retained earnings at start of year 2,171,353 2,003,765 Dividends ( 150,000 ) ( 100,000 ) Retained earnings at end of year 2,406,059 2,171,353 Note: The format illustrated above aggregates expenses according to their function (cost of sales, distribution, administrative etc). As the only changes to XYZ Group’s
+                           equity during the year arose from profit or loss and payment of dividends, it has elected to present a single statement of comprehensive income and retained earnings instead
+                           of separate statements of comprehensive income and changes in equity. XYZ Group: Consolidated statement of comprehensive income and retained earnings for the year ended 31 December 20X2 (Alternative 2 – illustrating the classification of expenses by nature) Notes 20X2 20X1 CU CU Revenue 5 6,863,545 5,808,653 Other income 6 88,850 25,000 Changes in inventories of finished goods and work in progress 3,310 ( 1,360 ) Raw material and consumables used ( 4,786,699 ) ( 4,092,185 ) Employee salaries and benefits ( 936,142 ) ( 879,900 ) Depreciation and amortisation expense ( 272,060 ) ( 221,247 ) Impairment of property, plant and equipment ( 30,000 ) - Other expenses ( 249,482 ) ( 145,102 ) Finance costs 7 ( 26,366 ) ( 36,712 ) Profit before tax 8 654,956 457,147 Income tax expense 9 ( 270,250 ) ( 189,559 ) Profit for the year 384,706 267,588 Retained earnings at start of year 2,171,353 2,003,765 Dividends ( 150,000 ) ( 100,000 ) Retained earnings at end of year 2,406,059 2,171,353 Note: The format illustrated above aggregates expenses according to their nature (raw materials and consumables, employee salaries and benefits, depreciation and
+                           amortisation, impairment etc). As the only changes to XYZ Group’s equity during the year arose from profit or loss and payment of dividends, it has elected to present a
+                           single statement of comprehensive income and retained earnings instead of separate statements of comprehensive income and changes in equity. XYZ Group: Consolidated statement of financial position at 31 December 20X2 Notes 20X2 20X1 20X0 ASSETS CU CU CU Current assets Cash 28,700 22,075 18,478 Trade and other receivables 10 585,548 573,862 521,234 Inventories 11 57,381 47,920 45,050 671,629 643,857 584,762 Non-current assets Investment in associate 12 107,500 107,500 107,500 Property, plant and equipment 13 2,549,945 2,401,455 2,186,002 Intangible assets 14 850 2,550 4,250 Deferred tax asset 15 4,309 2,912 2,155 2,662,604 2,514,417 2,299,907 Total assets 3,334,233 3,158,274 2,884,669 LIABILITIES AND EQUITY Current liabilities Bank overdraft 16 83,600 115,507 20,435 Trade payables 17 431,480 420,520 412,690 Interest payable 7 2,000 1,200 - Current tax liability 271,647 190,316 173,211 Provision for warranty obligations 18 4,200 5,040 2,000 Current portion of employee benefit obligations 19 4,944 4,754 4,571 XYZ Group: Consolidated statement of financial position at 31 December 20X2 Current portion of obligations under finance leases 20 21,461 19,884 18,423 819,332 757,221 631,330 Non-current liabilities Bank loan 16 50,000 150,000 150,000 Long-term employee benefit obligations 19 5,679 5,076 5,066 Obligations under finance leases 20 23,163 44,624 64,508 78,842 199,700 219,574 Total liabilities 898,174 956,921 850,904 Equity Share capital 22 30,000 30,000 30,000 Retained earnings 4 2,406,059 2,171,353 2,003,765 2,436,059 2,201,353 2,033,765 Total liabilities and equity 3,334,233 3,158,274 2,884,669 Note: The IFRS for SMEs does not require a statement of financial position at the beginning of the earliest comparative period―hence the shading. It is presented here to aid
+                           understanding of the calculations underlying amounts in the statement of cash flows. XYZ Group: Consolidated statement of cash flows for the year ended 31 December 20X2 Notes 20X2 20X1 CU CU Cash flows from operating activities Profit for the year 384,706 267,588 Adjustments for non-cash income and expenses: Non-cash finance costs (a) 800 1,200 Non-cash income tax expense (b) 79,934 16,348 Depreciation of property, plant and equipment 270,360 219,547 Impairment loss 30,000 - Amortisation of intangibles 1,700 1,700 Cash flow included in investing activities: Gain on sale of equipment ( 63,850 ) - Changes in operating assets and liabilities Decrease (increase) in trade and other receivables ( 11,686 ) ( 52,628 ) Decrease (increase) in inventories ( 9,461 ) ( 2,870 ) Increase (decrease) in trade payables (c) 10,120 10,870 Increase in current and long-term employee benefit payable 793 193 Net cash from operating activities 693,416 461,948 Cash flows from investing activities Proceeds from sale of equipment 100,000 - Purchases of equipment ( 485,000 ) ( 435,000 ) Net cash used in investing activities ( 385,000 ) ( 435,000 ) Cash flows from financing activities Payment of finance lease liabilities ( 19,884 ) ( 18,423 ) Repayment of borrowings ( 100,000 ) - Dividends paid ( 150,000 ) ( 100,000 ) Net cash used in financing activities ( 269,884 ) ( 118,423 ) Net increase (decrease) in cash and cash equivalents 38,532 ( 91,475 ) Cash and cash equivalents at beginning of year ( 93,432 ) ( 1,957 ) Cash and cash equivalents at end of year 23 ( 54,900 ) ( 93,432 ) (a) Finance costs paid in cash 25,566 35,512 (b) Income taxes paid in cash 190,316 173,211 (c) Includes unrealised foreign exchange loss 1,000 - XYZ Group:  Accounting policies and explanatory notes to the financial statements for the year ended 31 December 20X2 1.       General information XYZ (Holdings) Limited (the Company) is a limited company
+                  incorporated in A Land . The address of its registered office and principal place of business is _________. XYZ Group consists of the Company and
+                  its wholly-owned subsidiary XYZ ( Trading) Limited . Their principal
+                  activities are the manufacture and sale of
+                     candles . 2.       Basis of preparation and accounting policies These consolidated financial statements have been prepared in accordance with the International Financial Reporting Standard for Small and Medium-sized Entities issued by
+                     the International Accounting Standards Board. They are presented in the currency units (CU) of A Land. Basis of consolidation The consolidated financial statements incorporate the
+                     financial statements of the Company and its wholly-owned subsidiary. All intragroup transactions, balances, income and expenses are eliminated . Investments in associates Investments in associates are accounted for at cost less any accumulated impairment losses. Dividend income from investments in associates is recognised when the Group’s right to receive payment has been established. It is included in other income. Revenue recognition Revenue from sales of goods is recognised when the goods are delivered and title has passed. Royalty revenue from licensing candle-making patents for use by others is recognised
+                     in accordance with the relevant licence agreements. Revenue is measured at the fair value of the consideration received or receivable, net of discounts and sales-related taxes
+                     collected on behalf of the government of A Land. Borrowing costs All borrowing costs are recognised in profit or loss in the period in which they are incurred. Income tax Income tax expense represents the sum of the tax currently payable and deferred tax. The tax currently payable is based on taxable profit for the year. Deferred tax is recognised on differences between the carrying amounts of assets and liabilities in the financial statements and their corresponding tax bases (known as temporary differences). 
+				     Deferred tax liabilities are generally recognised for all temporary differences that will result in taxable amounts in determining taxable profit (tax loss) of future periods when the carrying 
+					 amount of the asset or liability is recovered or settled (taxable temporary differences). Deferred tax assets are generally recognised for all temporary differences that will result in amounts 
+					 that are deductible in determining taxable profit (tax loss) of future periods when the carrying amount of the asset or liability is recovered or settled (deductible temporary differences)—but 
+					 only to the extent that it is probable that taxable profits will be available against which those deductible temporary differences can be utilised. The carrying amount of deferred tax assets is reviewed at each reporting date and is adjusted to reflect the current assessment of future taxable profits. Any adjustments are recognised in profit 
+					 or loss. Deferred tax is calculated at the tax rates that are expected to apply to the taxable profit (tax loss) of the periods in which it expects the deferred tax asset to be realised or
+                     the deferred tax liability to be settled, on the basis of tax rates that have been enacted or substantively enacted by the end of the reporting period. Property, plant and equipment Items of property, plant and equipment are measured at cost less accumulated depreciation and any accumulated impairment losses. Depreciation is charged so as to allocate the cost of assets less their residual values over their estimated useful lives , using the straight-line method . The following annual
+                     rates are used for the depreciation of property, plant and equipment: Buildings 2 per cent Fixtures and equipment 10–30 per cent If there is an indication that there has been a significant change in depreciation rate, useful life or residual value of an asset, the depreciation of that asset is revised
+                     prospectively to reflect the new expectations. Intangible assets Intangible assets are purchased computer software that is stated at cost less accumulated depreciation and any accumulated impairment losses. It is amortised over its estimated
+                     life of five years using the straight-line method. If there is an indication that there has been a significant change in amortisation rate, useful life or residual value of an
+                     intangible asset, the amortisation is revised prospectively to reflect the new expectations. Impairment of assets At each reporting date, property, plant and equipment, intangible assets and investments in associates are reviewed to determine whether there is any indication that those assets
+                     have suffered an impairment loss. If there is an indication of possible impairment, the recoverable amount of any affected asset (or group of related assets) is estimated and
+                     compared with its carrying amount. If estimated recoverable amount is lower, the carrying amount is reduced to its estimated recoverable amount and an impairment loss is
+                     recognised immediately in profit or loss. Similarly, at each reporting date, inventories are assessed for impairment by comparing the carrying amount of each item of inventory (or group of similar items) with its selling
+                     price less costs to complete and sell. If an item of inventory (or group of similar items) is impaired, its carrying amount is reduced to selling price less costs to complete and
+                     sell, and an impairment loss is recognised immediately in profit or loss. If an impairment loss subsequently reverses, the carrying amount of the asset (or group of related assets) is increased to the revised estimate of its recoverable amount (selling
+                     price less costs to complete and sell, in the case of inventories), but not in excess of the amount that would have been determined had no impairment loss been recognised for the
+                     asset (group of related assets) in prior years. A reversal of an impairment loss is recognised immediately in profit or loss. Leases Leases are classified as finance leases whenever the terms of the lease transfer substantially all the risks and rewards of ownership of the leased asset to the Group. All other
+                     leases are classified as operating leases. Rights to assets held under finance leases are recognised as assets of the Group at the fair value of the leased property (or, if lower, the present value of minimum lease
+                     payments) at the inception of the lease. The corresponding liability to the lessor is included in the statement of financial position as a finance lease obligation. Lease payments
+                     are apportioned between finance charges and reduction of the lease obligation so as to achieve a constant rate of interest on the remaining balance of the liability. Finance
+                     charges are deducted in measuring profit or loss. Assets held under finance leases are included in property, plant and equipment, and depreciated and assessed for impairment
+                     losses in the same way as owned assets. Rentals payable under operating leases are charged to profit or loss on a straight-line basis over the term of the relevant lease. Inventories Inventories are stated at the lower of cost and selling price less costs to complete and sell. Cost is calculated using the first-in, first-out (FIFO) method. Trade and other receivables Most sales are made on the basis of normal credit terms and the receivables do not bear interest. Where credit is extended beyond normal credit terms, receivables are measured at
+                     amortised cost using the effective interest method. At the end of each reporting period, the carrying amounts of trade and other receivables are reviewed to determine whether
+                     there is any objective evidence that the amounts are not recoverable. If so, an impairment loss is recognised immediately in profit or loss. Trade payables Trade payables are obligations on the basis of normal credit terms and do not bear interest. Trade payables denominated in a foreign currency are translated into CU using the
+                     exchange rate at the reporting date. Foreign exchange gains or losses are included in other income or other expenses. Bank loans and overdrafts Interest expense is recognised on the basis of the effective interest method and is included in finance costs. Employee benefits―long-service payment The liability for employee benefit obligations relates to government-mandated long-service payments. All full-time staff, excluding directors, are covered by the programme. A
+                     payment is made of 5 per cent of salary (as determined for the twelve months before the payment) at the end of each of five years of employment. The payment is made as part of the
+                     December payroll in the fifth year. The Group does not fund this obligation in advance. The Group’s cost and obligation to make long-service payments to employees are recognised during the employees’ periods of service. The cost and obligation are measured using the
+                     projected unit credit method, assuming a 4 per cent average annual salary increase, with employee turnover based on the Group’s recent experience, discounted using the current
+                     market yield for high quality corporate bonds. Provision for warranty obligations All goods sold by the Group are warranted to be free of manufacturing defects for a period of one year. Goods are repaired or replaced at the Group’s option. When revenue is
+                     recognised, a provision is made for the estimated cost of the warranty obligation. 3.       Key sources of estimation uncertainty Long-service payments In determining the liability for long-service payments (explained in note 19), management must make an estimate of salary increases over the following five years, the discount rate
+                  for the next five years to use in the present value calculation, and the number of employees expected to leave before they receive the benefits. 4.       Restriction on payment of dividend Under the terms of the bank loan and bank overdraft agreements, dividends cannot be paid to the extent that they would reduce the balance of retained earnings below the sum of the
+                  outstanding balance of the bank loan and the bank overdraft. 5.       Revenue 20X2 20X1 CU CU Sale of goods 6,743,545 5,688,653 Royalties – licensing of candle-making patents 120,000 120,000 6,863,545 5,808,653 6.       Other income Other income includes dividends received from an associate of CU 25,000 in both 20X1 and 20X2 and gain on
+                  disposal of property, plant and equipment of CU 63,850 in 20X2. 7.       Finance costs 20X2 20X1 CU CU Interest on bank loan and overdraft ( 21,250 ) ( 30,135 ) Interest on finance leases ( 5,116 ) ( 6,577 ) ( 26,366 ) ( 36,712 ) 8.       Profit before tax The following items have been recognised as expenses (income) in determining profit before tax: 20X2 20X1 CU CU Cost of inventories recognised as expense 5,178,530 4,422,575 Research and development cost (included in other expenses) 31,620 22,778 Foreign exchange loss on trade payables (included in other expenses) 1,000 – Warranty expense (included in cost of sales*) 5,260 7,340 *If the entity classifies its expenses by nature in its income statement, this would say ‘included in raw materials and consumables used’. 9.       Income tax expense 20X2 20X1 CU CU Current tax 271,647 190,316 Deferred tax (note 15) ( 1,397 ) ( 757 ) 270,250 189,559 Income tax is calculated at 40 per cent (20X1: 40 per cent) of the estimated assessable profit for the year. Income tax expense for the year CU 270,250 in 20X2 (CU 189,559 in 20X1) differs from the amount that would result from applying the tax rate of 40 per cent (both 20X2 and
+                  20X1) to profit before tax because, under the tax laws of A Land, some employee compensation expenses (CU 20,670 in 20X2 and CU 16,750 in 20X1) that are recognised
+                  in measuring profit before tax are not tax-deductible.. 10.     Trade and other receivables 20X2 20X1 CU CU Trade debtors 528,788 528,384 Prepayments 56,760 45,478 585,548 573,862 11.     Inventories 20X2 20X1 CU CU Raw materials 42,601 36,450 Work in progress 1,140 900 Finished goods 13,640 10,570 57,381 47,920 12.     Investment in associate The Group owns 35 per cent of an associate whose shares are not publicly traded. 20X2 20X1 CU CU Cost of investment in associate 107,500 107,500 Dividend received from associate (included in other income) 25,000 25,000 13.     Property, plant and equipment Land and buildings Fixtures and equipment Total CU CU CU Cost 1 January 20X2 1,960,000 1,102,045 3,062,045 Additions - 485,000 485,000 Disposals - ( 241,000 ) ( 241,000 ) 31 December 20X2 1,960,000 1,346,045 3,306,045 Accumulated depreciation and impairment 1 January 20X2 390,000 270,590 660,590 Annual depreciation 30,000 240,360 270,360 Impairment - 30,000 30,000 Less accumulated depreciation on assets disposed of - ( 204,850 ) ( 204,850 ) 31 December 20X2 420,000 336,100 756,100 Carrying amount 31 December 20X2 1,540,000 1,009,945 2,549,945 During 20X2 the Group noticed a significant decline in the efficiency of a major piece of equipment and so carried out a review of its recoverable amount. The review led
+                              to the recognition of an impairment loss of CU 30,000 . The carrying amount of the Group’s fixtures and equipment includes an amount of CU 40,000 (20X1: CU 60,000 ) in respect of
+                              assets held under finance leases. On 10 December 20X2 the directors resolved to dispose of a machine. The machine’s carrying amount of CU 1,472 is included in fixtures and equipment at 31
+                              December 20X2, and trade payables includes the Group’s remaining obligation of CU 1,550 on the acquisition of this machine. Because the
+                              proceeds on disposal are expected to exceed the net carrying amount of the asset and related liability, no impairment loss has been recognised. 14.     Intangible assets Software: Cost CU 1 January 20X2 8,500 Additions - Disposals - 31 December 20X2 8,500 Accumulated depreciation and impairment 1 January 20X2 5,950 Annual amortisation (included in administrative expenses*) 1,700 31 December 20X2 7,650 Carrying amount 31 December 20X2 850 *If the entity classifies its expenses by nature in its income statement, this would say ‘included in depreciation and amortisation expense’. 15.     Deferred tax Differences between amounts recognised in the income statement and amounts reported to tax authorities in connection with investments in the subsidiary and associate are
+                  insignificant. The deferred tax assets are the tax effects of expected future income tax benefits relating to: (a)            the long-service benefit (note 19), which will not be tax-deductible until the benefit is actually paid but has already been recognised as an expense in measuring the
+                  Group’s profit for the year. (b)            the foreign exchange loss on trade payables, which will not be tax-deductible until the payables are settled but has already been recognised as an expense in measuring
+                  the Group’s profit for the year. Management considers it probable that taxable profits will be available against which the future income tax deductions can be utilised. The following are the deferred tax liabilities (assets) recognised by the Group: Software Foreign exchange loss Long-service benefit Total CU CU CU CU 1 January 20X1 1,700 - ( 3,855 ) ( 2,155 ) Charge (credit) to profit or loss for the year ( 680 ) - ( 77 ) ( 757 ) 1 January 20X2 1,020 - ( 3,932 ) ( 2,912 ) Charge (credit) to profit or loss for the year ( 680 ) ( 400 ) ( 317 ) ( 1,397 ) 31 December 20X2 340 ( 400 ) ( 4,249 ) ( 4,309 ) The deferred tax assets for the foreign exchange loss and the long-service benefits and the deferred tax liability for software relate to income tax in the same jurisdiction, and the
+                  law allows net settlement. Therefore, they have been offset in the statement of financial position as follows: 20X2 20X1 CU CU Deferred tax liability 340 1,020 Deferred tax asset ( 4,649 ) ( 3,932 ) ( 4,309 ) ( 2,912 ) 16.     Bank overdraft and loan 20X2 20X1 CU CU Bank overdraft 83,600 115,507 Bank loan—fully repayable in 20X4, prepayable without penalty 50,000 150,000 133,600 265,507 The bank overdraft and loan are secured by a floating lien over land and buildings owned by the Group with a carrying amount of CU 266,000 at 31 December 20X2 (CU 412,000 at 31 December 20X1). Interest is payable on the bank overdraft at 200 points above the London Interbank Borrowing Rate (LIBOR). Interest is payable on the seven-year bank loan at a fixed rate of 5 per cent of the principal amount. 17.     Trade payables Trade payables at 31 December 20X2 include CU 42,600 denominated in
+                  foreign currencies (nil at 31 December 20X1). 18.     Provision for warranty obligations Changes in the provision for warranty obligations during 20X2 were: 20X2 CU 1 January 20X2 5,040 Additional accrual during the year 5,260 Cost of warranty repairs and replacement during the year ( 6,100 ) 31 December 20X2 4,200 The obligation is classified as a current liability because the warranty is limited to twelve months. 19.     Employee benefit obligation―long-service payments The Group’s employee benefit obligation for long-service payments under a government-mandated plan is based on a comprehensive actuarial valuation as of 31 December 20X2 and is as
+                  follows: 20X2 CU Obligation at 1 January 20X2 9,830 Additional accrual during the year 7,033 Benefit payments made in year ( 6,240 ) Obligation at 31 December 20X2 10,623 The obligation is classified as: 20X2 20X1 CU CU Current liability 4,944 4,754 Non-current liability 5,679 5,076 Total 10,623 9,830 20.     Obligations under finance leases The Group holds one piece of specialised machinery with an estimated useful life of five years under a five-year finance lease. The future minimum lease payments are as follows: 20X2 20X1 CU CU Within one year 25,000 25,000 Later than one year but within five years 25,000 50,000 Later than five years - - 50,000 75,000 The obligation is classified as: 20X2 20X1 CU CU Current liability 21,461 19,884 Non-current liability 23,163 44,624 44,624 64,508 21.     Commitments under operating leases The Group rents several sales offices under operating leases. The leases are for an average period of three years, with fixed rentals over the same period. 20X2 20X1 CU CU Minimum lease payments under operating leases recognised as an expense during the year 26,100 26,100 At year-end, the Group has outstanding commitments under non-cancellable operating leases that fall due as follows: 20X2 20X1 CU CU Within one year 13,050 26,100 Later than one year but within five years - 13,050 Later than five years - - 13,050 39,150 22.     Share capital Balances as at 31 December 20X2 and 20X1 of CU 30,000 comprise 30,000 ordinary shares with par value CU 1.00 fully paid, issued and outstanding. An
+                  additional 70,000 shares are legally authorised but unissued. 23.     Cash and cash equivalents 20X2 20X1 CU CU Cash on hand 28,700 22,075 Overdrafts ( 83,600 ) ( 115,507 ) ( 54,900 ) ( 93,432 ) 24.     Contingent liabilities During 20X2 a customer initiated proceedings against XYZ (Trading) Limited for a fire caused by a faulty candle. The customer asserts that its total losses are CU 50,000 and has initiated litigation claiming this amount. The Group’s legal counsel do not consider that the claim has merit, and the Company intends to contest it. No provision has been recognised in these financial statements as the
+                  Group’s management does not consider it probable that a loss will arise. 25.     Events after the end of the reporting period On 25 January 20X3 there was a flood in one of the candle storage rooms. The cost of refurbishment is expected to be CU 36,000 . The reimbursements from insurance are estimated to be CU 16,000 . On 14 February 20X3 the directors voted to declare a dividend of CU 1.00 per share (CU 30,000 total) payable on 15 April 20X3 to registered shareholders on 31 March 20X3. Because the obligation arose in 20X3, a liability is not shown in the
+                  statement of financial position at 31 December 20X2. 26.     Related party transactions Transactions between the Company and its subsidiary, which is a related party, have been eliminated in consolidation. The Group sells goods to its associate (see note 12), which is a related party, as follows: Sales of goods Amounts owed to the Group by the related party and included in trade receivables at year-end 20X2 20X1 20X2 20X1 CU CU CU CU Associate 10,000 8,000 800 400 The payments under the finance lease (see note 20) are personally guaranteed by a principal shareholder of the Company. No charge has been requested for this guarantee. The total remuneration of directors and other members of key management in 20X2 (including salaries and benefits) was CU 249,918 (20X1: CU 208,260 ). 27.     Approval of financial statements These financial statements were approved by the board of directors and authorised for issue on 10 March 2013 Copyright © 2020 IFRS Foundation All rights reserved. Reproduction and use rights are strictly limited. Please contact the Foundation for further details at licences@ifrs.org . The Foundation has trade marks registered around the world (Marks) including ‘IAS®’, ‘IASB®’, the IASB® logo, ‘IFRIC®’, ‘IFRS®’, the IFRS® logo, ‘IFRS for SMEs®’, the IFRS for SMEs® logo, ‘IFRS Taxonomy’, ‘International Accounting Standards®’, ‘International Financial Reporting Standards®’, the ‘Hexagon Device’, ‘NIIF®’ and ‘SIC®’. Further details of the Foundation’s Marks are available from the Foundation on request.

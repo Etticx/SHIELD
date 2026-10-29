@@ -1,0 +1,1082 @@
+{
+  "source": "https://data.mendeley.com/datasets/j89csb932y/2",
+  "files": [
+    {
+      "file": "bankrupt_agriculture_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 6,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2013,
+      "sector": "agriculture",
+      "missing_cells": 52,
+      "infinite_cells": 0,
+      "rows_any_missing": 5,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_agriculture_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 6,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2014,
+      "sector": "agriculture",
+      "missing_cells": 27,
+      "infinite_cells": 0,
+      "rows_any_missing": 5,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_agriculture_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 8,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2015,
+      "sector": "agriculture",
+      "missing_cells": 31,
+      "infinite_cells": 0,
+      "rows_any_missing": 5,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_agriculture_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 8,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2016,
+      "sector": "agriculture",
+      "missing_cells": 27,
+      "infinite_cells": 0,
+      "rows_any_missing": 8,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_construction_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 25,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2013,
+      "sector": "construction",
+      "missing_cells": 107,
+      "infinite_cells": 0,
+      "rows_any_missing": 23,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_construction_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 30,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2014,
+      "sector": "construction",
+      "missing_cells": 93,
+      "infinite_cells": 0,
+      "rows_any_missing": 25,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_construction_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 20,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2015,
+      "sector": "construction",
+      "missing_cells": 90,
+      "infinite_cells": 0,
+      "rows_any_missing": 19,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_construction_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 14,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2016,
+      "sector": "construction",
+      "missing_cells": 106,
+      "infinite_cells": 0,
+      "rows_any_missing": 13,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_manufacture_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 30,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2013,
+      "sector": "manufacture",
+      "missing_cells": 79,
+      "infinite_cells": 0,
+      "rows_any_missing": 26,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_manufacture_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 30,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2014,
+      "sector": "manufacture",
+      "missing_cells": 96,
+      "infinite_cells": 0,
+      "rows_any_missing": 25,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_manufacture_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 26,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2015,
+      "sector": "manufacture",
+      "missing_cells": 96,
+      "infinite_cells": 0,
+      "rows_any_missing": 22,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_manufacture_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 14,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2016,
+      "sector": "manufacture",
+      "missing_cells": 69,
+      "infinite_cells": 0,
+      "rows_any_missing": 10,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_retail_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 12,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2013,
+      "sector": "retail",
+      "missing_cells": 80,
+      "infinite_cells": 0,
+      "rows_any_missing": 12,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_retail_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 11,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2014,
+      "sector": "retail",
+      "missing_cells": 104,
+      "infinite_cells": 0,
+      "rows_any_missing": 10,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_retail_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 7,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2015,
+      "sector": "retail",
+      "missing_cells": 15,
+      "infinite_cells": 0,
+      "rows_any_missing": 6,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "bankrupt_retail_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 4,
+      "predictors": 63,
+      "label_from_filename": "bankrupt",
+      "evaluation_year": 2016,
+      "sector": "retail",
+      "missing_cells": 77,
+      "infinite_cells": 0,
+      "rows_any_missing": 4,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_agriculture_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 1251,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2013,
+      "sector": "agriculture",
+      "missing_cells": 3761,
+      "infinite_cells": 0,
+      "rows_any_missing": 1009,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_agriculture_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 1327,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2014,
+      "sector": "agriculture",
+      "missing_cells": 3707,
+      "infinite_cells": 0,
+      "rows_any_missing": 1046,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_agriculture_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 1464,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2015,
+      "sector": "agriculture",
+      "missing_cells": 5098,
+      "infinite_cells": 0,
+      "rows_any_missing": 1195,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_agriculture_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 1652,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2016,
+      "sector": "agriculture",
+      "missing_cells": 7935,
+      "infinite_cells": 0,
+      "rows_any_missing": 1578,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_construction_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 1205,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2013,
+      "sector": "construction",
+      "missing_cells": 5940,
+      "infinite_cells": 0,
+      "rows_any_missing": 1086,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_construction_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 1418,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2014,
+      "sector": "construction",
+      "missing_cells": 7183,
+      "infinite_cells": 0,
+      "rows_any_missing": 1282,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_construction_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 1749,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2015,
+      "sector": "construction",
+      "missing_cells": 11236,
+      "infinite_cells": 0,
+      "rows_any_missing": 1671,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_construction_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 2174,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2016,
+      "sector": "construction",
+      "missing_cells": 16727,
+      "infinite_cells": 0,
+      "rows_any_missing": 2151,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_manufacture_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 4077,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2013,
+      "sector": "manufacture",
+      "missing_cells": 12849,
+      "infinite_cells": 0,
+      "rows_any_missing": 3374,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_manufacture_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 4450,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2014,
+      "sector": "manufacture",
+      "missing_cells": 13189,
+      "infinite_cells": 0,
+      "rows_any_missing": 3573,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_manufacture_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 5019,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2015,
+      "sector": "manufacture",
+      "missing_cells": 18313,
+      "infinite_cells": 0,
+      "rows_any_missing": 4105,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_manufacture_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 5840,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2016,
+      "sector": "manufacture",
+      "missing_cells": 28961,
+      "infinite_cells": 0,
+      "rows_any_missing": 5537,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_retail_13_year_10_11_12.csv",
+      "sha256_verified": true,
+      "rows": 3739,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2013,
+      "sector": "retail",
+      "missing_cells": 18498,
+      "infinite_cells": 0,
+      "rows_any_missing": 3384,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_retail_14_year_11_12_13.csv",
+      "sha256_verified": true,
+      "rows": 4404,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2014,
+      "sector": "retail",
+      "missing_cells": 22144,
+      "infinite_cells": 0,
+      "rows_any_missing": 3995,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_retail_15_year_12_13_14.csv",
+      "sha256_verified": true,
+      "rows": 5314,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2015,
+      "sector": "retail",
+      "missing_cells": 30316,
+      "infinite_cells": 0,
+      "rows_any_missing": 5134,
+      "index_is_just_1_to_n": true
+    },
+    {
+      "file": "nonbankrupt_retail_16_year_13_14_15.csv",
+      "sha256_verified": true,
+      "rows": 6073,
+      "predictors": 63,
+      "label_from_filename": "nonbankrupt",
+      "evaluation_year": 2016,
+      "sector": "retail",
+      "missing_cells": 37092,
+      "infinite_cells": 0,
+      "rows_any_missing": 6031,
+      "index_is_just_1_to_n": true
+    }
+  ],
+  "total_rows": 51407,
+  "class_counts": {
+    "bankrupt": 251,
+    "nonbankrupt": 51156
+  },
+  "evaluation_year_counts": {
+    "2013": {
+      "bankrupt": 73,
+      "nonbankrupt": 10272
+    },
+    "2014": {
+      "bankrupt": 77,
+      "nonbankrupt": 11599
+    },
+    "2015": {
+      "bankrupt": 61,
+      "nonbankrupt": 13546
+    },
+    "2016": {
+      "bankrupt": 40,
+      "nonbankrupt": 15739
+    }
+  },
+  "total_missing_cells": 244098,
+  "rows_any_missing": 46369,
+  "exact_duplicate_feature_vectors_beyond_first": 80,
+  "all_63_columns_outside_unit_range": true,
+  "column_stats": {
+    "V1": {
+      "missing": 312,
+      "min": -146527.27,
+      "max": 18725.0,
+      "median": 2.04,
+      "negative": 14056,
+      "above_one": 29303
+    },
+    "V2": {
+      "missing": 375,
+      "min": -1975000.0,
+      "max": 1735600.0,
+      "median": 9.39,
+      "negative": 12044,
+      "above_one": 35286
+    },
+    "V3": {
+      "missing": 3199,
+      "min": -698996.62,
+      "max": 5707100.0,
+      "median": 1.67,
+      "negative": 12354,
+      "above_one": 27280
+    },
+    "V4": {
+      "missing": 2249,
+      "min": -8911.0,
+      "max": 26201.0,
+      "median": 0.3,
+      "negative": 822,
+      "above_one": 13193
+    },
+    "V5": {
+      "missing": 2160,
+      "min": -8911.0,
+      "max": 27699.0,
+      "median": 1.04,
+      "negative": 318,
+      "above_one": 25529
+    },
+    "V6": {
+      "missing": 2205,
+      "min": -8911.0,
+      "max": 33200.0,
+      "median": 1.39,
+      "negative": 227,
+      "above_one": 34198
+    },
+    "V7": {
+      "missing": 2976,
+      "min": -76026.69,
+      "max": 43025396.7,
+      "median": 235.07,
+      "negative": 16,
+      "above_one": 48413
+    },
+    "V8": {
+      "missing": 5739,
+      "min": -14632.62,
+      "max": 26036532.0,
+      "median": 54.435,
+      "negative": 155,
+      "above_one": 43705
+    },
+    "V9": {
+      "missing": 3419,
+      "min": -128154.46,
+      "max": 22554479.57,
+      "median": 85.62,
+      "negative": 183,
+      "above_one": 47481
+    },
+    "V10": {
+      "missing": 13029,
+      "min": -29469.54,
+      "max": 1771037.54,
+      "median": 31.2,
+      "negative": 43,
+      "above_one": 33191
+    },
+    "V11": {
+      "missing": 1540,
+      "min": -57.0,
+      "max": 35352.0,
+      "median": 0.62,
+      "negative": 146,
+      "above_one": 4348
+    },
+    "V12": {
+      "missing": 1584,
+      "min": -29368.27,
+      "max": 298189.0,
+      "median": 1.12,
+      "negative": 4488,
+      "above_one": 26053
+    },
+    "V13": {
+      "missing": 375,
+      "min": -29367.27,
+      "max": 271727.0,
+      "median": 2.08,
+      "negative": 4320,
+      "above_one": 44606
+    },
+    "V14": {
+      "missing": 312,
+      "min": -146527.27,
+      "max": 30079.37,
+      "median": 18.72,
+      "negative": 6786,
+      "above_one": 41981
+    },
+    "V15": {
+      "missing": 343,
+      "min": -5700.0,
+      "max": 3535200.0,
+      "median": 61.925,
+      "negative": 165,
+      "above_one": 48702
+    },
+    "V16": {
+      "missing": 1952,
+      "min": -16531500.0,
+      "max": 2120000.0,
+      "median": 14.84,
+      "negative": 8194,
+      "above_one": 39577
+    },
+    "V17": {
+      "missing": 13032,
+      "min": -5290.46,
+      "max": 78389.0,
+      "median": 1.2,
+      "negative": 2526,
+      "above_one": 22515
+    },
+    "V18": {
+      "missing": 27573,
+      "min": -522440.0,
+      "max": 12361272.73,
+      "median": 13870.34,
+      "negative": 1534,
+      "above_one": 22228
+    },
+    "V19": {
+      "missing": 517,
+      "min": -3641.67,
+      "max": 4312.34,
+      "median": 0.0,
+      "negative": 35,
+      "above_one": 13852
+    },
+    "V20": {
+      "missing": 2921,
+      "min": -39.69,
+      "max": 76929.54,
+      "median": 10.27,
+      "negative": 17,
+      "above_one": 38025
+    },
+    "V21": {
+      "missing": 1399,
+      "min": -196257.89,
+      "max": 346600.0,
+      "median": 49.474999999999994,
+      "negative": 2935,
+      "above_one": 36425
+    },
+    "V22": {
+      "missing": 348,
+      "min": -146527.27,
+      "max": 18725.0,
+      "median": 2.68,
+      "negative": 12775,
+      "above_one": 31173
+    },
+    "V23": {
+      "missing": 390,
+      "min": -924266.67,
+      "max": 1735600.0,
+      "median": 11.47,
+      "negative": 11052,
+      "above_one": 36768
+    },
+    "V24": {
+      "missing": 4157,
+      "min": -688500.0,
+      "max": 5707100.0,
+      "median": 1.82,
+      "negative": 11440,
+      "above_one": 27603
+    },
+    "V25": {
+      "missing": 1239,
+      "min": -8911.0,
+      "max": 13614.0,
+      "median": 0.31,
+      "negative": 762,
+      "above_one": 13439
+    },
+    "V26": {
+      "missing": 1155,
+      "min": -8911.0,
+      "max": 20813.49,
+      "median": 1.05,
+      "negative": 275,
+      "above_one": 26211
+    },
+    "V27": {
+      "missing": 1189,
+      "min": -8911.0,
+      "max": 20813.49,
+      "median": 1.4,
+      "negative": 194,
+      "above_one": 35086
+    },
+    "V28": {
+      "missing": 1831,
+      "min": -76026.69,
+      "max": 43025396.7,
+      "median": 240.7,
+      "negative": 22,
+      "above_one": 49551
+    },
+    "V29": {
+      "missing": 4376,
+      "min": -14632.62,
+      "max": 26036532.0,
+      "median": 53.43,
+      "negative": 160,
+      "above_one": 45534
+    },
+    "V30": {
+      "missing": 2090,
+      "min": -128154.46,
+      "max": 22554479.57,
+      "median": 84.16,
+      "negative": 163,
+      "above_one": 48964
+    },
+    "V31": {
+      "missing": 12926,
+      "min": -29469.54,
+      "max": 1771037.54,
+      "median": 32.06,
+      "negative": 65,
+      "above_one": 34206
+    },
+    "V32": {
+      "missing": 913,
+      "min": -515.86,
+      "max": 32116.67,
+      "median": 0.64,
+      "negative": 127,
+      "above_one": 6427
+    },
+    "V33": {
+      "missing": 939,
+      "min": -1527944.44,
+      "max": 310968.0,
+      "median": 1.29,
+      "negative": 4332,
+      "above_one": 27756
+    },
+    "V34": {
+      "missing": 390,
+      "min": -29367.27,
+      "max": 143486.0,
+      "median": 2.16,
+      "negative": 4179,
+      "above_one": 45783
+    },
+    "V35": {
+      "missing": 348,
+      "min": -146527.27,
+      "max": 30079.37,
+      "median": 20.41,
+      "negative": 5406,
+      "above_one": 43895
+    },
+    "V36": {
+      "missing": 389,
+      "min": -9668.54,
+      "max": 192938.1,
+      "median": 62.26,
+      "negative": 143,
+      "above_one": 49807
+    },
+    "V37": {
+      "missing": 1055,
+      "min": -1482400.0,
+      "max": 258380.0,
+      "median": 15.92,
+      "negative": 7292,
+      "above_one": 41554
+    },
+    "V38": {
+      "missing": 11579,
+      "min": -28112.0,
+      "max": 221033.0,
+      "median": 1.23,
+      "negative": 2455,
+      "above_one": 23838
+    },
+    "V39": {
+      "missing": 30093,
+      "min": -522440.0,
+      "max": 12361272.73,
+      "median": 13532.064999999999,
+      "negative": 1140,
+      "above_one": 20110
+    },
+    "V40": {
+      "missing": 412,
+      "min": -1912.19,
+      "max": 4312.34,
+      "median": 0.0,
+      "negative": 60,
+      "above_one": 15063
+    },
+    "V41": {
+      "missing": 1801,
+      "min": -38.59,
+      "max": 63638.57,
+      "median": 9.76,
+      "negative": 20,
+      "above_one": 39374
+    },
+    "V42": {
+      "missing": 1053,
+      "min": -196257.89,
+      "max": 116589.45,
+      "median": 47.5,
+      "negative": 2652,
+      "above_one": 38082
+    },
+    "V43": {
+      "missing": 346,
+      "min": -146527.27,
+      "max": 18725.0,
+      "median": 3.17,
+      "negative": 11732,
+      "above_one": 32647
+    },
+    "V44": {
+      "missing": 354,
+      "min": -276393.33,
+      "max": 112600.0,
+      "median": 12.49,
+      "negative": 10290,
+      "above_one": 37892
+    },
+    "V45": {
+      "missing": 5421,
+      "min": -2632200.0,
+      "max": 5707100.0,
+      "median": 1.99,
+      "negative": 10479,
+      "above_one": 27754
+    },
+    "V46": {
+      "missing": 879,
+      "min": -8911.0,
+      "max": 11903.2,
+      "median": 0.33,
+      "negative": 669,
+      "above_one": 14097
+    },
+    "V47": {
+      "missing": 793,
+      "min": -8911.0,
+      "max": 11903.2,
+      "median": 1.08,
+      "negative": 222,
+      "above_one": 27070
+    },
+    "V48": {
+      "missing": 819,
+      "min": -8911.0,
+      "max": 11903.2,
+      "median": 1.44,
+      "negative": 155,
+      "above_one": 35903
+    },
+    "V49": {
+      "missing": 1320,
+      "min": -76026.69,
+      "max": 149034704.0,
+      "median": 246.52,
+      "negative": 20,
+      "above_one": 50065
+    },
+    "V50": {
+      "missing": 3694,
+      "min": -18489.6,
+      "max": 26036532.0,
+      "median": 52.97,
+      "negative": 189,
+      "above_one": 46410
+    },
+    "V51": {
+      "missing": 1517,
+      "min": -128154.46,
+      "max": 36236520.0,
+      "median": 82.36,
+      "negative": 144,
+      "above_one": 49621
+    },
+    "V52": {
+      "missing": 13307,
+      "min": -29469.54,
+      "max": 120899160.0,
+      "median": 32.82,
+      "negative": 94,
+      "above_one": 34652
+    },
+    "V53": {
+      "missing": 681,
+      "min": -515.86,
+      "max": 32116.67,
+      "median": 0.65,
+      "negative": 100,
+      "above_one": 7942
+    },
+    "V54": {
+      "missing": 677,
+      "min": -1527944.44,
+      "max": 310968.0,
+      "median": 1.39,
+      "negative": 3977,
+      "above_one": 28569
+    },
+    "V55": {
+      "missing": 354,
+      "min": -29367.27,
+      "max": 77122.0,
+      "median": 2.15,
+      "negative": 3849,
+      "above_one": 46543
+    },
+    "V56": {
+      "missing": 346,
+      "min": -146527.27,
+      "max": 26220.79,
+      "median": 21.0,
+      "negative": 4594,
+      "above_one": 45043
+    },
+    "V57": {
+      "missing": 395,
+      "min": -9668.54,
+      "max": 192938.1,
+      "median": 60.89,
+      "negative": 111,
+      "above_one": 50240
+    },
+    "V58": {
+      "missing": 750,
+      "min": -38209.38,
+      "max": 274897.78,
+      "median": 16.67,
+      "negative": 6262,
+      "above_one": 43050
+    },
+    "V59": {
+      "missing": 10683,
+      "min": -28112.0,
+      "max": 337618.5,
+      "median": 1.29,
+      "negative": 2244,
+      "above_one": 25104
+    },
+    "V60": {
+      "missing": 33361,
+      "min": -522440.0,
+      "max": 12361272.73,
+      "median": 13410.0,
+      "negative": 906,
+      "above_one": 17089
+    },
+    "V61": {
+      "missing": 395,
+      "min": -1912.19,
+      "max": 3201.23,
+      "median": 0.0,
+      "negative": 78,
+      "above_one": 16059
+    },
+    "V62": {
+      "missing": 1326,
+      "min": -101.2,
+      "max": 71101.79,
+      "median": 9.38,
+      "negative": 13,
+      "above_one": 40139
+    },
+    "V63": {
+      "missing": 796,
+      "min": -1068620.0,
+      "max": 174100.0,
+      "median": 44.99,
+      "negative": 2519,
+      "above_one": 38989
+    }
+  },
+  "candidate_identity_checks_not_verified_mappings": {
+    "block_1: V2 ~= V1 * V13": {
+      "valid": 50997,
+      "match_with_atol_0_02_rtol_0_01": 50051,
+      "median_absolute_error": 0.019999999999999574
+    },
+    "block_1: V12 ~= V11 * V13": {
+      "valid": 49790,
+      "match_with_atol_0_02_rtol_0_01": 49706,
+      "median_absolute_error": 0.006500000000000061
+    },
+    "block_2: V2 ~= V1 * V13": {
+      "valid": 50991,
+      "match_with_atol_0_02_rtol_0_01": 50063,
+      "median_absolute_error": 0.020800000000001262
+    },
+    "block_2: V12 ~= V11 * V13": {
+      "valid": 50442,
+      "match_with_atol_0_02_rtol_0_01": 50353,
+      "median_absolute_error": 0.007199999999999984
+    },
+    "block_3: V2 ~= V1 * V13": {
+      "valid": 51031,
+      "match_with_atol_0_02_rtol_0_01": 50184,
+      "median_absolute_error": 0.02039999999999864
+    },
+    "block_3: V12 ~= V11 * V13": {
+      "valid": 50708,
+      "match_with_atol_0_02_rtol_0_01": 50625,
+      "median_absolute_error": 0.007500000000000062
+    }
+  },
+  "hypothetical_three_columns_V1_V2_V13": {
+    "rows_all_present": 50997,
+    "rows_missing_any": 410,
+    "mapping_status": "V1/V2 map to ROA/ROE in author-prepared data; V13 maps to FP, apparently financial leverage. Unit convention and temporal block mapping not fully verified."
+  },
+  "top_missing_columns": [
+    {
+      "column": "V60",
+      "missing": 33361,
+      "min": -522440.0,
+      "max": 12361272.73,
+      "median": 13410.0,
+      "negative": 906,
+      "above_one": 17089
+    },
+    {
+      "column": "V39",
+      "missing": 30093,
+      "min": -522440.0,
+      "max": 12361272.73,
+      "median": 13532.064999999999,
+      "negative": 1140,
+      "above_one": 20110
+    },
+    {
+      "column": "V18",
+      "missing": 27573,
+      "min": -522440.0,
+      "max": 12361272.73,
+      "median": 13870.34,
+      "negative": 1534,
+      "above_one": 22228
+    },
+    {
+      "column": "V52",
+      "missing": 13307,
+      "min": -29469.54,
+      "max": 120899160.0,
+      "median": 32.82,
+      "negative": 94,
+      "above_one": 34652
+    },
+    {
+      "column": "V17",
+      "missing": 13032,
+      "min": -5290.46,
+      "max": 78389.0,
+      "median": 1.2,
+      "negative": 2526,
+      "above_one": 22515
+    },
+    {
+      "column": "V10",
+      "missing": 13029,
+      "min": -29469.54,
+      "max": 1771037.54,
+      "median": 31.2,
+      "negative": 43,
+      "above_one": 33191
+    }
+  ],
+  "author_prepared_mapping_check": {
+    "file": "https://github.com/kanasz/Bankruptcy_Prediction/blob/main/Prepared_Data/construction_13_1.csv",
+    "rows": 1230,
+    "rows_matching_original_60_values": 1230,
+    "labels_matching_filename": 1037,
+    "prepared_rows_missing_labels": 193,
+    "dropped_original_columns": [
+      "V18",
+      "V39",
+      "V60"
+    ],
+    "first_named_columns": [
+      "ROA_0",
+      "ROE_0",
+      "ROS_0",
+      "L1_0",
+      "L2_0",
+      "L3_0",
+      "DOA_0",
+      "DOKP_0",
+      "DOKZ_0",
+      "DOZ_0",
+      "CZ_0",
+      "ZVI_0",
+      "FP_0",
+      "NI_0",
+      "KCZ_0",
+      "FKCZ_0",
+      "KSA_0",
+      "ZVB_0",
+      "MT_0",
+      "MPH_0"
+    ],
+    "interpretation": "ROA and ROE named in author-prepared data; original V13 maps to FP. Exact percent/fraction convention still requires validation."
+  }
+}

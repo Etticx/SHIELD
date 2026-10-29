@@ -1,0 +1,381 @@
+SHIELD - SME INPUT AVAILABILITY RESEARCH CHECKPOINT
+Date: 28 October 2026
+Research performed with an SME credit-risk analyst subagent using GPT-6.1 Terra.
+Scope: availability and calculation feasibility only. No models trained or changed.
+
+IMPORTANT SCOPE CHANGE
+Earlier classification allowed recovery only from other top-20 ratios. This checkpoint permits calculations from the SME's financial statements and notes. More features therefore become feasible in principle.
+No input is guaranteed for every SME. The working scope is an incorporated SME that supplies a complete annual financial statement set, notes, and relevant prior-year comparatives. Sole proprietors and firms with insufficient history need separate treatment.
+
+1. RAW INFORMATION TO LOOK FOR
+Balance sheet: total assets, total liabilities, total equity; opening/prior-year balances where needed.
+Equity statement/notes: retained earnings or accumulated losses; share capital and share details where applicable.
+Profit/loss statement: revenue, profit before tax, profit after tax, income-tax expense.
+Statement/notes, when separately disclosed: interest expense, other finance costs, short/long-term borrowings, depreciation/amortisation, disposal gains/losses, continuing-operation profit and share movements.
+Availability must be checked on the actual documents; notes and accountant schedules may be needed. Audit exemption does not itself prove financial records are unavailable.
+The 20 SHIELD features are ratios or specialised measures, not 20 guaranteed line items printed in SME accounts.
+
+2. EIGHT FIRST-PRIORITY CALCULATOR CANDIDATES
+The following are simplified accounting concepts, NOT verified exact historical donor formulas or model-ready values. Confirm periods, ending versus average balances, numerator scope, ownership scope, denominator treatment, and original transformation before implementation.
+- Net profit before tax/Paid-in capital: pretax profit relative to contributed capital. Exact capital components require confirmation; share capital is not total equity.
+- Net Income to Stockholder's Equity: net income relative to the appropriate shareholders' equity balance.
+- Net Income to Total Assets: net income relative to the appropriate asset balance.
+- Retained Earnings to Total Assets: retained earnings relative to assets.
+- Debt ratio %: total liabilities relative to assets; confirm fraction versus percent.
+- Net worth/Assets: appropriate equity relative to assets.
+- Equity to Liability: appropriate equity relative to liabilities.
+- Liability to Equity: liabilities relative to appropriate equity; check sign and absolute-value conventions.
+These calculations use the company's real recorded amounts, not another company's typical ratio.
+
+3. TWELVE INPUTS NOT CONFIRMED AVAILABLE/REPRODUCIBLE
+These are a provisional review list, not proof they are impossible for every SME or an instruction to delete all twelve.
+A. History/share-detail needs:
+- Persistent EPS in the Last Four Seasons: specialised four-quarter recurring-earnings/share information; do not substitute ordinary annual EPS automatically.
+- Per Share Net profit before tax: needs the matching share-count convention and pretax earnings.
+- Net Value Per Share (A): exact A convention and applicable share/equity adjustments needed.
+- Net Value Per Share (B): exact B convention and applicable share/equity adjustments needed; do not copy A.
+B. Financial detail, formula, or historical mapping needs:
+- Borrowing dependency: borrowing breakdown and correct equity definition needed; total liabilities are not all borrowing.
+- ROA(A) before interest and % after tax: correct earnings/tax/interest adjustments and asset period needed.
+- ROA(B) before interest and depreciation after tax: adjusted earnings, tax, finance costs, depreciation/amortisation and asset period needed.
+- ROA(C) before interest and depreciation before interest: appropriate recurring earnings, finance costs, depreciation/amortisation and asset period needed.
+- Interest Expense Ratio: exact numerator and denominator unresolved for donor column; do not assume a familiar formula.
+- Interest Coverage Ratio (Interest expense to EBIT): direction conflict with usual coverage name; confirm donor convention.
+- Continuous interest rate (after tax): likely recurring-profit margin concept, not bank loan interest rate; historical mapping must be confirmed.
+- Degree of Financial Leverage (DFL): may be calculable with operating profit and interest, but exact convention and undefined-value handling need confirmation.
+
+TEJ DOCUMENTATION FINDINGS
+Current TEJ documentation explains recurring earnings, differing ROA adjustments, share-value variants, borrowing dependence and leverage. These support conditional calculation feasibility, not automatic deletion. Four-quarter EPS includes recurring-profit and share adjustments. Annual accounts may supply some ingredients without supplying every specialised adjustment. Current vendor definitions are not proof of the UCI 1999-2009 field mapping. An interest-coverage label ambiguity remains. Current Taiwan tax/share conventions must not be blindly applied to Malaysian SMEs.
+
+MODEL COMPATIBILITY
+Financial statement availability, correct ratio definition, and model-compatible transformation are three separate checks. The saved 20-feature model uses transformed values. We have not established a verified original donor transformation from raw RM amounts/ratios into its input scale. Do not min-max normalise each SME's 20 fields together, infer donor bounds from normalised training columns, or feed raw calculated ratios as if they were already matching model inputs.
+
+3. CANDIDATES FOR FUTURE REMOVAL EXPERIMENTS
+Priority scenario: four-quarter recurring EPS unavailable.
+Second scenario: share-related history/details unavailable (four fields above).
+Conditional individual/group scenarios: any remaining specialised fields whose definitions or actual records cannot be obtained after document review.
+Do not label all twelve permanently unavailable. Do not delete the eight calculator candidates merely because the ratio is not printed in the financial statement.
+No imputation used in this proposed path. Retraining/evaluation without required unavailable fields is a later stage; no such training was performed for this research checkpoint.
+
+SOURCES
+SSM taxonomy architecture: financial position, profit/loss, cash flows, equity/retained earnings and notes for MPERS/MFRS filings:
+https://www.ssm.com.my/Pages/Register_Business_Company_LLP/Company/document/SSMxT2022_Architecture_Document.pdf
+SSM company information (share capital and financial information):
+https://ssm.com.my/Pages/Product/Company-Information.aspx
+IFRS Malaysia jurisdiction (MPERS context):
+https://www.ifrs.org/use-around-the-world/use-of-ifrs-standards-by-jurisdiction/view-jurisdiction/malaysia/
+IFRS SME background and edition timing (not a statement that the 2025 edition already governs Malaysian entities):
+https://www.ifrs.org/issued-standards/ifrs-for-smes/
+UCI original dataset record:
+https://archive.ics.uci.edu/dataset/572/taiwanese+bankruptcy+prediction
+TEJ current vendor financial-definition documentation (Chinese):
+https://www.tej.com.tw/tejdoc/db-document/tw/wim4.html
+IFRS IAS33 EPS denominator conventions (context, not donor formula proof):
+https://www.ifrs.org/issued-standards/list-of-standards/ias-33-earnings-per-share/
+
+CHECKPOINT STATUS
+1. Document-based raw-amount availability: identified, conditional on actual complete accounts.
+2. Top20 derivation feasibility: eight initial calculator candidates; twelve conditional/unresolved fields listed.
+3. Unavailable-input experiment candidates: listed only. No training or deployment.
+
+
+FOLLOW-UP PROPOSAL: AVAILABILITY-FIRST FEATURE SELECTION
+Recorded: 28 October 2026
+User proposal: review the whole dataset, identify financial features realistically obtainable from SME records, then train/evaluate a model restricted to those features.
+Status: proposal for discussion; not yet implemented or trained.
+
+Important distinction: the dataset alone cannot confirm that a feature is available in real SME businesses. Availability needs accounting definitions, financial-statement examples and preferably SME/accountant confirmation. Limit the target population explicitly (for example incorporated SMEs with complete annual accounts). Distinguish required statement amounts from optional detail and calculated ratios.
+
+Proposed selection order:
+1. Review all95 financial predictors, excluding Company and Bankrupt.
+2. Check each predictor's accounting definition, obtainable source amounts, applicability, time history and compatibility with the dataset representation.
+3. Establish a practically obtainable candidate feature pool without looking at test performance.
+4. Compare a model using the full practical pool against a model using IG-selected features from that same pool, if enough features remain. Fit IG within training folds only; do not use test labels.
+5. Compare both with the existing20-feature baseline using matched companies/folds and settings.
+
+IG is not made futile: availability filtering asks whether a feature can realistically be obtained; IG asks how informative an eligible feature is about bankruptcy. If the practical pool is small enough to use directly, omit IG for that arm and document the operational reason. This does not invalidate earlier IG experiments.
+
+No arbitrary count of20 is required for the new model. The8 initial calculator candidates are not a final feature list. Other of the95 columns may offer more practical measures. Do not invent missing raw accounting amounts that the training dataset does not contain.
+
+Outstanding deployment gate: verify historical donor feature definitions and transformations. Retraining on a selected subset of transformed dataset columns does not itself solve conversion from real SME figures or establish generalisation to Malaysian SMEs.
+
+
+ALL95 CROSS-CHECK COMPLETED
+See reports/sme_reporting_crosscheck/SME_FEATURE_SHORTLIST.txt and SME_DATASET_CROSSCHECK.txt.
+Counts:30 ordinary-account calculator candidates,35 conditional additional-record cases,28 specialised-definition cases,1 external-factor feature,1 constant exclusion. These update the earlier top20-only preliminary review. Actual IFRS XHTML parsed, and Terra agent reviewed all95 mapping rows. No model training.
+
+
+SEVEN-FEATURE RESTRICTED MODEL PROPOSAL - 28 OCTOBER 2026
+The intersection of the30 annual-account calculator candidates and historical top20 contains seven actual dataset features:
+1. Net Income to Stockholder's Equity
+2. Net Income to Total Assets
+3. Retained Earnings to Total Assets
+4. Debt ratio %
+5. Net worth/Assets
+6. Equity to Liability
+7. Liability to Equity
+
+These are accounting-feasibility candidates, not yet confirmed exact donor-formula/model-scale matches. An SME may have equity without being exchange-listed; share capital and total equity are distinct. The working population remains incorporated SMEs with complete annual accounts, not automatic interchangeability with sole-proprietor owner capital.
+
+No verified exact formulas recover the remaining13 top20 features from these seven ratios alone. They lack the necessary share counts, earnings history, interest, borrowing breakdown, depreciation/tax adjustments, revenue or paid-in-capital information. Some seven ratios may recover each other only under matching definitions and original scale. Ratio values do not identify absolute underlying amounts.
+
+User proposes a new Colab notebook training RF on these seven features only. This is a useful controlled feature-subset experiment, not proof of availability for every SME or performance for Malaysian SMEs. Compare matched seven-feature and20-feature baselines using stratified80:20 split,10-fold training CV,seed42,fixed RF parameters,cutoff0.5,and SMOTE ratios0.25/1.0 in one configurable notebook. No imputation; no IG reselection outside the predefined subset. IG is not necessary when deliberately testing all seven; earlier IG remains relevant as the historical source of the top20 and an alternative30-pool study.
+
+Several seven features encode overlapping leverage/profit relationships; seven columns do not mean seven independent signals. No expectation of guaranteed performance improvement. Evaluate precision,recall,F1,missed bankruptcies,false alarms and training CV variability. Historical feature selection/holdout reuse means results exploratory. Original donor input transformation remains a separate implementation gate.
+
+Status: discussion/proposal saved. No new notebook or training performed in this turn. Existing reduced-input notebooks do not yet include the seven-only scenario.
+
+
+ORIGINAL IG RANKS OF THE SEVEN CANDIDATES
+Recorded: 28 October 2026
+Source: the user's historical top20 IG table in this conversation. These are historical reported scores, not newly computed scores. Positions below are1-based; original table indices were0-based.
+
+Rank5 (index4): Net Income to Stockholder's Equity - IG0.036753
+Rank7 (index6): Net Income to Total Assets - IG0.035144
+Rank13 (index12): Retained Earnings to Total Assets - IG0.032738
+Rank14 (index13): Debt ratio % - IG0.032479
+Rank16 (index15): Net worth/Assets - IG0.032132
+Rank17 (index16): Equity to Liability - IG0.031732
+Rank20 (index19): Liability to Equity - IG0.030660
+
+These ranks describe individual feature mutual-information estimates in the historical run; they do not establish the predictive performance of the seven-feature model as a group. No model training performed for this note update.
+
+
+SEVEN-VERSUS-TWENTY COLAB CREATED - 28 OCTOBER 2026
+Notebook: notebooks/SHIELD_RF_Seven_vs_Twenty_Features.ipynb
+One configurable notebook, defaultSMOTE0.25; change to1.0 and rerun from settings. Both ratios save separate configuration-hashed report folders. Two predefined scenarios: baseline20 and practical7. Stratified80:20,trainingCV10,seed42,RF200trees/depth10/split2/leaf1/max_features sqrt,threshold0.5. No imputation or newIG selection. 22fits per ratio. Same source companies/folds; training-fold-only SMOTE. Scores are exploratory due historical feature selection and holdout reuse.
+Includes historicalIG ranks/scores,metrics,classificationreports,confusionmatrices,ROC/PRcharts,baselinechanges,predictioncheckpoints,and settings/partitionprovenance. Notebook self-contained; no helper uploads needed. Does not deploy/export replacement production model.
+Verification: allPythoncells compile;2tests passed,including synthetic end-to-end reporting and checkpoint reuse for bothratios. Actual local sourceCSV schema verified20baseline/7subsetnames and no duplicate full20predictorrows. Full real-data training not run.
+
+
+SEVEN VERSUS TWENTY - USER RESULTS - SMOTE 0.25
+Source: user-supplied Colab reports, tables, confusion matrices and comparison chart. Values below reported to two decimals except integer counts; no model rerun. Date recorded:28 October2026.
+Setup: RandomForest,80:20 stratified split,10-fold training CV,SMOTE0.25,threshold0.5; fixed20 versus predefined7; no newIG or imputation. Original dataset expected split5455train/1364test.
+
+TEST - baseline20:
+Accuracy95.53%; Precision38.67%; Recall65.91%; F148.74%; ROC-AUC94.25%; F257.77%; AveragePrecision50.18%.
+TN1274; FP46; FN15; TP29. Test support1320nonbankrupt,44bankrupt.
+TEST - practical7:
+Accuracy94.43%; Precision30.95%; Recall59.09%; F140.62%; ROC-AUC90.45%; F250.00%; AveragePrecision37.62%.
+TN1262; FP58; FN18; TP26. Same supports.
+
+TRAINING OOF - baseline20:
+Accuracy95.49%; TN5120; FP159; FN87; TP89; pooledF141.98%; ROC-AUC92.56%; F246.74%; AP38.89%; foldF1mean42.35%,SD9.98percentagepoints.
+TRAINING OOF - practical7:
+Accuracy93.77%; TN5025; FP254; FN86; TP90; pooledF134.62%; ROC-AUC89.61%; F242.94%; AP28.41%; foldF1mean34.84%,SD7.21percentagepoints.
+
+INTERPRETATION:
+Seven-input test model detects3fewer bankruptcies and creates12more false alarms. Precision falls7.71percentagepoints,recall6.82points,F1about8.11points based on exact integer counts (display-rounded F1 subtraction gives8.12). ROC-AUC falls3.80points; AP falls12.56points. OOF F1 also falls41.98to34.62; foldmean42.35to34.84. This supports an observed predictive-information loss in this fixed experiment, not proof that every possible7-input model will be inferior.
+Use this matched fresh baseline, not historical30TP45FP baseline; this run baseline is29TP46FP. Unchanged labels and preprocessing protocol do not ensure exact historical results across environments or input precision.
+Do not select practical7 as an equal-performing replacement from this run. Finish plannedSMOTE1.0 comparison. If reduced version remains inadequate, consider the wider30annual-account calculator candidate pool (after definition/scaling checks), with optional training-foldIG, rather than insisting on seven.
+The seven are related ratio signals; operational simplicity is not proof all seven are independently necessary or model-ready. Historical test reuse means comparison exploratory. No new full-data model trained locally for this note.
+
+
+SEVEN VERSUS TWENTY - USER RESULTS - SMOTE 1.0
+Source: user-supplied Colab reports, confusion matrices and comparison chart,28October2026. No model rerun. Reported percentages rounded to2decimals.
+Setup: RandomForest,80:20 stratified split,10-fold training CV,SMOTE1.0,threshold0.5,fixed parameters; historical20 versus predefined7; no newIG or imputation.
+
+TEST baseline20:
+Accuracy93.70%; Precision30.19%; Recall72.73%; F142.67%; ROC-AUC93.83%; F256.74%; AP43.66%.
+TN1246;FP74;FN12;TP32. Support1320nonbankrupt,44bankrupt.
+TEST practical7:
+Accuracy87.61%; Precision17.62%; Recall77.27%; F128.69%; ROC-AUC90.82%; F246.07%; AP39.05%.
+TN1161;FP159;FN10;TP34. Same support.
+TRAINING OOF baseline20:
+Accuracy93.11%; pooledF139.16%; ROC-AUC91.95%; F252.79%; AP36.03%; TN4958;FP321;FN55;TP121;foldF1mean39.44%,SD7.40points.
+TRAINING OOF practical7:
+Accuracy88.05%; pooledF127.88%; ROC-AUC89.20%; F243.99%; AP28.62%; TN4677;FP602;FN50;TP126;foldF1mean28.05%,SD4.48points.
+
+INTERPRETATION
+Versus matched20-inputSMOTE1.0 baseline: seven inputs detect2additional bankruptcies but produce85additional false alarms;precision falls30.19to17.62%,F142.67to28.69%. Higher recall alone does not indicate a better overall model. OOF F1 also declines.
+Within practical7,SMOTE0.25 had26TP58FP18FN1262TN;SMOTE1.0 has34TP159FP10FN1161TN. Full balancing detects8additional bankruptcies at the cost of101additional false alarms. F1 declines40.625to28.692%;F2 declines50.00to46.07%.
+Both tested ratios show lower F1 for7than matched20;these fixed comparisons do not establish the upper limit of all7-feature models. Do not adopt seven inputs as an equally effective replacement on present evidence. Consider the broader30ordinary-account feature candidate pool after definition/scaling checks, rather than endless ratio changes. Keep historical repeated-test-selection limitations explicit.
+
+
+THIRTY-FEATURE ACCOUNTING-CANDIDATE COLAB CREATED - 28 OCTOBER 2026
+Notebook: notebooks/SHIELD_RF_Financial_Statement_30_vs_Twenty.ipynb
+One configurable notebook compares baseline20 and financial_statement30. DefaultSMOTE0.25; change to1.0 and rerun settings onward. Matched80:20,CV10,seed42,RF200/depth10/split2/leaf1/max_features sqrt,cutoff0.5,noimputation,no newIG,22fits perratio. Separate hashed outputs/checkpoints.
+All30 are verified columns in the local sourceCSV. Seven overlap with historical20; comparison input union43. Conceptual calculation routes, required accounting amounts and outstanding definition checks are exported in a feature manifest. No claim all30 ratios are mandatory printed SME statement fields or exact model-ready conversions. Definitions and transformation remain unresolved deployment gates.
+Includes original metric reports,confusion matrices,ROC/PRplots,comparisonchanges,sourcehash and versions,partitionmembership and resumablepredictions. Does not train7-arm again,deploy or export replacementproductionmodels.
+Verification:2tests passed,covering syntax,exact30/20scenarios,synthetic end-to-end reporting and predictioncheckpointresume for bothratios. LocalCSV schema,no missing inputs/duplicate full43rows checked. Full realdatasettraining not run.
+
+
+THIRTY VERSUS TWENTY - USER RESULTS - SMOTE 0.25
+Recorded28October2026 from user Colab tables,reports,confusionmatrices andcomparisonchart. No modelrerun. RF80:20,CV10,seed42,SMOTE0.25,cutoff0.5,fixedparams,no newIG,noimputation.
+
+TEST baseline20:
+Accuracy95.53%;precision38.67%;recall65.91%;F148.74%;ROC-AUC94.25%.
+TN1274;FP46;FN15;TP29. Supports1320nonbankrupt,44bankrupt.
+TEST financial_statement30:
+Accuracy95.09%;precision35.06%;recall61.36%;F144.63%;ROC-AUC92.61%.
+TN1270;FP50;FN17;TP27. Same supports.
+The user test PRcurve legend shows AP0.39 (rounded); exact full-precision testAP not supplied, so do not infer it from plotted steps. Training AP30.72% below is distinct from testAP.
+
+TRAINING OOF baseline20:
+PooledF141.98%;ROC-AUC92.56%;F246.74%;AP38.89%;TN5120;FP159;FN87;TP89;foldF1mean42.35%,SD9.98percentagepoints.
+TRAINING OOF financial_statement30:
+PooledF136.32%;ROC-AUC92.47%;F241.58%;AP30.72%;TN5090;FP189;FN95;TP81;foldF1mean35.92%,SD9.71percentagepoints.
+Reported30foldF1:50.00,22.22,33.33,47.62,34.04,26.67,37.21,40.82,43.48,23.81 (rounded).
+
+INTERPRETATION
+30candidate inputs versus matched20:2fewer bankruptcies detected,4morefalsealarms. Precision declinesabout3.60percentagepoints,recall4.55points,F1about4.11points from exactcounts. ROC-AUC declines1.64points. Both CV and testF1 are belowbaseline.
+Versus prior7inputSMOTE0.25 (26TP58FP18FN1262TN),30inputs detect1additionalbankruptcy and avoid8falsealarms;precision35.06vs30.95%,recall61.36vs59.09%,F144.63vs40.625%. Same reported baseline supports matching; remain cautious about all earlier test reuse.
+This30pool is not the original20plus10:only7columns overlap;13historicalinputs removed and23newcandidates added. This is an availability-motivated pool change,not a pure feature-count experiment.30candidate availability and originalscale still needverification; do not portray as guaranteed SME fields.
+Do not declare equivalent performance or superiority from thisrun. Complete plannedSMOTE1.0 run before concluding. Training-foldIG within the practical30pool could be a later controlled experiment,not yet performed. No automaticdeployment.
+
+
+THIRTY VERSUS TWENTY - USER RESULTS - SMOTE 1.0
+Recorded28October2026 from userColab reports/tables/figures. RF80:20,CV10,SMOTE1.0,threshold0.5,fixedparams,no newIG,noimputation. No modelrerun.
+TEST baseline20:Accuracy93.70%;Precision30.19%;Recall72.73%;F142.67%;ROC-AUC93.83%;F256.74%;AP43.66%;TN1246;FP74;FN12;TP32.
+TEST financial_statement30:Accuracy92.74%;Precision26.50%;Recall70.45%;F138.51%;ROC-AUC92.70%;F252.90%;AP35.72%;TN1234;FP86;FN13;TP31.
+Supports1320nonbankrupt,44bankrupt for both.
+TRAINING OOF baseline20:PooledF139.16%;ROC-AUC91.95%;F252.79%;AP36.03%;TN4958;FP321;FN55;TP121;foldF1mean39.44%,SD7.40points.
+TRAINING OOF financial_statement30:PooledF137.46%;ROC-AUC91.96%;F251.53%;AP28.87%;TN4930;FP349;FN55;TP121;foldF1mean37.30%,SD6.12points.
+30foldF1reported45.45,32.73,32.84,46.67,33.33,33.33,35.82,43.84,39.44,29.51 (rounded).
+INTERPRETATION:30versusmatched20detects1fewerbankruptcy andproduces12morefalsealarms. Both trainingOOF models detect121of176;30produces28morefalsealarms.30testprecisionfalls3.69points,recall2.27points,F14.16points.
+Within30:SMOTE0.25had27TP50FP17FN1270TN;SMOTE1.0has31TP86FP13FN1234TN. Fullbalancingdetects4additionalbankruptcies for36additionalfalsealarms;precision35.06to26.50%,F144.63to38.51%. Higherrecall70.45%doesnotmeanbetterbalancedperformance.
+30isbelowmatched20onprecision/recall/F1atbothtestedratios. Thisisnotproofall30featuremodelsareinferior. Optionalnextcontrolledexperiment:IGinsideeachtrainingfoldwithinpredefined30pool;do not select features usingtestlabels. Definitionandtransformationchecks stillneeded. No productionmodelreplacement.
+SVG:reports/financial_statement_charts/RF_30_vs_20_SMOTE_1_test.svg
+
+
+SEVEN-FEATURE RF/XGBOOST EIGHT-PROTOCOL NOTEBOOK - 28 OCTOBER 2026
+Created:notebooks/SHIELD_Seven_Features_RF_XGBoost_Experiments.ipynb
+One self-contained original-master-style notebook:clean data/fixed7/training-onlySMOTE demonstration -> experiments/checkpoints -> fullmetrics,reports,PNG/SVGgraphs,saved researchpipelines and7inputmanifest. NoIG,noimputation,noLR/SVM,no50:50.
+Protocols:70:30only,80:20only,CV5only,CV10only,70:30CV5,70:30CV10,80:20CV5,80:20CV10.16experimentsperratio. DefaultSMOTE0.25;secondrun1.0. SMOTEkneighbors5,seed42,threshold>=0.5,no scaling.
+RF fixed:n_estimators200,max_depth10,min_samples_split2,min_samples_leaf1,max_features sqrt,class_weightNone,random_state42,n_jobs1.
+RF split+CVgrid:n_estimators[100,200],max_depth[6,10,None],min_samples_split[2,5]. Other RF options fixed.
+XGBoost fixed:n_estimators200,max_depth6,learning_rate0.1,eval_metriclogloss,random_state42,n_jobs1;otherparameterslibrarydefaults recordedthroughversion/modelcheckpoint.
+XGBoost split+CVgrid:n_estimators[100,200],max_depth[3,6,9],learning_rate[0.01,0.1,0.2].
+GridSearchCV maximises meanbankruptcyF1ontrainingpartition only,refitTrue,error_scoreraise,N_JOBS2. Split-only andCV-onlyusefixedsettings,notparamschosenfromfull-datasetsearch. CV-onlyordinarynotnested:held-out predictionspooledoverallcompanies;finalfullfitforexportonly. Holdoutprotocolstestsetoriginalimbalanced.
+Approximately946fitsperratio withfullgrids. CheckpointseachcompletedexperimentandCV-onlyfold. Aninterruptedgridsearchrestarts thatsearch,notremainingcompletedexperiments. Changedratio/settings/datafingerprint isolateresults. Researchoutputs only,noproductionreplacement.
+Verification:allPythoncellscompile;synthetic all8protocols,bothmodels,bothSMOTEratios exercise fixed,ordinaryCVandgridsearch paths withsmalltrees/narrowtestgrids;model/predictioncheckpointsave/loadverified. Cachedresulttables,reports,PNG/SVGchartsandresearchmanifest verified. Scopeassertionsconfirm noIG/extramodels/50:50. Fullrealdatasettrainingnotrun.
+
+
+SEVEN FEATURES - 16 PROTOCOL/MODEL RESULTS - SMOTE0.25 INFERRED
+Recorded28October2026. Source:user16-row table and attachedclassificationreports. Ratio0.25 is inferred from default and exact matching RF80:20only values,not explicitly confirmed in supplied outputs. No model rerun. Full selected grid parameters are truncated in the user table; do not invent them.
+RandomForest | 70-30 only | Acc94.916911 P32.727273 R54.545455 F140.909091 AUC90.80502 CV_F1None | TN1906 FP74 FN30 TP36
+XGBoost | 70-30 only | Acc94.672532 P28.282828 R42.424242 F133.939394 AUC89.924625 CV_F1None | TN1909 FP71 FN38 TP28
+RandomForest | 80-20 only | Acc94.428152 P30.952381 R59.090909 F140.625 AUC90.452824 CV_F1None | TN1262 FP58 FN18 TP26
+XGBoost | 80-20 only | Acc94.134897 P26.315789 R45.454545 F133.333333 AUC90.36157 CV_F1None | TN1264 FP56 FN24 TP20
+RandomForest | CV=5 only | Acc94.236692 P29.256595 R55.454545 F138.304553 AUC89.597494 CV_F138.247025 | TN6304 FP295 FN98 TP122
+XGBoost | CV=5 only | Acc94.178032 P27.012987 R47.272727 F134.380165 AUC89.661519 CV_F134.483547 | TN6318 FP281 FN116 TP104
+RandomForest | CV=10 only | Acc94.104707 P28.837209 R56.363636 F138.153846 AUC89.994317 CV_F138.051177 | TN6293 FP306 FN96 TP124
+XGBoost | CV=10 only | Acc94.090043 P26.835443 R48.181818 F134.471545 AUC89.747379 CV_F134.745528 | TN6310 FP289 FN114 TP106
+RandomForest | 70-30 + CV=5 | Acc94.428152 P32.089552 R65.151515 F143.0 AUC91.608127 CV_F138.391979 | TN1889 FP91 FN23 TP43
+XGBoost | 70-30 + CV=5 | Acc94.134897 P30.434783 R63.636364 F141.176471 AUC92.614784 CV_F141.583357 | TN1884 FP96 FN24 TP42
+RandomForest | 70-30 + CV=10 | Acc94.428152 P32.089552 R65.151515 F143.0 AUC91.608127 CV_F138.50223 | TN1889 FP91 FN23 TP43
+XGBoost | 70-30 + CV=10 | Acc95.40567 P32.926829 R40.909091 F136.486486 AUC91.988445 CV_F140.723956 | TN1925 FP55 FN39 TP27
+RandomForest | 80-20 + CV=5 | Acc94.134897 P30.851064 R65.909091 F142.028986 AUC90.416667 CV_F139.533913 | TN1255 FP65 FN15 TP29
+XGBoost | 80-20 + CV=5 | Acc94.57478 P32.954545 R65.909091 F143.939394 AUC91.249139 CV_F140.368936 | TN1261 FP59 FN15 TP29
+RandomForest | 80-20 + CV=10 | Acc94.208211 P31.182796 R65.909091 F142.335766 AUC90.699897 CV_F138.811815 | TN1256 FP64 FN15 TP29
+XGBoost | 80-20 + CV=10 | Acc94.501466 P30.379747 R54.545455 F139.02439 AUC90.414084 CV_F139.05816 | TN1265 FP55 FN20 TP24
+Strongest reported holdoutF1:XGBoost80:20+CV5,P32.954545,R65.909091,F143.939394,AUC91.249139;29TP59FP15FN1261TN. Versus earlierfixed7RF80:20(.25),3moreTPfor1moreFP. Versus matched20RF(.25)29TP46FP15FN1274TN,same29detectionsbut13additionalfalsealarms;not equivalent performance. Other80:20tunedRFmodelsalso29detectionsbut64/65FP. RF70:30CV5and10F143.0;different testpopulation prevents simple directsplitranking. CVonlymetricsarepooledOOFnotindependentholdout. Repeatedhistoricaltestinspectionremains exploratory. FinishSMOTE1.0beforefinalchoice.
+
+
+SEVEN FEATURES - ALL16 RESULTS FOR SMOTE1.0 RECORDED
+28October2026. Authoritative consolidated32-row tracker:reports/seven_feature_protocol_results/SEVEN_FEATURE_EXPERIMENT_TRACKER.txt andseven_features_all_runs.json. Includes earlier0.25run,now confirmed by users subsequent explicit reference. All metrics/counts validated; truncated selectedparameters not invented.
+RandomForest | 70-30 only | Acc88.514174 P18.35206 R74.242424 F129.429429 AUC90.629783 CV_F1None | TN1762 FP218 FN17 TP49
+XGBoost | 70-30 only | Acc88.709677 P16.59919 R62.121212 F126.198083 AUC89.109657 CV_F1None | TN1774 FP206 FN25 TP41
+RandomForest | 80-20 only | Acc87.609971 P17.61658 R77.272727 F128.691983 AUC90.82042 CV_F1None | TN1161 FP159 FN10 TP34
+XGBoost | 80-20 only | Acc88.56305 P18.539326 R75.0 F129.72973 AUC90.347796 CV_F1None | TN1175 FP145 FN11 TP33
+RandomForest | CV=5 only | Acc89.00132 P18.527316 R70.909091 F129.378531 AUC89.724304 CV_F129.27739 | TN5913 FP686 FN64 TP156
+XGBoost | CV=5 only | Acc89.939874 P19.661458 R68.636364 F130.566802 AUC89.455289 CV_F130.584811 | TN5982 FP617 FN69 TP151
+RandomForest | CV=10 only | Acc88.664027 P18.472064 R73.636364 F129.535096 AUC89.94524 CV_F129.55239 | TN5884 FP715 FN58 TP162
+XGBoost | CV=10 only | Acc88.810676 P17.945691 R69.090909 F128.491097 AUC89.633967 CV_F128.59076 | TN5904 FP695 FN68 TP152
+RandomForest | 70-30 + CV=5 | Acc87.341153 P17.508418 R78.787879 F128.650138 AUC90.851699 CV_F128.10907 | TN1735 FP245 FN14 TP52
+XGBoost | 70-30 + CV=5 | Acc88.709677 P16.59919 R62.121212 F126.198083 AUC89.109657 CV_F127.91073 | TN1774 FP206 FN25 TP41
+RandomForest | 70-30 + CV=10 | Acc87.341153 P17.508418 R78.787879 F128.650138 AUC90.851699 CV_F127.087297 | TN1735 FP245 FN14 TP52
+XGBoost | 70-30 + CV=10 | Acc87.781036 P18.493151 R81.818182 F130.167598 AUC91.408785 CV_F126.916682 | TN1742 FP238 FN12 TP54
+RandomForest | 80-20 + CV=5 | Acc87.609971 P17.61658 R77.272727 F128.691983 AUC90.82042 CV_F128.751436 | TN1161 FP159 FN10 TP34
+XGBoost | 80-20 + CV=5 | Acc88.56305 P18.539326 R75.0 F129.72973 AUC90.347796 CV_F128.634564 | TN1175 FP145 FN11 TP33
+RandomForest | 80-20 + CV=10 | Acc90.909091 P21.830986 R70.454545 F133.333333 AUC89.54115 CV_F128.367495 | TN1209 FP111 FN13 TP31
+XGBoost | 80-20 + CV=10 | Acc88.56305 P18.539326 R75.0 F129.72973 AUC90.347796 CV_F128.762423 | TN1175 FP145 FN11 TP33
+HighestholdoutF1in1.0run:RF80:20CV10,P21.83%,R70.45%,F133.33%,31TP111FP13FN1209TN. Highestholdoutrecall:XGB70:30CV10,R81.82%,P18.49%,F130.17%,54TP238FP12FN1742TN;66bankruptsupport,not44. Comparedwithin80:20,prior0.25bestXGB80CV5had29TP59FP;1.0RF80CV10detects2morefor52morefalsealarms. Nooverallconclusivewinner;protocol/modeldifferencesmatter. Userplans0.1next;no newtraining locally.
+
+
+SEVEN FEATURES - ALL16 SMOTE0.1 RESULTS RECORDED - 28OCTOBER2026
+All48seriesresults(0.1,0.25,1.0)arein reports/seven_feature_protocol_results/SEVEN_FEATURE_EXPERIMENT_TRACKER.txt andseven_features_all_runs.json. Classificationreportattachment preserved andhashed. No modelrerun. Full selectedhyperparameterstablestruncated; visibleprefixes recorded only.
+RandomForest | 70-30 only | Acc95.894428 P33.928571 R28.787879 F131.147541 AUC91.455464 CV_F1None | TN1943 FP37 FN47 TP19
+XGBoost | 70-30 only | Acc95.601173 P32.352941 R33.333333 F132.835821 AUC89.444827 CV_F1None | TN1934 FP46 FN44 TP22
+RandomForest | 80-20 only | Acc96.11437 P39.534884 R38.636364 F139.08046 AUC90.938361 CV_F1None | TN1294 FP26 FN27 TP17
+XGBoost | 80-20 only | Acc95.454545 P30.434783 R31.818182 F131.111111 AUC91.033058 CV_F1None | TN1288 FP32 FN30 TP14
+RandomForest | CV=5 only | Acc96.128465 P38.421053 R33.181818 F135.609756 AUC89.149045 CV_F135.630959 | TN6482 FP117 FN147 TP73
+XGBoost | CV=5 only | Acc95.864496 P35.648148 R35.0 F135.321101 AUC89.722238 CV_F135.31325 | TN6460 FP139 FN143 TP77
+RandomForest | CV=10 only | Acc95.923156 P36.574074 R35.909091 F136.238532 AUC90.039056 CV_F135.900379 | TN6462 FP137 FN141 TP79
+XGBoost | CV=10 only | Acc95.820502 P33.830846 R30.909091 F132.304038 AUC89.942967 CV_F131.739803 | TN6466 FP133 FN152 TP68
+RandomForest | 70-30 + CV=5 | Acc95.698925 P32.8125 R31.818182 F132.307692 AUC91.979645 CV_F135.474063 | TN1937 FP43 FN45 TP21
+XGBoost | 70-30 + CV=5 | Acc96.138807 P40.0 R39.393939 F139.694656 AUC92.093281 CV_F139.879175 | TN1941 FP39 FN40 TP26
+RandomForest | 70-30 + CV=10 | Acc95.698925 P33.333333 R33.333333 F133.333333 AUC91.941001 CV_F138.584377 | TN1936 FP44 FN44 TP22
+XGBoost | 70-30 + CV=10 | Acc96.57869 P45.238095 R28.787879 F135.185185 AUC92.30678 CV_F139.910723 | TN1957 FP23 FN47 TP19
+RandomForest | 80-20 + CV=5 | Acc95.601173 P35.185185 R43.181818 F138.77551 AUC91.008092 CV_F138.936621 | TN1285 FP35 FN25 TP19
+XGBoost | 80-20 + CV=5 | Acc95.601173 P34.615385 R40.909091 F137.5 AUC91.021866 CV_F141.551931 | TN1286 FP34 FN26 TP18
+RandomForest | 80-20 + CV=10 | Acc95.601173 P35.185185 R43.181818 F138.77551 AUC91.075241 CV_F137.065167 | TN1285 FP35 FN25 TP19
+XGBoost | 80-20 + CV=10 | Acc95.454545 P33.333333 R40.909091 F136.734694 AUC91.561639 CV_F139.182699 | TN1284 FP36 FN26 TP18
+Best0.1holdoutF1:XGB70:30CV5,P40%,R39.39%,F139.69%,26TP39FP40FN1941TN. Highest0.1recall:RF80:20CV5or10,R43.18%,P35.19%,F138.78%,19TP35FP25FN1285TN. Highest0.1precision:XGB70:30CV10,P45.24%,R28.79%,19TP23FP47FN1957TN. None0.1recallreaches50%. Lowerresamplingreducesfalsealarmsbutmissesmorebankruptcies. Matched80:20RFtunedat0.25detects29with64/65FPversus0.1detects19with35FP;notallcomparisonsisolateonlySMOTEbecausetuningselectsparameters. Prior0.25XGB80CV5stillbestreportedholdoutF1in48rows(43.94%,29TP59FP). Do notcomparedetectioncountsacross66/44bankruptsupportsasifrecallidentical.
+
+
+SEVEN FEATURES - ALL16 SMOTE0.5RESULTS RECORDED - 28OCTOBER2026
+Seriestracker now64results(0.1,0.25,0.5,1.0). SMOTE0.75pending. Allcount/metricconsistencychecks passed; fullbestparamsnotavailablewhentruncated. No modelrerun.
+RandomForest | 70-30 only | Acc92.57087 P25.0 R65.151515 F136.134454 AUC90.660009 CV_F1None | TN1851 FP129 FN23 TP43
+XGBoost | 70-30 only | Acc92.57087 P23.780488 R59.090909 F133.913043 AUC89.914294 CV_F1None | TN1855 FP125 FN27 TP39
+RandomForest | 80-20 only | Acc92.521994 P26.229508 R72.727273 F138.554217 AUC91.335227 CV_F1None | TN1230 FP90 FN12 TP32
+XGBoost | 80-20 only | Acc92.302053 P23.931624 R63.636364 F134.782609 AUC90.396006 CV_F1None | TN1231 FP89 FN16 TP28
+RandomForest | CV=5 only | Acc92.036956 P23.39374 R64.545455 F134.340992 AUC89.710149 CV_F134.268602 | TN6134 FP465 FN78 TP142
+XGBoost | CV=5 only | Acc92.403578 P23.007246 R57.727273 F132.901554 AUC89.1352 CV_F132.957432 | TN6174 FP425 FN93 TP127
+RandomForest | CV=10 only | Acc92.095615 P23.723229 R65.454545 F134.824667 AUC89.867266 CV_F134.562178 | TN6136 FP463 FN76 TP144
+XGBoost | CV=10 only | Acc92.11028 P22.395833 R58.636364 F132.41206 AUC89.51866 CV_F132.485934 | TN6152 FP447 FN91 TP129
+RandomForest | 70-30 + CV=5 | Acc92.717498 P25.149701 R63.636364 F136.051502 AUC90.825681 CV_F133.21768 | TN1855 FP125 FN24 TP42
+XGBoost | 70-30 + CV=5 | Acc92.864125 P27.272727 R72.727273 F139.669421 AUC92.325911 CV_F136.987983 | TN1852 FP128 FN18 TP48
+RandomForest | 70-30 + CV=10 | Acc92.864125 P25.609756 R63.636364 F136.521739 AUC90.694827 CV_F133.040474 | TN1858 FP122 FN24 TP42
+XGBoost | 70-30 + CV=10 | Acc92.864125 P27.272727 R72.727273 F139.669421 AUC92.325911 CV_F136.224087 | TN1852 FP128 FN18 TP48
+RandomForest | 80-20 + CV=5 | Acc91.422287 P24.113475 R77.272727 F136.756757 AUC91.847452 CV_F133.562612 | TN1213 FP107 FN10 TP34
+XGBoost | 80-20 + CV=5 | Acc92.228739 P25.78125 R75.0 F138.372093 AUC90.598313 CV_F135.685922 | TN1225 FP95 FN11 TP33
+RandomForest | 80-20 + CV=10 | Acc91.202346 P23.239437 R75.0 F135.483871 AUC91.979167 CV_F134.764599 | TN1211 FP109 FN11 TP33
+XGBoost | 80-20 + CV=10 | Acc92.228739 P25.78125 R75.0 F138.372093 AUC90.598313 CV_F136.811403 | TN1225 FP95 FN11 TP33
+HighestholdoutF1at0.5:XGB70:30CV5or10,P27.27%,R72.73%,F139.67%;48TP128FP18FN1852TN. Highestrecall:RF80:20CV5,P24.11%,R77.27%,F136.76%;34TP107FP10FN1213TN. XGB80:20CV5or10:P25.78%,R75%,F138.37%;33TP95FP11FN1225TN. RF80:20only:P26.23%,R72.73%,F138.55%;32TP90FP12FN1230TN.
+Within80:20,prior0.25bestXGB80CV5had29TP59FP;0.5RF80CV5detects5additionalbankruptciesfor48additionalfalsealarms;0.5XGB80CV5detects4morefor36morefalsealarms. These comparisons include possible tunedparameterdifferences. Against1.0RF80only34TP159FP,0.5RF80CV5matches34TPwith52fewerFP,butdifferent selectedsettings/protocols prevent attributing gains solelytoSMOTE. Prior0.25XGB80CV5stillhighestreportedholdoutF1inseries43.94%;0.5providesalternativehigherrecall. Do not rank rawdetectionsacrossdifferenttestsupports(66versus44).
+
+
+SEVEN FEATURES - ALL16 SMOTE0.75RESULTS RECORDED - 28OCTOBER2026
+Allfiveplannedratios0.1,0.25,0.5,0.75,1.0complete;80resultsrecorded. No modelrerun. Countsverified; fullselectedparamsunavailablewhentruncated.
+RandomForest | 70-30 only | Acc90.957967 P21.800948 R69.69697 F133.212996 AUC90.413223 CV_F1None | TN1815 FP165 FN20 TP46
+XGBoost | 70-30 only | Acc89.98045 P18.834081 R63.636364 F129.065744 AUC89.465871 CV_F1None | TN1799 FP181 FN24 TP42
+RandomForest | 80-20 only | Acc90.395894 P21.568627 R75.0 F133.502538 AUC91.167355 CV_F1None | TN1200 FP120 FN11 TP33
+XGBoost | 80-20 only | Acc90.469208 P20.547945 R68.181818 F131.578947 AUC90.129993 CV_F1None | TN1204 FP116 FN14 TP30
+RandomForest | CV=5 only | Acc90.570465 P20.987654 R69.545455 F132.244468 AUC90.054864 CV_F132.099269 | TN6023 FP576 FN67 TP153
+XGBoost | CV=5 only | Acc90.673119 P19.942197 R62.727273 F130.263158 AUC89.310295 CV_F130.26075 | TN6045 FP554 FN82 TP138
+RandomForest | CV=10 only | Acc90.438481 P20.810811 R70.0 F132.083333 AUC90.324911 CV_F132.044439 | TN6013 FP586 FN66 TP154
+XGBoost | CV=10 only | Acc90.658454 P20.171674 R64.090909 F130.685528 AUC89.682149 CV_F130.838522 | TN6041 FP558 FN79 TP141
+RandomForest | 70-30 + CV=5 | Acc89.687195 P20.164609 R74.242424 F131.71521 AUC91.410315 CV_F130.974912 | TN1786 FP194 FN17 TP49
+XGBoost | 70-30 + CV=5 | Acc90.469208 P22.077922 R77.272727 F134.343434 AUC92.464034 CV_F132.043593 | TN1800 FP180 FN15 TP51
+RandomForest | 70-30 + CV=10 | Acc89.882698 P20.502092 R74.242424 F132.131148 AUC91.500612 CV_F130.208466 | TN1790 FP190 FN17 TP49
+XGBoost | 70-30 + CV=10 | Acc90.469208 P22.077922 R77.272727 F134.343434 AUC92.464034 CV_F130.566909 | TN1800 FP180 FN15 TP51
+RandomForest | 80-20 + CV=5 | Acc90.175953 P21.875 R79.545455 F134.313725 AUC91.22073 CV_F130.077671 | TN1195 FP125 FN9 TP35
+XGBoost | 80-20 + CV=5 | Acc90.615836 P22.368421 R77.272727 F134.693878 AUC90.865186 CV_F131.108142 | TN1202 FP118 FN10 TP34
+RandomForest | 80-20 + CV=10 | Acc90.029326 P21.25 R77.272727 F133.333333 AUC91.160468 CV_F131.380035 | TN1194 FP126 FN10 TP34
+XGBoost | 80-20 + CV=10 | Acc90.615836 P22.368421 R77.272727 F134.693878 AUC90.865186 CV_F132.109337 | TN1202 FP118 FN10 TP34
+0.75highestrecall:RF80:20CV5,P21.875%,R79.545455%,F134.313725%,35TP125FP9FN1195TN. Versus0.5RFsameprotocol34TP107FP:1additionaldetectionfor18additionalFP. 0.75XGB80CV5or10:P22.368421%,R77.272727%,F134.693878%,34TP118FP10FN1202TN.0.5RF80CV5has same34TPwith107FP:11fewerFP,thoughdifferentmodel/settings. Prior0.25XGB80CV5continueshighestreportedholdoutF143.939394%(29TP59FP). Highestrecallacross80rows:XGB1.0,70:30CV10,R81.818182%,54/66TP,238FP;not35/44comparisonpopulation. Do notdeclarepartitionintrinsicallybestorrelabeltestfalsepositivesasconfirmedfinancialdistress.
+
+
+EXTERNAL KAGGLE NOTEBOOK REVIEW
+KAGGLE NOTEBOOK REVIEW - 28 OCTOBER 2026
+Notebook:https://www.kaggle.com/code/arnab36gm/eda-resampling-dimensionality-red-and-prediction
+Actual rendered version6of6 inspected. No sourcecode executed.
+
+CONFIRMED ISSUES
+Cells16-18: RandomUnderSampler applied to alloriginaldata,majority6599to2200;RandomOverSampler applied next,minority220to660;onlythen80:20split. Random duplication before splitting can put copies of onecompany inbothpartitions. Identity-overlap count not measured. Testsetisdrawnfromanartificialdistribution,notoriginalcompanypopulation.
+Cell23:confusion_matrix(prediction,y_test)andclassification_report(prediction,y_test)reverse requiredtrue/predictedargumentorder. Printed rowsarepredicted,columnsactual. Every matrix's columns sum424nonbankrupt148bankrupt;printedclasssupports varybetweenmodelsbecausetheyarepredictioncounts. Correct by transposing matrix and computingreportwithy_testfirst.
+RandomForestcorrectedCM[[416,8],[16,132]];Accuracy95.8042%,Precision94.2857%,Recall89.1892%,F191.6667%. These scores remain contaminated by design;argumentfixdoesnotfixleakage.
+XGBoostcorrectedCM[[409,15],[12,136]];Accuracy95.2797%,Precision90.0662%,Recall91.8919%,F190.9699%.
+Actualtestpositiveprevalence148/572=25.87%,versusSHIELD44/1364=3.23%. Precisionnotdirectlycomparableacrossthesepopulations. TranspositiondoesnotchangeaccuracyorperclassF1.
+
+OTHER OBSERVATIONS
+SVD19components isfittedonX_trainandusedtotransformtest,whichiscorrectforthatstage;earlierfull-dataSVDvarianceexerciseislabeledEDA. Representationuses91originalfinancialfeatures,notsevenrawfinancialinputs. Notebookhasnoexplicitrandom_stateorstratifyintrainsplitandnoseedsforrandomsamplers,soreproducibilitylimited. Assertionallfeaturesalreadyscalednotadequatelysupported;SVDoutputhasbillionsscalemagnitudes. Do notattributeallresultssolelytosevenversus91featuresoruseasproof70/70achievableonnaturalholdout.
+
+FAIR REPRODUCTION
+Splitoriginalcompaniesfirst;fitanyscaling,sampling,andSVDonlyontrainingfolds;testonnaturallyimbalancedoriginalcompanies;usemetrics(y_true,y_pred).Comparematchedfeatures/splitsandreportclasssupport. Randomundersampling/randomoversampling/SVDcanbeinvestigatedwithoutcopyingtheinvalidvalidationorder.
+
+Primarynotebooklinkabove. Validationreferences:
+https://imbalanced-learn.org/stable/common_pitfalls.html
+https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
+https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html

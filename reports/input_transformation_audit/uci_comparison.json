@@ -1,0 +1,48 @@
+{
+  "checked_on": "2026-10-28",
+  "source_url": "https://archive.ics.uci.edu/static/public/572/taiwanese%2Bbankruptcy%2Bprediction.zip",
+  "archive_sha256": "c346f5ad2618cb198e7ed8306cf2f31fe3bb2ec60acdbbe1736788d50f269aac",
+  "archive_members": [
+    "data.csv"
+  ],
+  "local_file": "data\\bankruptcy_italian_companies_2023.xlsx",
+  "local_sha256": "7892b62135008eb3b3dc1f60d435494d824fb36db42c3633d8730841e52dd3bd",
+  "local_shape": [
+    6819,
+    97
+  ],
+  "uci_shape": [
+    6819,
+    96
+  ],
+  "excluded_local_identifier": "Company",
+  "column_labels_stripped": true,
+  "target_renamed_from": "Bankrupt?",
+  "uci_column_aliases": {
+    "Revenue Per Share (Yuan \u00a5)": "Revenue Per Share",
+    "Operating Profit Per Share (Yuan \u00a5)": "Operating Profit Per Share",
+    "Per Share Net profit before tax (Yuan \u00a5)": "Per Share Net profit before tax",
+    "Bankrupt?": "Bankrupt"
+  },
+  "row_order_preserved": true,
+  "comparison_rtol": 0,
+  "comparison_atol": 1e-12,
+  "comparison_tolerance_reason": "Small absolute allowance for floating-point Excel/CSV parsing; no relative tolerance.",
+  "all_values_match_within_tolerance": true,
+  "max_absolute_difference": 9.90960785651751e-17,
+  "target_values_identical": true,
+  "mismatched_values_at_tolerance": 0,
+  "seven_features": [
+    "Net Income to Stockholder's Equity",
+    "Net Income to Total Assets",
+    "Retained Earnings to Total Assets",
+    "Debt ratio %",
+    "Net worth/Assets",
+    "Equity to Liability",
+    "Liability to Equity"
+  ],
+  "median_absolute_ratio_identity_residual": 0.0759680441913424,
+  "identity_residual_is_diagnostic_not_a_recovered_transformation": true,
+  "raw_min_max_constants_recovered": false,
+  "normalized_column_ranges_are_not_raw_scaler_bounds": true
+}

@@ -1,0 +1,152 @@
+{
+  "source": "official UCI release previously cached and verified",
+  "rows": 6819,
+  "features": 95,
+  "features_with_values_outside_0_1": 24,
+  "nonunit_features": [
+    {
+      "feature": "Operating Expense Rate",
+      "minimum": 0.0,
+      "maximum": 9990000000.0,
+      "outside_unit_rows": 2282
+    },
+    {
+      "feature": "Research and development expense rate",
+      "minimum": 0.0,
+      "maximum": 9980000000.0,
+      "outside_unit_rows": 4033
+    },
+    {
+      "feature": "Interest-bearing debt interest rate",
+      "minimum": 0.0,
+      "maximum": 990000000.0,
+      "outside_unit_rows": 221
+    },
+    {
+      "feature": "Revenue Per Share (Yuan \u00a5)",
+      "minimum": 0.0,
+      "maximum": 3020000000.0,
+      "outside_unit_rows": 5
+    },
+    {
+      "feature": "Total Asset Growth Rate",
+      "minimum": 0.0,
+      "maximum": 9990000000.0,
+      "outside_unit_rows": 6017
+    },
+    {
+      "feature": "Net Value Growth Rate",
+      "minimum": 0.0,
+      "maximum": 9330000000.0,
+      "outside_unit_rows": 2
+    },
+    {
+      "feature": "Current Ratio",
+      "minimum": 0.0,
+      "maximum": 2750000000.0,
+      "outside_unit_rows": 1
+    },
+    {
+      "feature": "Quick Ratio",
+      "minimum": 0.0,
+      "maximum": 9230000000.0,
+      "outside_unit_rows": 9
+    },
+    {
+      "feature": "Total debt/Total net worth",
+      "minimum": 0.0,
+      "maximum": 9940000000.0,
+      "outside_unit_rows": 8
+    },
+    {
+      "feature": "Accounts Receivable Turnover",
+      "minimum": 0.0,
+      "maximum": 9740000000.0,
+      "outside_unit_rows": 22
+    },
+    {
+      "feature": "Average Collection Days",
+      "minimum": 0.0,
+      "maximum": 9730000000.0,
+      "outside_unit_rows": 18
+    },
+    {
+      "feature": "Inventory Turnover Rate (times)",
+      "minimum": 0.0,
+      "maximum": 9990000000.0,
+      "outside_unit_rows": 2946
+    },
+    {
+      "feature": "Fixed Assets Turnover Frequency",
+      "minimum": 0.0,
+      "maximum": 9990000000.0,
+      "outside_unit_rows": 1228
+    },
+    {
+      "feature": "Revenue per person",
+      "minimum": 0.0,
+      "maximum": 8810000000.0,
+      "outside_unit_rows": 2
+    },
+    {
+      "feature": "Allocation rate per person",
+      "minimum": 0.0,
+      "maximum": 9570000000.0,
+      "outside_unit_rows": 12
+    },
+    {
+      "feature": "Quick Assets/Current Liability",
+      "minimum": 0.0,
+      "maximum": 8820000000.0,
+      "outside_unit_rows": 3
+    },
+    {
+      "feature": "Cash/Current Liability",
+      "minimum": 0.0,
+      "maximum": 9650000000.0,
+      "outside_unit_rows": 46
+    },
+    {
+      "feature": "Inventory/Current Liability",
+      "minimum": 0.0,
+      "maximum": 9910000000.0,
+      "outside_unit_rows": 99
+    },
+    {
+      "feature": "Long-term Liability to Current Assets",
+      "minimum": 0.0,
+      "maximum": 9540000000.0,
+      "outside_unit_rows": 109
+    },
+    {
+      "feature": "Current Asset Turnover Rate",
+      "minimum": 0.0,
+      "maximum": 10000000000.0,
+      "outside_unit_rows": 1234
+    },
+    {
+      "feature": "Quick Asset Turnover Rate",
+      "minimum": 0.0,
+      "maximum": 10000000000.0,
+      "outside_unit_rows": 2383
+    },
+    {
+      "feature": "Cash Turnover Rate",
+      "minimum": 0.0,
+      "maximum": 10000000000.0,
+      "outside_unit_rows": 4239
+    },
+    {
+      "feature": "Fixed Assets to Assets",
+      "minimum": 0.0,
+      "maximum": 8320000000.0,
+      "outside_unit_rows": 1
+    },
+    {
+      "feature": "Total assets to GNP price",
+      "minimum": 0.0,
+      "maximum": 9820000000.0,
+      "outside_unit_rows": 20
+    }
+  ]
+}

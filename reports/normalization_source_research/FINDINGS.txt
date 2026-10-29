@@ -1,0 +1,91 @@
+TAIWANESE RELEASE NORMALISATION SOURCE RESEARCH — 29 October 2026
+
+Question: What produced the released seven 0-1 feature columns, and can new SME
+raw ratios be mapped into that representation using verified information?
+
+NEW PRIMARY PUBLIC DISCUSSIONS READ DIRECTLY IN BROWSER
+1. https://www.kaggle.com/datasets/fedesoriano/company-bankruptcy-prediction/discussion/381394
+Title: Financial ratios seem to be flawed.
+A user independently identifies the reciprocal-ratio contradiction (liability /
+equity near .29 versus equity / liability near .01) and the concentration of
+net income / equity near .84. No original scaling specification is supplied in
+the visible thread. The reply asserting that absence of negatives proves bad
+data is not valid: normalisation can legitimately remove negative values.
+These comments corroborate public concern, not an authoritative transformation.
+
+2. https://www.kaggle.com/datasets/fedesoriano/company-bankruptcy-prediction/discussion/564252
+Title: Data Scale. The user asks about scaling of currency-based attributes.
+Zero comments were visible. No answer or parameters were recovered.
+
+3. https://www.kaggle.com/datasets/fedesoriano/company-bankruptcy-prediction/discussion/219171
+Title: Version 2 of the data. Dataset uploader says column names and attribute
+information were updated. The visible announcement does not say that original
+financial values were restored or provide a scaling fix/scaler.
+
+4. https://www.kaggle.com/datasets/fedesoriano/company-bankruptcy-prediction/discussion/218445
+Title: Mistakes in the Dataset, Needs an update on column names.
+Original feature-number descriptions differ in order from actual CSV columns.
+Uploader advises following column names and later links the version-2 update.
+Do not map X1-X95 positionally from the paper appendix to CSV column order.
+The thread also notes a constant Net Income Flag. A name alone does not
+establish that constant flag's intended coding is correct.
+
+5. https://www.kaggle.com/datasets/fedesoriano/company-bankruptcy-prediction/discussion/235632
+Title: Does anyone have additionnal information on the Data?
+User asks about the observation date relative to bankruptcy; no replies visible.
+Target horizon thus also remains unverified from this discussion.
+
+Snapshots are saved in kaggle_discussion_snapshots.json. These are read-only
+public page excerpts. No comments were posted and no messages were sent.
+
+PRIMARY PAPER VS RELEASE
+Liang et al. (2016), https://isslab.csie.ncu.edu.tw/download/publications/1.pdf
+Section 3.1 explicitly uses per-feature min-max normalisation, but discusses
+239 bankrupt + 239 nonbankrupt cases with 95 FRs and 95 governance indicators.
+That is not the same stated sample as the 6,819-row/95-predictor UCI release.
+Neither the original raw bounds nor a verified link between that particular
+478-case fitted scaler and the published UCI values has been recovered.
+
+https://archive.ics.uci.edu/dataset/572/taiwanese+bankruptcy+prediction
+Cached official ZIP has data.csv only, as previously checked. The entire local
+Excel dataset matches the official release numerically after column alignment.
+The unknown representation is present in the UCI release; it was not created
+by SHIELD's seven-feature pipeline.
+
+ADDITIONAL DIRECT NUMERIC CHECK
+Of all 95 official predictors, 24 contain values outside [0,1]. Example:
+Operating Expense Rate reaches 9,990,000,000; R&D expense rate reaches
+9,980,000,000. All seven SHIELD features individually have min 0 and max 1.
+Therefore do not repeat the blanket claim that the entire public dataset is a
+clean 0-1 min-max table. This does not prove why the large values occur; possible
+mixed representation/data anomalies remain hypotheses.
+Measured full nonunit list: released_value_ranges.json.
+
+OTHER PAPERS DO NOT AUTOMATICALLY SOLVE THIS
+Many later studies describe fitting StandardScaler, MinMaxScaler or power
+transforms to the downloaded file. These are additional transformations of the
+released values, not necessarily conversion from real statement ratios. A later
+paper using the word 'raw' often means 'as downloaded', not original TEJ amounts.
+No recovered bounds were found in the reviewed public paper/repository sources.
+Do not assume a saved scaler from another notebook bridges the missing raw step.
+
+UNRESOLVED PUBLIC LEADS
+National Central University thesis records:
+https://ir.lib.ncu.edu.tw/handle/987654321/77622?locale=en-US
+Study of applicability of normalisation and variable selection in bankruptcy.
+https://ir.lib.ncu.edu.tw/handle/987654321/84065
+Comparative Analysis of Data Normalization and Discretization for Bankruptcy
+Prediction and Credit Scoring.
+Search-index records exist, but pages/full attachments were not accessible in
+this run (web cache miss / host DNS unavailable). They have not been read in
+full and are NOT evidence of a recovered scaler or matched raw values.
+
+CONCLUSION
+The seven columns cannot currently be treated as unchanged accounting ratios.
+Min-max scaling is documented for a related study, but the exact release-level
+transformation, original bounds and preprocessing history remain unverified.
+This investigation found independent public reports of the same issue, plus
+an explicit uploader correction of column metadata; it did not recover the
+missing original parameters. Do not claim the values are irrecoverably lost,
+or that arbitrary bounds have been established by synthetic sanity checks.
+No current application/model changes were made in this research run.

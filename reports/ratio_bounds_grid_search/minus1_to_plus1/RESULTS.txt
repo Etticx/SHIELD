@@ -1,0 +1,15 @@
+Raw-bound interval: [-1, 1]
+Grid step: 0.01
+Raw min/max pairs per feature: 20,100
+Joint combinations checked: 404,010,000
+Dataset rows available for validation: 6,819
+Absolute tolerance: 1e-05
+Surviving combinations: 0
+Smallest product error even on first row: 0.003066228414
+Runtime: 5.080 seconds
+No complete seven-feature solution on this grid can satisfy all checks under identical accounting definitions.
+This finite grid is not every real number in the chosen interval.
+Raw bounds outside [-1.0,1.0] are excluded.
+Original bounds are not recovered.
+No inference about the original data transformation follows if ratio definitions differ.
+Retained earnings/assets cannot be identified from these relationships.

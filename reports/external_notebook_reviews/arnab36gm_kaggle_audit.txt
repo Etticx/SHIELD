@@ -1,0 +1,21 @@
+KAGGLE NOTEBOOK REVIEW - 28 OCTOBER 2026
+Notebook:https://www.kaggle.com/code/arnab36gm/eda-resampling-dimensionality-red-and-prediction
+Actual rendered version6of6 inspected. No sourcecode executed.
+
+CONFIRMED ISSUES
+Cells16-18: RandomUnderSampler applied to alloriginaldata,majority6599to2200;RandomOverSampler applied next,minority220to660;onlythen80:20split. Random duplication before splitting can put copies of onecompany inbothpartitions. Identity-overlap count not measured. Testsetisdrawnfromanartificialdistribution,notoriginalcompanypopulation.
+Cell23:confusion_matrix(prediction,y_test)andclassification_report(prediction,y_test)reverse requiredtrue/predictedargumentorder. Printed rowsarepredicted,columnsactual. Every matrix's columns sum424nonbankrupt148bankrupt;printedclasssupports varybetweenmodelsbecausetheyarepredictioncounts. Correct by transposing matrix and computingreportwithy_testfirst.
+RandomForestcorrectedCM[[416,8],[16,132]];Accuracy95.8042%,Precision94.2857%,Recall89.1892%,F191.6667%. These scores remain contaminated by design;argumentfixdoesnotfixleakage.
+XGBoostcorrectedCM[[409,15],[12,136]];Accuracy95.2797%,Precision90.0662%,Recall91.8919%,F190.9699%.
+Actualtestpositiveprevalence148/572=25.87%,versusSHIELD44/1364=3.23%. Precisionnotdirectlycomparableacrossthesepopulations. TranspositiondoesnotchangeaccuracyorperclassF1.
+
+OTHER OBSERVATIONS
+SVD19components isfittedonX_trainandusedtotransformtest,whichiscorrectforthatstage;earlierfull-dataSVDvarianceexerciseislabeledEDA. Representationuses91originalfinancialfeatures,notsevenrawfinancialinputs. Notebookhasnoexplicitrandom_stateorstratifyintrainsplitandnoseedsforrandomsamplers,soreproducibilitylimited. Assertionallfeaturesalreadyscalednotadequatelysupported;SVDoutputhasbillionsscalemagnitudes. Do notattributeallresultssolelytosevenversus91featuresoruseasproof70/70achievableonnaturalholdout.
+
+FAIR REPRODUCTION
+Splitoriginalcompaniesfirst;fitanyscaling,sampling,andSVDonlyontrainingfolds;testonnaturallyimbalancedoriginalcompanies;usemetrics(y_true,y_pred).Comparematchedfeatures/splitsandreportclasssupport. Randomundersampling/randomoversampling/SVDcanbeinvestigatedwithoutcopyingtheinvalidvalidationorder.
+
+Primarynotebooklinkabove. Validationreferences:
+https://imbalanced-learn.org/stable/common_pitfalls.html
+https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
+https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html

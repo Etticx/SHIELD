@@ -1,0 +1,92 @@
+[
+  {
+    "model": "RandomForest",
+    "label": "Random Forest",
+    "ratio": 0.25,
+    "attachment": "b1001435-c810-4838-adea-d3334c789082",
+    "stem": "rf_smote_025",
+    "color": "#4C93E0",
+    "cmap": "Blues",
+    "Experiment": "80-20 + CV=10",
+    "Split": 0.2,
+    "CV": 10,
+    "Accuracy (%)": 95.67448680351906,
+    "Precision (%)": 40.0,
+    "Recall (%)": 68.18181818181817,
+    "F1-Score (%)": 50.42016806722689,
+    "ROC-AUC (%)": 94.43870523415978,
+    "Best_Params": {
+      "model__max_depth": 10,
+      "model__min_samples_split": 2,
+      "model__n_estimators": 200
+    },
+    "CV_F1_Mean (%)": 43.29762120163908,
+    "Original_Source_Index": 40,
+    "Source": "C:\\Users\\User\\.codex\\attachments\\b1001435-c810-4838-adea-d3334c789082\\Pasted text.txt",
+    "Source_SHA256": "39f80b4817c5d9a39a4408cffd68da524eb14d89b7c06b0ff52ac60e2760e8c2",
+    "Confusion_Matrix": [
+      [
+        1275,
+        45
+      ],
+      [
+        14,
+        30
+      ]
+    ],
+    "Confusion_Matrix_Order": [
+      "Not Bankrupt (0)",
+      "Bankrupt (1)"
+    ],
+    "Support": {
+      "Not Bankrupt": 1320,
+      "Bankrupt": 44
+    },
+    "Count_Provenance": "Uniquely reconstructed from original reported metrics and test supports; not newly fitted predictions."
+  },
+  {
+    "model": "XGBoost",
+    "label": "XGBoost",
+    "ratio": 0.1,
+    "attachment": "a9acd921-8a2e-40aa-98cc-a46863fdeb25",
+    "stem": "xgb_smote_010",
+    "color": "#9A63C7",
+    "cmap": "Purples",
+    "Experiment": "80-20 + CV=10",
+    "Split": 0.2,
+    "CV": 10,
+    "Accuracy (%)": 97.28739002932552,
+    "Precision (%)": 59.45945945945946,
+    "Recall (%)": 50.0,
+    "F1-Score (%)": 54.32098765432099,
+    "ROC-AUC (%)": 93.99276859504133,
+    "Best_Params": {
+      "model__learning_rate": 0.1,
+      "model__max_depth": 6,
+      "model__n_estimators": 100
+    },
+    "CV_F1_Mean (%)": 44.43943466234489,
+    "Original_Source_Index": 41,
+    "Source": "C:\\Users\\User\\.codex\\attachments\\a9acd921-8a2e-40aa-98cc-a46863fdeb25\\Pasted text.txt",
+    "Source_SHA256": "ce35d9ba65b34836efb5892c6582937ca7b7529b1158d75bd58efb1a68fc7b66",
+    "Confusion_Matrix": [
+      [
+        1305,
+        15
+      ],
+      [
+        22,
+        22
+      ]
+    ],
+    "Confusion_Matrix_Order": [
+      "Not Bankrupt (0)",
+      "Bankrupt (1)"
+    ],
+    "Support": {
+      "Not Bankrupt": 1320,
+      "Bankrupt": 44
+    },
+    "Count_Provenance": "Uniquely reconstructed from original reported metrics and test supports; not newly fitted predictions."
+  }
+]

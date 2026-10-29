@@ -54,3 +54,20 @@ data/bankruptcy_italian_companies_2023.xlsx
 reports/focused_improvement/*/pipeline_cache/
 reports/feature_comparison/*/pipeline_cache/
 reports/.focused_verification/
+frontend/.next-incomplete-*/
+
+# Downloaded third-party datasets (re-download from source)
+reports/slovak_dataset_research/original_csv/
+reports/polish_dataset_research/*.zip
+reports/input_transformation_audit/*.zip
+
+# Regenerable experiment outputs
+reports/approximate_mapping_experiment/all_*_predictions.csv
+reports/synthetic_accounting_sanity/REPORT.html
+reports/synthetic_accounting_sanity/report_browser_check.js
+reports/synthetic_accounting_sanity/all_*cases.*
+reports/ratio_bounds_hypothesis/**/row_checks.csv
+reports/*.zip
+
+# Superseded model (scikit-learn 1.9.0); backend uses the _sk161 refit
+model/SHIELD_RF_7Features_SMOTE050_8020_CV5.joblib

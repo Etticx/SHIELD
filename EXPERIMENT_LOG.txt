@@ -2379,3 +2379,15 @@ constant retention, threshold ties, selection fallback, duplicate guards and res
 Self-contained Colab experiment definitions execute without importing project helper files.
 The 45 full-feature fold records and 9 OOF files use the same company/fold membership as the IG control.
 Saved score/threshold CSVs verified with pandas.read_csv(float_precision='round_trip') to preserve equal-cutoff decisions.
+
+
+SEVEN-FEATURE RF/XGBOOST PROTOCOL SERIES - OCTOBER 28
+SMOTE 0.25 and 1.0: all 32 results recorded in reports/seven_feature_protocol_results/SEVEN_FEATURE_EXPERIMENT_TRACKER.txt; structured metrics/counts in seven_features_all_runs.json. User classification reports preserved separately for both ratios. Selected grid parameters truncated in supplied tables are not invented. Full details also in reports/SME_INPUT_AVAILABILITY_CHECKPOINT_2026-10-28.txt. Next planned ratio 0.1.
+
+Seven-feature RF/XGB series: SMOTE 0.1 added, all 48 results (0.1, 0.25, 1.0) indexed in reports/seven_feature_protocol_results/SEVEN_FEATURE_EXPERIMENT_TRACKER.txt. Source attachment and metrics/count verification retained.
+
+Seven-feature series: SMOTE 0.5 all 16 added; 64 results total. Full tracker: reports/seven_feature_protocol_results/SEVEN_FEATURE_EXPERIMENT_TRACKER.txt.
+
+Seven-feature RF/XGB series: SMOTE 0.75 all 16 added. All five planned ratios complete, 80 results total. Full tracker: reports/seven_feature_protocol_results/SEVEN_FEATURE_EXPERIMENT_TRACKER.txt.
+
+Seven-feature model refit for deployment compatibility (October 30): SHIELD_RF_7Features_SMOTE050_8020_CV5.joblib was saved with scikit-learn 1.9.0; the backend pins 1.6.1. Refit with identical data split (preprocessed_dataset.csv, 80:20 stratified, seed 42; train 5279/176), SMOTE 0.5 (2463 synthetic) and saved RF parameters via tools/refit_seven_feature_model.py -> model/SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib. Holdout: max probability difference 0.0098, 100% label agreement at 0.5. Backend now loads the _sk161 file; original kept for provenance.
