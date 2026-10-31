@@ -150,6 +150,3 @@ npm run dev
 | Styling    | Tailwind CSS 3.4 · JuneBank dark theme          |
 | Charts     | Recharts 2.12 (RadialBar + BarChart)            |
 
----
-
-*SHIELD · Random Forest + SHAP · JuneBank · Academic use only*
