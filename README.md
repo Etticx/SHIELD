@@ -2,7 +2,7 @@
 
 > **Final Year Project · For academic use only**
 
-SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using a Random Forest model trained on 7 financial ratios (experimental; SMOTE 0.5, 80:20 split, 5-fold CV). SHAP provides full explainability for every prediction.
+SHIELD is a credit-risk assessment platform that predicts the probability of SME bankruptcy using a Random Forest model trained on 7 financial ratios (experimental; SMOTE 0.5, 80:20 split, 5-fold CV). SHAP provides full explainability for every prediction. 
 
 ---
 
