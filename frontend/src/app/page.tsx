@@ -474,7 +474,7 @@ export default function DashboardPage() {
           <main className="flex-1 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-5 p-5 items-start">
 
             {/* Inputs stay beside the results so officers can tweak a ratio and re-run. */}
-            <section className="panel flex flex-col gap-0 overflow-hidden lg:sticky lg:top-5 lg:max-h-[calc(100vh-40px)] lg:overflow-y-auto">
+            <section className="panel flex flex-col gap-0 overflow-hidden lg:sticky lg:top-[84px] lg:max-h-[calc(100vh-104px)] lg:overflow-y-auto">
               <div className="px-5 pt-5 pb-4 border-b border-brand-border">
                 <p className="section-label">Company Financial Inputs</p>
                 <h2 className="text-brand-charcoal font-bold text-base font-heading">SME Financial Profile</h2>
