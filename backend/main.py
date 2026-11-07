@@ -1,7 +1,7 @@
 # =============================================================================
 # SHIELD — FastAPI Backend
 # Prediction endpoint: POST /ratios-predict
-# Startup: loads Random Forest model + SHAP TreeExplainer once, reuses per request.
+# Startup: loads XGBoost model + SHAP TreeExplainer once, reuses per request.
 #
 # Advisory engine: dynamically generated via Groq API (openai/gpt-oss-120b)
 # when GROQ_API_KEY is set in backend/.env.
@@ -126,22 +126,32 @@ async def verify_api_key(key: str | None = Security(_api_key_header)) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Lifespan — model: SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib
-#
-# SHAP TreeExplainer notes for RandomForestClassifier:
-#   • feature_perturbation defaults to "interventional" for RF, which is
-#     correct and avoids the tree_path_dependent approximation used for XGBoost.
-#   • check_additivity=False is set to suppress the floating-point sum warning
-#     that can appear with large RF ensembles (100+ trees); the SHAP values
-#     themselves remain accurate.
+# Lifespan — model: XGBoost_7Features_8020_CV5.joblib (XGBoost, SMOTE 0.25)
+# check_additivity=False suppresses benign floating-point sum warnings.
 # ---------------------------------------------------------------------------
+
+# Risk bands (thesis note §1): Medium = isotonic OOF base-rate crossing,
+# High = model decision threshold. Re-derive both if the model changes.
+MEDIUM_THRESHOLD = 0.197567880153656
+HIGH_THRESHOLD   = 0.50
+
+
+def risk_band(prob: float) -> tuple[str, str]:
+    """Returns (classification, tone_level)."""
+    if prob >= HIGH_THRESHOLD:
+        return "High Risk", "high"
+    if prob >= MEDIUM_THRESHOLD:
+        return "Medium Risk", "medium"
+    return "Low Risk", "low"
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Loading seven-ratio Random Forest model …")
+    logger.info("Loading seven-ratio XGBoost model …")
     app_state.model = joblib.load(Path(__file__).resolve().parent / settings.model_path)
 
     # The saved .joblib is an imblearn Pipeline whose final step is the
-    # RandomForestClassifier.  SHAP's TreeExplainer cannot wrap the full
+    # XGBClassifier.  SHAP's TreeExplainer cannot wrap the full
     # Pipeline object — it must receive the bare classifier.
     # We keep app_state.model as the full pipeline for predict_proba (so the
     # preprocessing steps still run), and store only the classifier in the
@@ -151,7 +161,7 @@ async def lifespan(app: FastAPI):
     from imblearn.pipeline import Pipeline as ImbPipeline
 
     if isinstance(app_state.model, (SKPipeline, ImbPipeline)):
-        clf = app_state.model[-1]   # last step = the RandomForestClassifier
+        clf = app_state.model[-1]   # last step = the XGBClassifier
         logger.info(
             "Pipeline detected — extracting final estimator for SHAP: %s",
             type(clf).__name__,
@@ -159,7 +169,7 @@ async def lifespan(app: FastAPI):
     else:
         clf = app_state.model
 
-    logger.info("Building SHAP TreeExplainer (RandomForestClassifier) …")
+    logger.info("Building SHAP TreeExplainer (XGBClassifier) …")
     app_state.explainer = shap.TreeExplainer(
         clf,
         feature_perturbation="interventional",
@@ -210,7 +220,7 @@ class ShapFeature(BaseModel):
 
 class AdvisoryReport(BaseModel):
     tone: str
-    tone_level: str              # "critical" | "elevated" | "moderate" | "low"
+    tone_level: str              # "high" | "medium" | "low"
     risk_drivers: list[dict]
     protective_factors: list[dict]
     recommendation: str
@@ -334,7 +344,7 @@ async def generate_advisory(
         explanation_prompt = (
             f"An SME credit application has been assessed with a {probability * 100:.1f}% "
             f"probability of default, classified as {classification}.\n\n"
-            f"Top risk drivers (SHAP values from the Random Forest model):\n{drivers_text}\n\n"
+            f"Top risk drivers (SHAP values from the XGBoost model):\n{drivers_text}\n\n"
             f"Protective factors:\n{protective_text}\n\n"
             f"Write 3 concise sentences explaining WHY these specific metrics drove the "
             f"default probability to {probability * 100:.1f}%. Name each metric explicitly "
@@ -397,9 +407,8 @@ def _compute_shap(input_df: pd.DataFrame) -> tuple[np.ndarray, float]:
     """
     Compute SHAP values for a single-row DataFrame.
 
-    For RandomForestClassifier, TreeExplainer returns a 3-D array
-    (n_samples, n_features, n_classes) when called as a callable.
-    We extract class-1 (default) values and the corresponding base value.
+    XGBoost returns a 2-D array (log-odds, class 1); the 3-D branch is kept
+    for per-class tree models such as RandomForest.
     check_additivity is disabled to avoid benign floating-point warnings
     from large ensembles; the values themselves remain correct.
     """
@@ -421,18 +430,12 @@ def _build_rule_based_advisory(
     """Returns (tone, tone_level, recommendation, risk_drivers, protective_factors)."""
     pairs = list(zip(labels, shap_values))
 
-    if prob >= 0.80:
-        tone       = "Critical Risk Detected. The model indicates a very high likelihood of financial distress."
-        tone_level = "critical"
-    elif prob >= 0.60:
-        tone       = "Elevated Risk Detected. The SME exhibits several financial vulnerabilities."
-        tone_level = "elevated"
-    elif prob >= 0.30:
-        tone       = "Moderate Risk. The SME shows some concerning signals but maintains core financial health."
-        tone_level = "moderate"
-    else:
-        tone       = "Low Risk. The SME appears financially healthy with strong fundamental indicators."
-        tone_level = "low"
+    _, tone_level = risk_band(prob)
+    tone = {
+        "high":   "High Risk Detected. The model predicts financial distress for this SME.",
+        "medium": "Medium Risk. The SME's risk is above the average firm; manual review is advised.",
+        "low":    "Low Risk. The SME's risk is below the average firm.",
+    }[tone_level]
 
     risk_drivers = [
         {"label": l, "shap_value": round(float(v), 6)}
@@ -451,10 +454,10 @@ def _build_rule_based_advisory(
         "Loan approval should be approached with caution. A detailed due-diligence review of "
         "the flagged risk drivers is strongly advised. Consider requesting collateral or "
         "imposing covenant-based conditions before disbursement."
-        if prob >= 0.60 else
+        if tone_level == "high" else
         "The financial profile supports a favourable loan consideration. Standard monitoring "
         "of the identified risk drivers is recommended throughout the loan tenure."
-        if prob < 0.30 else
+        if tone_level == "low" else
         "Proceed with conditional approval. Request additional financial disclosures and "
         "consider imposing a reduced credit limit or phased disbursement pending improvement "
         "in the flagged risk indicators."
@@ -484,7 +487,7 @@ async def health() -> dict:
 
 @app.post("/ratios-predict", response_model=PredictionResponse, tags=["Prediction"])
 async def predict(request: AccountingPredictRequest, _: None = Security(verify_api_key)) -> PredictionResponse:
-    """Main prediction endpoint — runs the seven-ratio Random Forest + SHAP + Groq advisory, then persists to DB."""
+    """Main prediction endpoint — runs the seven-ratio XGBoost + SHAP + Groq advisory, then persists to DB."""
     if app_state.model is None or app_state.explainer is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Try again shortly.")
     data = request.financials
@@ -498,7 +501,7 @@ async def predict(request: AccountingPredictRequest, _: None = Security(verify_a
     labels = [str(name).strip() for name in input_df.columns]
     prob_bankrupt = outcome['bankruptcy_score']
     shap_vals, base_val = _compute_shap(input_df)
-    is_high_risk = prob_bankrupt >= 0.60
+    is_high_risk = prob_bankrupt >= HIGH_THRESHOLD
 
     shap_features: list[ShapFeature] = []
     for i, (label, sv) in enumerate(zip(labels, shap_vals)):
@@ -514,12 +517,7 @@ async def predict(request: AccountingPredictRequest, _: None = Security(verify_a
         _build_rule_based_advisory(shap_vals, prob_bankrupt, labels)
     )
 
-    classification = (
-        "Critical Risk" if prob_bankrupt >= 0.80 else
-        "High Risk"     if prob_bankrupt >= 0.60 else
-        "Moderate Risk" if prob_bankrupt >= 0.30 else
-        "Low Risk"
-    )
+    classification, _ = risk_band(prob_bankrupt)
 
     final_tone, final_recommendation, advisory_source = await generate_advisory(
         probability=prob_bankrupt,
@@ -603,7 +601,7 @@ async def accounting_predict(request: AccountingExperimentRequest, _: None = Sec
     try:
         features = calculate_features(**request.model_dump())
         result = run_prediction(app_state.model, features)
-        result['model'] = 'Random Forest | 7 features | SMOTE 0.5 | 80:20 + CV=5'
+        result['model'] = 'XGBoost | 7 features | SMOTE 0.25 | 80:20 + CV=5'
         result['balance_difference'] = request.total_assets - request.total_liabilities - request.equity
         return result
     except ValueError as exc:

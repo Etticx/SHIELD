@@ -38,7 +38,6 @@ import {
   AlertTriangle,
   ShieldCheck,
   ShieldAlert,
-  Flame,
   Building2,
   Hash,
   Download,
@@ -56,9 +55,8 @@ import type { LogEntry } from "@/lib/types";
 // Risk-semantic palette for donut segments
 const DONUT_COLORS: Record<string, string> = {
   "Low Risk": "#16A34A",   // green
-  "Moderate Risk": "#CA8A04",   // yellow
-  "High Risk": "#D97706",   // amber
-  "Critical Risk": "#DC2626",   // red
+  "Medium Risk": "#CA8A04",   // yellow
+  "High Risk": "#DC2626",   // red
 };
 
 const CHARCOAL = "#1A1A1A";
@@ -117,7 +115,7 @@ function buildVolumeData(logs: LogEntry[], maxDays = 7) {
 
 function buildDonutData(logs: LogEntry[]) {
   const counts: Record<string, number> = {
-    "Low Risk": 0, "Moderate Risk": 0, "High Risk": 0, "Critical Risk": 0,
+    "Low Risk": 0, "Medium Risk": 0, "High Risk": 0,
   };
   for (const log of logs) counts[log.risk_classification] = (counts[log.risk_classification] ?? 0) + 1;
   return Object.entries(counts)
@@ -245,14 +243,13 @@ function KpiCard({ icon, label, value, sub, accentBar }: KpiCardProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Risk badge (table) — 4-tier colour coding
+// Risk badge (table) — 3-band colour coding
 // ---------------------------------------------------------------------------
 function RiskBadge({ classification }: { classification: LogEntry["risk_classification"] }) {
   const cfg = {
     "Low Risk": { Icon: ShieldCheck, cls: "text-[#166534] bg-[rgba(22,163,74,0.07)]  border-[rgba(22,163,74,0.25)]" },
-    "Moderate Risk": { Icon: ShieldAlert, cls: "text-[#854D0E] bg-[rgba(202,138,4,0.07)]  border-[rgba(202,138,4,0.25)]" },
-    "High Risk": { Icon: AlertTriangle, cls: "text-[#92400E] bg-[rgba(217,119,6,0.07)]  border-[rgba(217,119,6,0.25)]" },
-    "Critical Risk": { Icon: Flame, cls: "text-[#991B1B] bg-[rgba(220,38,38,0.07)]  border-[rgba(220,38,38,0.25)]" },
+    "Medium Risk": { Icon: ShieldAlert, cls: "text-[#854D0E] bg-[rgba(202,138,4,0.07)]  border-[rgba(202,138,4,0.25)]" },
+    "High Risk": { Icon: AlertTriangle, cls: "text-[#991B1B] bg-[rgba(220,38,38,0.07)]  border-[rgba(220,38,38,0.25)]" },
   }[classification] ?? { Icon: ShieldCheck, cls: "text-[#166534] bg-[rgba(22,163,74,0.07)] border-[rgba(22,163,74,0.25)]" };
 
   return (
@@ -718,7 +715,7 @@ export default function DashboardPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
+          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
         </footer>
 
         {/* ── Hidden print template — mounted in DOM for react-to-print ────── */}

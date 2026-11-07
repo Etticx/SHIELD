@@ -405,7 +405,7 @@ export default function SettingsPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
+          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
         </footer>
 
       </div>

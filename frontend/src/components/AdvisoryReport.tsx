@@ -13,7 +13,6 @@ import clsx from "clsx";
 import type { LucideIcon } from "lucide-react";
 import {
   AlertCircle,
-  AlertTriangle,
   Info,
   CheckCircle,
   TrendingUp,
@@ -42,31 +41,22 @@ const TONE_CONFIG: Record<
     Icon: LucideIcon;
   }
 > = {
-  critical: {
+  high: {
     bg: "bg-risk-highBg",
     border: "border-risk-high/30",
     text: "text-risk-high",
     subtext: "text-risk-high/80",
     divider: "border-risk-high/20",
-    label: "Critical Risk",
+    label: "High Risk",
     Icon: AlertCircle,
   },
-  elevated: {
-    bg: "bg-[rgba(245,158,11,0.08)]",
-    border: "border-risk-amber/30",
-    text: "text-risk-amber",
-    subtext: "text-risk-amber/80",
-    divider: "border-risk-amber/20",
-    label: "Elevated Risk",
-    Icon: AlertTriangle,
-  },
-  moderate: {
+  medium: {
     bg: "bg-[rgba(234,179,8,0.06)]",
     border: "border-yellow-500/30",
     text: "text-yellow-400",
     subtext: "text-yellow-400/80",
     divider: "border-yellow-500/20",
-    label: "Moderate Risk",
+    label: "Medium Risk",
     Icon: Info,
   },
   low: {

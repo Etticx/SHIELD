@@ -1,7 +1,7 @@
 "use client";
 
 // =============================================================================
-// SHIELD — RiskGauge Component  (v1.2 — 4-tier classification)
+// SHIELD — RiskGauge Component  (3-band classification, set by backend)
 // =============================================================================
 
 import { useMemo } from "react";
@@ -15,22 +15,18 @@ interface Props {
 }
 
 // ---------------------------------------------------------------------------
-// 4-tier helpers
+// 3-band helpers — band comes from the backend so cut-points live in one place
 // ---------------------------------------------------------------------------
-type Tier = "low" | "moderate" | "high" | "critical";
+type Tier = "low" | "medium" | "high";
 
-function getTier(pct: number): Tier {
-  if (pct >= 80) return "critical";
-  if (pct >= 60) return "high";
-  if (pct >= 30) return "moderate";
-  return "low";
-}
+const TIER_OF: Record<PredictionResponse["classification"], Tier> = {
+  "Low Risk": "low", "Medium Risk": "medium", "High Risk": "high",
+};
 
 function gaugeColor(tier: Tier): string {
   switch (tier) {
-    case "critical": return "#DC2626";   // red
-    case "high": return "#EA580C";   // orange
-    case "moderate": return "#CA8A04";   // yellow
+    case "high": return "#DC2626";   // red
+    case "medium": return "#CA8A04";   // yellow
     case "low": return "#16A34A";   // green
   }
 }
@@ -51,9 +47,9 @@ const TIER_CONFIG: Record<Tier, {
     badgeBorder: "border-risk-low/30",
     cardLabel: "Healthy",
   },
-  moderate: {
-    label: "MODERATE RISK",
-    health: "Financially Distressed",
+  medium: {
+    label: "MEDIUM RISK",
+    health: "Review Advised",
     badgeBg: "bg-risk-moderateBg",
     badgeText: "text-risk-moderate",
     badgeBorder: "border-risk-moderate/30",
@@ -61,14 +57,6 @@ const TIER_CONFIG: Record<Tier, {
   },
   high: {
     label: "HIGH RISK",
-    health: "Financially Distressed",
-    badgeBg: "bg-risk-highBg",
-    badgeText: "text-risk-high",
-    badgeBorder: "border-risk-high/30",
-    cardLabel: "At Risk",
-  },
-  critical: {
-    label: "CRITICAL RISK",
     health: "Financially Distressed",
     badgeBg: "bg-risk-criticalBg",
     badgeText: "text-risk-critical",
@@ -78,9 +66,9 @@ const TIER_CONFIG: Record<Tier, {
 };
 
 export default function RiskGauge({ result }: Props) {
-  const { probability_pct, shap_base_value } = result;
+  const { probability_pct, shap_base_value, classification } = result;
 
-  const tier = useMemo(() => getTier(probability_pct), [probability_pct]);
+  const tier = TIER_OF[classification] ?? "low";
   const color = useMemo(() => gaugeColor(tier), [tier]);
   const config = TIER_CONFIG[tier];
 
@@ -181,15 +169,15 @@ export default function RiskGauge({ result }: Props) {
             className="h-full rounded-full transition-all duration-700"
             style={{
               width: `${probability_pct}%`,
-              background: "linear-gradient(90deg, #16A34A, #CA8A04, #D97706, #DC2626)",
+              background: "linear-gradient(90deg, #16A34A, #CA8A04, #DC2626)",
             }}
           />
         </div>
         <div className="flex justify-between text-[10px] text-brand-muted mt-1">
           <span>0% — Low</span>
-          <span>30% Moderate</span>
-          <span>60% High</span>
-          <span>80% Critical</span>
+          <span>19.8% Medium</span>
+          <span>50% High</span>
+          <span>100%</span>
         </div>
       </div>
 
@@ -213,7 +201,7 @@ export default function RiskGauge({ result }: Props) {
 
       {/* ── Model metadata ─────────────────────────────────────────────────── */}
       <div className="border-t border-brand-border pt-3 flex items-center justify-between text-[11px] text-brand-muted">
-        <span>Random Forest + SHAP</span>
+        <span>XGBoost + SHAP</span>
         <span className="flex items-center gap-1.5">
           Base value:{" "}
           <span className="font-mono text-brand-subtext">{shap_base_value.toFixed(4)}</span>

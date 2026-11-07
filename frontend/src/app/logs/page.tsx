@@ -15,7 +15,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
-  RefreshCw, AlertTriangle, CheckCircle, ShieldAlert, Flame,
+  RefreshCw, AlertTriangle, CheckCircle, ShieldAlert,
   Calendar, Building2, Hash, DollarSign,
   ChevronDown, ChevronUp, Loader2,
   ClipboardList, ServerOff, Download,
@@ -53,14 +53,13 @@ function formatDate(iso: string) {
 }
 
 // ---------------------------------------------------------------------------
-// Risk badge — 4-tier colour coding
+// Risk badge — 3-band colour coding
 // ---------------------------------------------------------------------------
 function RiskBadge({ classification }: { classification: LogEntry["risk_classification"] }) {
   const cfg = {
     "Low Risk": { icon: CheckCircle, cls: "text-risk-low      bg-risk-lowBg      border-risk-low/30" },
-    "Moderate Risk": { icon: ShieldAlert, cls: "text-risk-moderate bg-risk-moderateBg border-risk-moderate/30" },
-    "High Risk": { icon: AlertTriangle, cls: "text-risk-high     bg-risk-highBg     border-risk-high/30" },
-    "Critical Risk": { icon: Flame, cls: "text-risk-critical bg-risk-criticalBg border-risk-critical/30" },
+    "Medium Risk": { icon: ShieldAlert, cls: "text-risk-moderate bg-risk-moderateBg border-risk-moderate/30" },
+    "High Risk": { icon: AlertTriangle, cls: "text-risk-critical bg-risk-criticalBg border-risk-critical/30" },
   }[classification] ?? { icon: CheckCircle, cls: "text-risk-low bg-risk-lowBg border-risk-low/30" };
 
   const Icon = cfg.icon;
@@ -207,9 +206,8 @@ function LogRow({ entry }: { entry: LogEntry }) {
         <td className="px-4 py-3 whitespace-nowrap text-right">
           <span className={clsx(
             "font-mono text-sm font-bold tabular-nums",
-            entry.risk_classification === "Critical Risk" && "text-risk-critical",
-            entry.risk_classification === "High Risk" && "text-risk-high",
-            entry.risk_classification === "Moderate Risk" && "text-risk-moderate",
+            entry.risk_classification === "High Risk" && "text-risk-critical",
+            entry.risk_classification === "Medium Risk" && "text-risk-moderate",
             entry.risk_classification === "Low Risk" && "text-risk-low",
           )}>
             {(entry.probability_default * 100).toFixed(2)}%
@@ -296,7 +294,7 @@ export default function LogsPage() {
 
   // ── Filter state ──────────────────────────────────────────────────────────
   const [search, setSearch] = useState("");
-  const [riskFilter, setRiskFilter] = useState<"all" | "Low Risk" | "Moderate Risk" | "High Risk" | "Critical Risk">("all");
+  const [riskFilter, setRiskFilter] = useState<"all" | "Low Risk" | "Medium Risk" | "High Risk">("all");
 
   // ── Sort state ────────────────────────────────────────────────────────────
   const [sortKey, setSortKey] = useState<SortKey>("evaluated_at");
@@ -480,9 +478,8 @@ export default function LogsPage() {
                   >
                     <option value="all">All Risk Levels</option>
                     <option value="Low Risk">Low Risk</option>
-                    <option value="Moderate Risk">Moderate Risk</option>
+                    <option value="Medium Risk">Medium Risk</option>
                     <option value="High Risk">High Risk</option>
-                    <option value="Critical Risk">Critical Risk</option>
                   </select>
                   <ChevronDown
                     size={12}
@@ -595,7 +592,7 @@ export default function LogsPage() {
         <footer className="border-t border-brand-border px-6 py-3 flex items-center
                            justify-between text-brand-muted text-xs mt-auto">
           <span>SHIELD · Final Year Project · For academic use only</span>
-          <span>JuneBank Internal Tools · Random Forest + SHAP</span>
+          <span>JuneBank Internal Tools · XGBoost + SHAP</span>
         </footer>
 
       </div>

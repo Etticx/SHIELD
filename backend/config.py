@@ -15,7 +15,7 @@ class Settings(BaseSettings):
         protected_namespaces=("settings_",),  # avoids false warning on model_path field
     )
 
-    model_path: str = "../model/SHIELD_RF_7Features_SMOTE050_8020_CV5_sk161.joblib"
+    model_path: str = "../model/XGBoost_7Features_8020_CV5.joblib"
     cors_origins: str = "http://localhost:3000"
     host: str = "0.0.0.0"
     port: int = 8000

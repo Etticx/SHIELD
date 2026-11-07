@@ -25,7 +25,7 @@ export interface ShapFeature {
 
 export interface AdvisoryReport {
   tone:               string;
-  tone_level:         "critical" | "elevated" | "moderate" | "low";
+  tone_level:         "high" | "medium" | "low";
   risk_drivers:       Array<{ label: string; shap_value: number }>;
   protective_factors: Array<{ label: string; shap_value: number }>;
   recommendation:     string;
@@ -35,7 +35,7 @@ export interface AdvisoryReport {
 export interface PredictionResponse {
   probability:     number;
   probability_pct: number;
-  classification:  "Low Risk" | "Moderate Risk" | "High Risk" | "Critical Risk";
+  classification:  "Low Risk" | "Medium Risk" | "High Risk";
   is_high_risk:    boolean;
   shap_base_value: number;
   shap_features:   ShapFeature[];
@@ -53,7 +53,7 @@ export interface LogEntry {
   evaluator:           string;
   evaluated_at:        string;   // ISO-8601
   probability_default: number;
-  risk_classification: "Low Risk" | "Moderate Risk" | "High Risk" | "Critical Risk";
+  risk_classification: "Low Risk" | "Medium Risk" | "High Risk";
   financial_inputs:    Record<string, number>;
   shap_breakdown:      ShapFeature[];
   advisory_report:     string;
