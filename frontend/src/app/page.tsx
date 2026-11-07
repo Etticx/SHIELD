@@ -18,7 +18,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus, X, Building2, Hash, DollarSign, User,
-  FileText, ChevronRight, RefreshCw,
+  ChevronRight, RefreshCw,
 } from "lucide-react";
 
 import Modal from "@/components/Modal";
@@ -309,6 +309,7 @@ export default function DashboardPage() {
   // Skip the persistence useEffect on the initial mount
   const isFirstRender = useRef(true);
   const evaluationVersion = useRef(0);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   // A response arriving after navigation must not overwrite the saved draft.
   useEffect(() => () => { evaluationVersion.current++; }, []);
@@ -377,6 +378,8 @@ export default function DashboardPage() {
       const response = await predict({ meta: sessionMeta, financials });
       if (version !== evaluationVersion.current) return;
       setResult(response);
+      // Stacked layout puts the score below the form; bring it into view.
+      if (window.innerWidth < 1024) resultsRef.current?.scrollIntoView({ behavior: "smooth" });
       // Persist result immediately so navigation away won't lose it
       saveWorkspace({ meta: sessionMeta, draft, result: response });
     } catch (err) {
@@ -468,9 +471,10 @@ export default function DashboardPage() {
 
         ) : (
           /* ── WORKSPACE ──────────────────────────────────────────────────── */
-          <main className="flex-1 grid grid-cols-1 xl:grid-cols-[400px_1fr_1fr] gap-5 p-5 items-start">
+          <main className="flex-1 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-5 p-5 items-start">
 
-            <section className="panel flex flex-col gap-0 overflow-hidden">
+            {/* Inputs stay beside the results so officers can tweak a ratio and re-run. */}
+            <section className="panel flex flex-col gap-0 overflow-hidden lg:sticky lg:top-5 lg:max-h-[calc(100vh-40px)] lg:overflow-y-auto">
               <div className="px-5 pt-5 pb-4 border-b border-brand-border">
                 <p className="section-label">Company Financial Inputs</p>
                 <h2 className="text-brand-charcoal font-bold text-base font-heading">SME Financial Profile</h2>
@@ -485,39 +489,43 @@ export default function DashboardPage() {
               </div>
             </section>
 
-            <section className="panel flex flex-col gap-0 overflow-hidden xl:sticky" style={{ top: "20px" }}>
-              <div className="px-5 pt-5 pb-4 border-b border-brand-border">
-                <p className="section-label">Risk Assessment</p>
-                <h2 className="text-brand-charcoal font-bold text-base font-heading">Probability of Default</h2>
-              </div>
-              <div className="px-5 py-4">
-                {loading ? <Spinner label="Computing model…" />
-                  : result ? <RiskGauge result={result} />
-                    : <IdleMiddle draft={draft} />}
-              </div>
-            </section>
+            <div ref={resultsRef} className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-start scroll-mt-5">
+              <section className="panel flex flex-col gap-0 overflow-hidden">
+                <div className="px-5 pt-5 pb-4 border-b border-brand-border">
+                  <p className="section-label">Risk Assessment</p>
+                  <h2 className="text-brand-charcoal font-bold text-base font-heading">Probability of Default</h2>
+                </div>
+                <div className="px-5 py-4">
+                  {loading ? <Spinner label="Computing model…" />
+                    : result ? <RiskGauge result={result} />
+                      : <IdleMiddle draft={draft} />}
+                </div>
+              </section>
 
-            <section className="panel flex flex-col gap-0 overflow-hidden xl:sticky" style={{ top: "20px" }}>
-              <div className="px-5 pt-5 pb-4 border-b border-brand-border">
-                <p className="section-label">Explainability & Advisory</p>
-                <h2 className="text-brand-charcoal font-bold text-base font-heading">SHAP Analysis & Report</h2>
-              </div>
-              <div className="px-5 py-4">
-                {loading ? <Spinner label="Computing SHAP…" />
-                  : result ? (
-                    <div className="flex flex-col gap-6 animate-fade-in">
-                      <ShapChart features={result.shap_features} />
-                      <div className="border-t border-brand-border pt-5">
-                        <div className="flex items-center gap-2 mb-3">
-                          <FileText size={12} className="text-brand-muted" />
-                          <p className="section-label mb-0">AI Advisory Report</p>
-                        </div>
-                        <AdvisoryReport advisory={result.advisory} />
-                      </div>
-                    </div>
-                  ) : <IdleRight />}
-              </div>
-            </section>
+              <section className="panel flex flex-col gap-0 overflow-hidden">
+                <div className="px-5 pt-5 pb-4 border-b border-brand-border">
+                  <p className="section-label">Explainability</p>
+                  <h2 className="text-brand-charcoal font-bold text-base font-heading">What Drove the Score</h2>
+                </div>
+                <div className="px-5 py-4">
+                  {loading ? <Spinner label="Computing SHAP…" />
+                    : result ? <div className="animate-fade-in"><ShapChart features={result.shap_features} /></div>
+                      : <IdleRight />}
+                </div>
+              </section>
+
+              {result && !loading && (
+                <section className="panel flex flex-col gap-0 overflow-hidden xl:col-span-2 animate-fade-in">
+                  <div className="px-5 pt-5 pb-4 border-b border-brand-border">
+                    <p className="section-label">Advisory</p>
+                    <h2 className="text-brand-charcoal font-bold text-base font-heading">AI Advisory Report</h2>
+                  </div>
+                  <div className="px-5 py-4">
+                    <AdvisoryReport advisory={result.advisory} />
+                  </div>
+                </section>
+              )}
+            </div>
 
           </main>
         )}
