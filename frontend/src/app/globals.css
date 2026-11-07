@@ -23,6 +23,10 @@
   ::-webkit-scrollbar-thumb  { background: #D4CFC8; border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #B8B2AA; }
 
+  /* Edge adds its own eye icon to password fields; the login form has its own Show button. */
+  input::-ms-reveal,
+  input::-ms-clear { display: none; }
+
   /* Ubuntu on all headings */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-ubuntu), system-ui, sans-serif;
