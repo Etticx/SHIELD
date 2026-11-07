@@ -489,7 +489,7 @@ export default function DashboardPage() {
               </div>
             </section>
 
-            <div ref={resultsRef} className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-start scroll-mt-5">
+            <div ref={resultsRef} className="grid grid-cols-1 xl:grid-cols-2 gap-5 scroll-mt-5">
               <section className="panel flex flex-col gap-0 overflow-hidden">
                 <div className="px-5 pt-5 pb-4 border-b border-brand-border">
                   <p className="section-label">Risk Assessment</p>
