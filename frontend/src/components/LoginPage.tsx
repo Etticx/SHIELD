@@ -7,43 +7,16 @@
 
 import { useState, useCallback } from "react";
 import Image from "next/image";
-import { X, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import Modal from "@/components/Modal";
 
 // ---------------------------------------------------------------------------
 // Help Modal
 // ---------------------------------------------------------------------------
 function HelpModal({ onClose }: { onClose: () => void }) {
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
-      onClick={onClose}
-    >
-      <div
-        className="bg-brand-panel rounded-2xl shadow-card w-full max-w-md p-8 flex flex-col gap-6 animate-fade-in"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[11px] uppercase tracking-widest text-brand-muted font-semibold mb-1">
-              Support
-            </p>
-            <h2 className="text-lg font-bold text-brand-charcoal font-heading">
-              Account Help
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-brand-muted hover:text-brand-charcoal transition-colors mt-0.5 p-0.5 rounded"
-            aria-label="Close"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
-        <div className="h-px bg-brand-border" />
+    <Modal title="Account help" onClose={onClose}>
 
         {/* Item 1 — Access Request */}
         <div className="flex gap-4">
@@ -95,8 +68,7 @@ function HelpModal({ onClose }: { onClose: () => void }) {
         <p className="text-[11px] text-brand-muted text-center">
           JuneBank IT Support &nbsp;·&nbsp; Internal Use Only
         </p>
-      </div>
-    </div>
+    </Modal>
   );
 }
 

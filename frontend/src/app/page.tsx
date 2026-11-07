@@ -18,9 +18,10 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus, X, Building2, Hash, DollarSign, User,
-  BarChart2, FileText, ChevronRight, RefreshCw,
+  FileText, ChevronRight, RefreshCw,
 } from "lucide-react";
 
+import Modal from "@/components/Modal";
 import InputForm from "@/components/AccountingInputForm";
 import RiskGauge from "@/components/RiskGauge";
 import ShapChart from "@/components/ShapChart";
@@ -66,40 +67,45 @@ function clearWorkspace() {
 // ---------------------------------------------------------------------------
 function IdleMiddle({ draft }: { draft: FinancialDraft }) {
   const readiness = assessReadiness(draft);
+  // Ghost gauge: the arc fills with input completeness, never with a risk value.
+  const arc = 251;
+  const filled = (readiness.provided / 7) * arc;
   return (
     <div className="flex flex-col items-center justify-center min-h-[280px] text-brand-muted gap-3 py-8">
-      <div className="h-14 w-14 rounded-full border-2 border-brand-border flex items-center justify-center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
-          className="text-brand-border">
-          <path d="M12 2a10 10 0 0 1 10 10" />
-          <path d="M12 6a6 6 0 0 1 6 6" />
-          <circle cx="12" cy="12" r="2" />
-        </svg>
-      </div>
+      <svg width="200" height="110" viewBox="0 0 200 110" aria-hidden="true">
+        <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#E8E4DE" strokeWidth="14" strokeLinecap="round" />
+        {filled > 0 && (
+          <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#C9C3BA" strokeWidth="14" strokeLinecap="round"
+            strokeDasharray={`${filled} ${arc}`} className="transition-all duration-300" />
+        )}
+        <text x="100" y="92" textAnchor="middle" className="fill-brand-muted font-mono" fontSize="22">—</text>
+      </svg>
       <p className="text-sm font-semibold text-brand-charcoal">
-        {readiness.ready ? "Ready to Evaluate" : "Insufficient Data"}
+        {readiness.ready ? "Ready to evaluate" : `${readiness.provided} of 7 ratios provided`}
       </p>
-      <p className="text-sm text-center leading-relaxed max-w-[240px]">
+      <p className="text-sm text-center leading-relaxed max-w-[260px]">
         {readiness.ready
-          ? "All 7 ratios are provided. Click Evaluate Risk to calculate the assessment."
-          : `${readiness.provided} of 7 ratios provided. Complete the required inputs or request supporting records before evaluation.`}
-      </p>
-      <p className="text-xs text-center leading-relaxed max-w-[240px] text-brand-muted">
-        {readiness.ready ? "Input completeness does not verify the underlying records." : "No risk score has been calculated for these inputs."}
+          ? "Click Evaluate Risk to calculate the assessment. Complete inputs do not verify the underlying records."
+          : "Complete the required inputs or request supporting records. No risk score has been calculated yet."}
       </p>
     </div>
   );
 }
 
 function IdleRight() {
+  const ghostBars = [88, 72, 60, 48, 38, 26, 16];
   return (
-    <div className="flex flex-col items-center justify-center min-h-[280px] text-brand-muted gap-3 py-8">
-      <div className="h-14 w-14 rounded-full border-2 border-brand-border flex items-center justify-center">
-        <BarChart2 size={22} className="text-brand-border" strokeWidth={1.5} />
+    <div className="flex flex-col justify-center min-h-[280px] text-brand-muted gap-4 py-8" >
+      <div className="flex flex-col gap-2" aria-hidden="true">
+        {ghostBars.map((w, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="h-2.5 w-20 rounded bg-brand-border/70" />
+            <div className="h-2.5 rounded bg-brand-border" style={{ width: `${w}%` }} />
+          </div>
+        ))}
       </div>
-      <p className="text-sm text-center leading-relaxed max-w-[180px]">
-        SHAP analysis and the AI advisory report will appear here.
+      <p className="text-sm leading-relaxed">
+        Each ratio&apos;s push toward or away from default, plus the written advisory, will appear here after evaluation.
       </p>
     </div>
   );
@@ -152,48 +158,21 @@ function GateModal({ evaluator, onSubmit, onClose }: GateModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
-      onClick={onClose}
+    <Modal
+      title="Identify the SME"
+      subtitle="This information is saved with every evaluation for audit purposes."
+      onClose={onClose}
+      dismissOnBackdrop={!companyName && !ssmNumber && !loanAmount}
     >
-      <div
-        className="bg-brand-panel rounded-2xl shadow-card border border-brand-border
-                   w-full max-w-md animate-fade-in overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="h-1 w-full bg-brand-yellow" />
-        <div className="px-7 py-6 flex flex-col gap-5">
-
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[11px] uppercase tracking-widest text-brand-muted font-semibold mb-1">
-                New Evaluation
-              </p>
-              <h2 className="text-xl font-bold text-brand-charcoal font-heading">Identify the SME</h2>
-              <p className="text-sm text-brand-muted mt-0.5">
-                This information is saved with every evaluation for audit purposes.
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-brand-muted hover:text-brand-charcoal transition-colors mt-0.5 p-1 rounded"
-              aria-label="Close"
-            >
-              <X size={16} />
-            </button>
-          </div>
-
-          <div className="h-px bg-brand-border" />
-
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-brand-charcoal uppercase tracking-wide flex items-center gap-1.5">
-                <Building2 size={11} /> Company Name
+              <label htmlFor="gate-company" className="text-sm font-semibold text-brand-charcoal flex items-center gap-1.5">
+                <Building2 size={11} /> Company name
               </label>
               <input
                 type="text"
+                id="gate-company"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="e.g. Syarikat Maju Jaya Sdn Bhd"
@@ -203,11 +182,12 @@ function GateModal({ evaluator, onSubmit, onClose }: GateModalProps) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-brand-charcoal uppercase tracking-wide flex items-center gap-1.5">
+              <label htmlFor="gate-ssm" className="text-sm font-semibold text-brand-charcoal flex items-center gap-1.5">
                 <Hash size={11} /> Business Reg. No. (SSM)
               </label>
               <input
                 type="text"
+                id="gate-ssm"
                 value={ssmNumber}
                 onChange={(e) => setSsmNumber(e.target.value)}
                 placeholder="e.g. 1234567-A"
@@ -217,13 +197,14 @@ function GateModal({ evaluator, onSubmit, onClose }: GateModalProps) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-brand-charcoal uppercase tracking-wide flex items-center gap-1.5">
-                <DollarSign size={11} /> Requested Loan Amount (MYR)
+              <label htmlFor="gate-loan" className="text-sm font-semibold text-brand-charcoal flex items-center gap-1.5">
+                <DollarSign size={11} /> Requested loan amount (MYR)
               </label>
               <input
                 type="number"
                 min="1"
                 step="1000"
+                id="gate-loan"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(e.target.value)}
                 placeholder="e.g. 500000"
@@ -233,9 +214,9 @@ function GateModal({ evaluator, onSubmit, onClose }: GateModalProps) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-brand-charcoal uppercase tracking-wide flex items-center gap-1.5">
+              <p className="text-sm font-semibold text-brand-charcoal flex items-center gap-1.5">
                 <User size={11} /> Evaluator
-              </label>
+              </p>
               <div className="input-field bg-brand-bg text-brand-muted flex items-center gap-2 cursor-not-allowed select-none">
                 <User size={12} className="shrink-0" />
                 <span>{evaluator}</span>
@@ -250,9 +231,7 @@ function GateModal({ evaluator, onSubmit, onClose }: GateModalProps) {
               <ChevronRight size={15} />
             </button>
           </form>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -269,7 +248,7 @@ function SessionHeader({ meta, onReset }: { meta: EvaluationMeta; onReset: () =>
       <div className="flex items-center gap-2 min-w-0">
         <Building2 size={13} className="text-brand-muted shrink-0" />
         <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-widest text-brand-muted font-semibold">Company</p>
+          <p className="text-xs text-brand-muted">Company</p>
           <p className="text-sm font-bold text-brand-charcoal truncate">{meta.company_name}</p>
         </div>
       </div>
@@ -277,7 +256,7 @@ function SessionHeader({ meta, onReset }: { meta: EvaluationMeta; onReset: () =>
       <div className="flex items-center gap-2">
         <Hash size={13} className="text-brand-muted shrink-0" />
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-brand-muted font-semibold">SSM</p>
+          <p className="text-xs text-brand-muted">SSM</p>
           <p className="text-sm font-mono text-brand-charcoal">{meta.ssm_number}</p>
         </div>
       </div>
@@ -285,7 +264,7 @@ function SessionHeader({ meta, onReset }: { meta: EvaluationMeta; onReset: () =>
       <div className="flex items-center gap-2">
         <DollarSign size={13} className="text-brand-muted shrink-0" />
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-brand-muted font-semibold">Loan Amount</p>
+          <p className="text-xs text-brand-muted">Loan amount</p>
           <p className="text-sm font-semibold text-brand-charcoal">{fmt.format(meta.loan_amount)}</p>
         </div>
       </div>
@@ -293,7 +272,7 @@ function SessionHeader({ meta, onReset }: { meta: EvaluationMeta; onReset: () =>
       <div className="flex items-center gap-2">
         <User size={13} className="text-brand-muted shrink-0" />
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-brand-muted font-semibold">Evaluator</p>
+          <p className="text-xs text-brand-muted">Evaluator</p>
           <p className="text-sm text-brand-charcoal">{meta.evaluator}</p>
         </div>
       </div>
@@ -467,16 +446,12 @@ export default function DashboardPage() {
         {!isWorkspaceActive ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 py-16">
             <div className="text-center flex flex-col items-center gap-3 max-w-sm">
-              <div className="h-16 w-16 rounded-2xl bg-brand-panel border border-brand-border
-                              flex items-center justify-center shadow-card mb-2">
-                <Building2 size={28} className="text-brand-muted" strokeWidth={1.5} />
-              </div>
               <h1 className="text-2xl font-bold text-brand-charcoal font-heading">
                 SME Risk Evaluation
               </h1>
               <p className="text-sm text-brand-muted leading-relaxed">
-                Start a new evaluation to assess an SME&apos;s probability of default
-                using the Random Forest model with SHAP explainability and AI advisory.
+                Score an SME&apos;s default risk from 7 financial ratios, see which
+                ratios drove the score, and get a written advisory for the credit file.
               </p>
             </div>
             <button
